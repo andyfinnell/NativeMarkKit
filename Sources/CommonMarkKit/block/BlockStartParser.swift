@@ -1,41 +1,54 @@
 import Foundation
 
-enum BlockStartOp {
-    case addTextLine(Line, to: Block)
-    case addChild(Block, to: Block)
+enum BlockStartMatch {
+    case container(Block)
+    case leaf(Block)
     case none
 }
 
-protocol IsBlockStart {
-    func isStart(_ line: Line) -> LineResult<BlockStartOp>
+protocol BlockStarter {
+    func parseStart(_ line: Line, in container: Block, using closer: BlockCloser) -> LineResult<BlockStartMatch>
 }
 
-class BlockStartParser {
-    private let starters: [IsBlockStart] = []
+struct BlockStart {
+    let tip: Block
+}
+
+final class BlockStartParser {
+    private let starters: [BlockStarter] = [
+        // ThematicBreakStartParser(),
+        // ATXHeadingStartParser(),
+    ]
     
     init() {
         
     }
     
-    func parse(_ line: Line) -> [BlockStartOp] {
+    func parse(_ line: Line, for root: Block, using closer: BlockCloser) -> LineResult<BlockStart> {
+        var container = root
         var remainingLine = line
-        var ops = [BlockStartOp]()
-        while !remainingLine.isBlank {
-            let start = parseLine(remainingLine)
-            if case .none = start.value {
-                continue
+        var isLeaf = root.acceptsLines && root.kind != .paragraph
+        while !remainingLine.isBlank && !isLeaf {
+            let start = parseLine(remainingLine, in: container, using: closer)
+            switch start.value {
+            case let .container(block):
+                container = block
+            case let .leaf(block):
+                container = block
+                isLeaf = true
+            case .none:
+                return LineResult(remainingLine: start.remainingLine, value: BlockStart(tip: container))
             }
-            ops.append(start.value)
             remainingLine = start.remainingLine
         }
-        return ops
+        return LineResult(remainingLine: remainingLine, value: BlockStart(tip: container))
     }
 }
 
 private extension BlockStartParser {
-    func parseLine(_ line: Line) -> LineResult<BlockStartOp> {
+    func parseLine(_ line: Line, in container: Block, using closer: BlockCloser) -> LineResult<BlockStartMatch> {
         for parser in starters {
-            let start = parser.isStart(line)
+            let start = parser.parseStart(line, in: container, using: closer)
             if case .none = start.value {
                 continue
             } else {

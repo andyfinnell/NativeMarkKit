@@ -33,6 +33,27 @@ extension Cursor where S.Element == Character {
         return !ch.value.isWhitespace
     }
        
+    var isSpace: Bool {
+        guard case .value(let ch) = element else {
+            return false
+        }
+        return ch.value == " "
+    }
+
+    var notSpace: Bool {
+        guard case .value(let ch) = element else {
+            return true
+        }
+        return ch.value != " "
+    }
+
+    var isSpaceOrTab: Bool {
+        guard case .value(let ch) = element else {
+            return false
+        }
+        return ch.value == " " || ch.value == "\t"
+    }
+
     func not(in set: Set<Character>) -> Bool {
         guard case .value(let ch) = element else {
             return true
