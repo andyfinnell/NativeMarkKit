@@ -16,6 +16,7 @@ struct BlockStart {
 
 final class BlockStartParser {
     private let starters: [BlockStarter] = [
+        BlockQuoteStarter(),
         ATXHeadingBlockStarter(),
         SetextHeadingBlockStarter(),
         ThematicBreakBlockStarter()
