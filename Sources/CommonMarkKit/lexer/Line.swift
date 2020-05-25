@@ -5,6 +5,10 @@ struct Line {
 }
 
 extension Line {
+    func hasPrefix(_ string: String) -> Bool {
+        text.hasPrefix(string)
+    }
+    
     func firstMatch(_ regex: NSRegularExpression) -> NSTextCheckingResult? {
         regex.firstMatch(in: text,
                          options: [],
@@ -53,10 +57,10 @@ extension Line {
         return count >= 4
     }
     
-    func trimIndent() -> Line {
+    func trimIndent(_ maxIndent: Int = 4) -> Line {
         var current = text.startIndex
         var count = 0
-        while current < text.endIndex, text[current].isSpaceOrTab && count < 4 {
+        while current < text.endIndex, text[current].isSpaceOrTab && count < maxIndent {
             if text[current] == " " {
                 count += 1
             } else if text[current] == "\t" {

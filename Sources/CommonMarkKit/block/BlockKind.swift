@@ -1,6 +1,6 @@
 import Foundation
 
-enum BlockKind {
+enum BlockKind: Equatable {
     case document
     case paragraph
     case thematicBreak
@@ -11,5 +11,5 @@ enum BlockKind {
     case heading5
     case heading6
     case blockQuote
-    case codeBlock
+    case codeBlock(infoString: String)
 }

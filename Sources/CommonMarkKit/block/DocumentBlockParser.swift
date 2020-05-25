@@ -8,7 +8,7 @@ struct DocumentBlockParser: BlockParser {
         true
     }
     
-    func attemptContinuation(with line: Line) -> LineResult<Bool> {
+    func attemptContinuation(_ block: Block, with line: Line) -> LineResult<Bool> {
         LineResult(remainingLine: line, value: true)
     }
 

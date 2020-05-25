@@ -18,6 +18,7 @@ final class BlockStartParser {
     private let starters: [BlockStarter] = [
         BlockQuoteStarter(),
         ATXHeadingBlockStarter(),
+        FencedCodeBlockStarter(),
         SetextHeadingBlockStarter(),
         ThematicBreakBlockStarter(),
         IndentedCodeBlockStarter()

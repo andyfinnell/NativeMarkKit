@@ -9,7 +9,7 @@ struct IndentedCodeBlockStarter: BlockStarter {
         let content = line.trimIndent()
         
         closer.close()
-        let codeBlock = Block(kind: .codeBlock, parser: IndentedCodeBlockParser())
+        let codeBlock = Block(kind: .codeBlock(infoString: ""), parser: IndentedCodeBlockParser())
         codeBlock.addText(content)
         let newContainer = container.addChild(codeBlock)
         

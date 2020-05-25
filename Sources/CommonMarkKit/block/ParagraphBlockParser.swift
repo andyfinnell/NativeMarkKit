@@ -7,7 +7,7 @@ struct ParagraphBlockParser: BlockParser {
         false
     }
     
-    func attemptContinuation(with line: Line) -> LineResult<Bool> {
+    func attemptContinuation(_ block: Block, with line: Line) -> LineResult<Bool> {
         if line.isBlank {
             return LineResult(remainingLine: line, value: false)
         } else {

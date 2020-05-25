@@ -1,7 +1,7 @@
 import Foundation
 
 final class Block {
-    let kind: BlockKind
+    var kind: BlockKind
     private(set) var isOpen = true
     private(set) var children = [Block]()
     private(set) var textLines = [Line]()
@@ -36,6 +36,13 @@ final class Block {
         parent?.children.removeAll(where: { $0 === self })
     }
     
+    func removeFirstLine() -> Line {
+        guard textLines.count > 0 else {
+            return .blank
+        }
+        return textLines.removeFirst()
+    }
+    
     func removeTrailingBlankLines() {
         textLines = textLines.reversed()
             .drop(while: { $0.isBlank })
@@ -47,7 +54,7 @@ extension Block {
     var acceptsLines: Bool { parser.acceptsLines }
 
     func attemptContinuation(with line: Line) -> LineResult<Bool> {
-        parser.attemptContinuation(with: line)
+        parser.attemptContinuation(self, with: line)
     }
 
     func close() {

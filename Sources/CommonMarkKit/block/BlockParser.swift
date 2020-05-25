@@ -5,7 +5,7 @@ protocol BlockParser {
     
     func acceptsChild(_ block: Block) -> Bool
     
-    func attemptContinuation(with line: Line) -> LineResult<Bool>
+    func attemptContinuation(_ block: Block, with line: Line) -> LineResult<Bool>
 
     func close(_ block: Block)
 }

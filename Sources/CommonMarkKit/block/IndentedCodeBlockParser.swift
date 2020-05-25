@@ -7,7 +7,7 @@ struct IndentedCodeBlockParser: BlockParser {
         false
     }
     
-    func attemptContinuation(with line: Line) -> LineResult<Bool> {
+    func attemptContinuation(_ block: Block, with line: Line) -> LineResult<Bool> {
         if line.hasIndent {
             return LineResult(remainingLine: line.trimIndent(), value: true)
         } else if line.isBlank {
