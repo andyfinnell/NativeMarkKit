@@ -27,6 +27,14 @@ final class Block {
     func addText(_ line: Line) {
         textLines.append(line)
     }
+    
+    var hasText: Bool {
+        textLines.contains(where: { !$0.isBlank })
+    }
+    
+    func removeFromParent() {
+        parent?.children.removeAll(where: { $0 === self })
+    }
 }
 
 extension Block {

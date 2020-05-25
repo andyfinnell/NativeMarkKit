@@ -2,8 +2,8 @@ import Foundation
 
 struct ATXHeadingBlockStarter: BlockStarter {
     private static let startRegex = try! NSRegularExpression(pattern: "^#{1,6}(?:[ \\t]+|$)", options: [])
-    private static let ending1Regex = try! NSRegularExpression(pattern: "^[ \t]*#+[ \t]*$", options: [])
-    private static let ending2Regex = try! NSRegularExpression(pattern: "[ \t]+#+[ \t]*$", options: [])
+    private static let ending1Regex = try! NSRegularExpression(pattern: "^[ \\t]*#+[ \\t]*$", options: [])
+    private static let ending2Regex = try! NSRegularExpression(pattern: "[ \\t]+#+[ \\t]*$", options: [])
 
     func parseStart(_ line: Line, in container: Block, using closer: BlockCloser) -> LineResult<BlockStartMatch> {
         let realLine = line.indentedStart
