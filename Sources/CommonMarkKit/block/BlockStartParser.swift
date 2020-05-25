@@ -16,8 +16,8 @@ struct BlockStart {
 
 final class BlockStartParser {
     private let starters: [BlockStarter] = [
-        ATXHeadingBlockStarter()
-        // ThematicBreakStartParser(),
+        ATXHeadingBlockStarter(),
+        ThematicBreakBlockStarter()
     ]
     
     init() {

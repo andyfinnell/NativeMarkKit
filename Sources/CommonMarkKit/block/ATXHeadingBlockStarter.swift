@@ -6,14 +6,15 @@ struct ATXHeadingBlockStarter: BlockStarter {
     private static let ending2Regex = try! NSRegularExpression(pattern: "[ \t]+#+[ \t]*$", options: [])
 
     func parseStart(_ line: Line, in container: Block, using closer: BlockCloser) -> LineResult<BlockStartMatch> {
-        guard let startMatch = line.firstMatch(Self.startRegex) else {
+        let realLine = line.indentedStart
+        guard let startMatch = realLine.firstMatch(Self.startRegex) else {
             return LineResult(remainingLine: line, value: .none)
         }
         
-        let startText = line.text.matchedText(startMatch).trimmingCharacters(in: .whitespacesAndNewlines)
+        let startText = realLine.text.matchedText(startMatch).trimmingCharacters(in: .whitespacesAndNewlines)
         let blockKind = kind(fromCount: startText.count)
         
-        let content = line.replace(startMatch, with: "")
+        let content = realLine.replace(startMatch, with: "")
             .replace(Self.ending1Regex, with: "")
             .replace(Self.ending2Regex, with: "")
         
