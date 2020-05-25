@@ -7,5 +7,5 @@ protocol BlockParser {
     
     func attemptContinuation(with line: Line) -> LineResult<Bool>
 
-    func close()
+    func close(_ block: Block)
 }

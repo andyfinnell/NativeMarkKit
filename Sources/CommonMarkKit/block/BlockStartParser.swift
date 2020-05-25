@@ -19,7 +19,8 @@ final class BlockStartParser {
         BlockQuoteStarter(),
         ATXHeadingBlockStarter(),
         SetextHeadingBlockStarter(),
-        ThematicBreakBlockStarter()
+        ThematicBreakBlockStarter(),
+        IndentedCodeBlockStarter()
     ]
     
     init() {

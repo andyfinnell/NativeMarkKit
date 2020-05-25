@@ -28,7 +28,7 @@ extension Line {
         return replace(match, with: replacementText)
     }
     
-    var indentedStart: Line {
+    var nonIndentedStart: Line {
         var current = text.startIndex
         var count = 0
         while current < text.endIndex,
@@ -39,6 +39,34 @@ extension Line {
         return subrange(current..<text.endIndex)
     }
 
+    var hasIndent: Bool {
+        var current = text.startIndex
+        var count = 0
+        while current < text.endIndex, text[current].isSpaceOrTab && count < 4 {
+            if text[current] == " " {
+                count += 1
+            } else if text[current] == "\t" {
+                count += 4
+            }
+            current = text.index(after: current)
+        }
+        return count >= 4
+    }
+    
+    func trimIndent() -> Line {
+        var current = text.startIndex
+        var count = 0
+        while current < text.endIndex, text[current].isSpaceOrTab && count < 4 {
+            if text[current] == " " {
+                count += 1
+            } else if text[current] == "\t" {
+                count += 4
+            }
+            current = text.index(after: current)
+        }
+        return subrange(current..<text.endIndex)
+    }
+    
     var isBlank: Bool {
         let blankCharacters = Set<Character>([" ", "\t", "\n"])
         return text.isEmpty || text.allSatisfy { blankCharacters.contains($0) }

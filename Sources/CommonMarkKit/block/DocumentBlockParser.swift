@@ -12,7 +12,7 @@ struct DocumentBlockParser: BlockParser {
         LineResult(remainingLine: line, value: true)
     }
 
-    func close() {
+    func close(_ block: Block) {
         // nop
     }
 }

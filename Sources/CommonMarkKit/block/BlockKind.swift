@@ -11,4 +11,5 @@ enum BlockKind {
     case heading5
     case heading6
     case blockQuote
+    case codeBlock
 }

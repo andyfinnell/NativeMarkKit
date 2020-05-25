@@ -4,7 +4,7 @@ struct BlockQuoteStarter: BlockStarter {
     private static let startRegex = try! NSRegularExpression(pattern: "^>[ \\t]?", options: [])
 
     func parseStart(_ line: Line, in container: Block, using closer: BlockCloser) -> LineResult<BlockStartMatch> {
-        let realLine = line.indentedStart
+        let realLine = line.nonIndentedStart
         guard let startMatch = realLine.firstMatch(Self.startRegex) else {
             return LineResult(remainingLine: line, value: .none)
         }

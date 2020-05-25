@@ -11,7 +11,7 @@ struct HeadingBlockParser: BlockParser {
         LineResult(remainingLine: line, value: false)
     }
 
-    func close() {
+    func close(_ block: Block) {
         // nop
     }
 }

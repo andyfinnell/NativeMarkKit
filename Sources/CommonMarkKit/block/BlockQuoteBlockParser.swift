@@ -11,7 +11,7 @@ struct BlockQuoteBlockParser: BlockParser {
     }
     
     func attemptContinuation(with line: Line) -> LineResult<Bool> {
-        let realLine = line.indentedStart
+        let realLine = line.nonIndentedStart
         guard let match = realLine.firstMatch(Self.continueRegex) else {
             return LineResult(remainingLine: line, value: false)
         }
@@ -20,7 +20,7 @@ struct BlockQuoteBlockParser: BlockParser {
         return LineResult(remainingLine: remainingLine, value: true)
     }
 
-    func close() {
+    func close(_ block: Block) {
         // nop
     }
 }

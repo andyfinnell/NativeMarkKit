@@ -1,6 +1,6 @@
 import Foundation
 
-struct ParagraphBlockParser: BlockParser {
+struct IndentedCodeBlockParser: BlockParser {
     let acceptsLines = true
     
     func acceptsChild(_ block: Block) -> Bool {
@@ -8,14 +8,16 @@ struct ParagraphBlockParser: BlockParser {
     }
     
     func attemptContinuation(with line: Line) -> LineResult<Bool> {
-        if line.isBlank {
-            return LineResult(remainingLine: line, value: false)
-        } else {
+        if line.hasIndent {
+            return LineResult(remainingLine: line.trimIndent(), value: true)
+        } else if line.isBlank {
             return LineResult(remainingLine: line, value: true)
+        } else {
+            return LineResult(remainingLine: line, value: false)
         }
     }
 
     func close(_ block: Block) {
-        // TODO: look for link defs
+        block.removeTrailingBlankLines()
     }
 }

@@ -35,6 +35,12 @@ final class Block {
     func removeFromParent() {
         parent?.children.removeAll(where: { $0 === self })
     }
+    
+    func removeTrailingBlankLines() {
+        textLines = textLines.reversed()
+            .drop(while: { $0.isBlank })
+            .reversed()
+    }
 }
 
 extension Block {
@@ -48,7 +54,7 @@ extension Block {
         guard isOpen else {
             return
         }
-        parser.close()
+        parser.close(self)
         isOpen = false
     }
 }
