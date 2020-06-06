@@ -18,4 +18,8 @@ struct ParagraphBlockParser: BlockParser {
     func close(_ block: Block) {
         // TODO: look for link defs
     }
+    
+    func canHaveLastLineBlank(_ block: Block) -> Bool {
+        true
+    }
 }

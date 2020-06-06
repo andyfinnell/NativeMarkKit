@@ -21,6 +21,7 @@ final class BlockStartParser {
         FencedCodeBlockStarter(),
         SetextHeadingBlockStarter(),
         ThematicBreakBlockStarter(),
+        ItemBlockStarter(),
         IndentedCodeBlockStarter()
     ]
     

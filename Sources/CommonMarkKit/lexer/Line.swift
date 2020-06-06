@@ -2,6 +2,12 @@ import Foundation
 
 struct Line {
     let text: String
+    let startColumn: LineColumn
+    
+    init(text: String, startColumn: LineColumn) {
+        self.text = text
+        self.startColumn = startColumn
+    }
 }
 
 extension Line {
@@ -22,7 +28,7 @@ extension Line {
         
         var subtext = text
         subtext.replaceSubrange(replaceRange, with: replacementText)
-        return Line(text: subtext)
+        return Line(text: subtext, startColumn: startColumn)
     }
     
     func replace(_ regex: NSRegularExpression, with replacementText: String) -> Line {
@@ -34,41 +40,46 @@ extension Line {
     
     var nonIndentedStart: Line {
         var current = text.startIndex
-        var count = 0
+        var column = startColumn
         while current < text.endIndex,
-            text[current] == " " && count < 3 {
-            count += 1
+            text[current] == " " && column < LineColumn(3) {
+            column = column.space()
             current = text.index(after: current)
         }
-        return subrange(current..<text.endIndex)
+        return subrange(current..<text.endIndex, startColumn: column)
     }
 
     var hasIndent: Bool {
-        var current = text.startIndex
-        var count = 0
-        while current < text.endIndex, text[current].isSpaceOrTab && count < 4 {
-            if text[current] == " " {
-                count += 1
-            } else if text[current] == "\t" {
-                count += 4
-            }
-            current = text.index(after: current)
-        }
-        return count >= 4
+        indent >= LineColumnCount(4)
     }
     
-    func trimIndent(_ maxIndent: Int = 4) -> Line {
+    var indent: LineColumnCount {
         var current = text.startIndex
-        var count = 0
-        while current < text.endIndex, text[current].isSpaceOrTab && count < maxIndent {
+        var column = startColumn
+        while current < text.endIndex, text[current].isSpaceOrTab {
             if text[current] == " " {
-                count += 1
+                column = column.space()
             } else if text[current] == "\t" {
-                count += 4
+                column = column.tab()
             }
             current = text.index(after: current)
         }
-        return subrange(current..<text.endIndex)
+        return column - startColumn
+    }
+    
+    func trimIndent(_ maxIndent: LineColumnCount = 4) -> Line {
+        var current = text.startIndex
+        var column = startColumn
+        // TODO: this might split a tab, which would throw the column count
+        while current < text.endIndex, text[current].isSpaceOrTab && (column - startColumn) < maxIndent {
+            if text[current] == " " {
+                column = column.space()
+            } else if text[current] == "\t" {
+                column = column.tab()
+            }
+            current = text.index(after: current)
+        }
+        return subrange(current..<text.endIndex, startColumn: column)
     }
     
     var isBlank: Bool {
@@ -76,11 +87,11 @@ extension Line {
         return text.isEmpty || text.allSatisfy { blankCharacters.contains($0) }
     }
     
-    static let blank = Line(text: "")
+    static let blank = Line(text: "", startColumn: LineColumn(0))
 }
 
 private extension Line {
-    func subrange(_ range: Range<String.Index>) -> Line {
-        Line(text: String(text[range]))
+    func subrange(_ range: Range<String.Index>, startColumn: LineColumn) -> Line {
+        Line(text: String(text[range]), startColumn: startColumn)
     }
 }

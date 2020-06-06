@@ -20,4 +20,8 @@ struct IndentedCodeBlockParser: BlockParser {
     func close(_ block: Block) {
         block.removeTrailingBlankLines()
     }
+    
+    func canHaveLastLineBlank(_ block: Block) -> Bool {
+        true
+    }
 }

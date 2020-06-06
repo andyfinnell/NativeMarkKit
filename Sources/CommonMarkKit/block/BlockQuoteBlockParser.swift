@@ -6,8 +6,7 @@ struct BlockQuoteBlockParser: BlockParser {
     let acceptsLines = false
     
     func acceptsChild(_ block: Block) -> Bool {
-        // TODO: everything but item
-        true
+        block.kind != .item
     }
     
     func attemptContinuation(_ block: Block, with line: Line) -> LineResult<Bool> {
@@ -22,5 +21,9 @@ struct BlockQuoteBlockParser: BlockParser {
 
     func close(_ block: Block) {
         // nop
+    }
+    
+    func canHaveLastLineBlank(_ block: Block) -> Bool {
+        false
     }
 }

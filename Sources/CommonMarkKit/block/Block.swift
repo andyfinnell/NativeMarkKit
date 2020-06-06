@@ -48,6 +48,15 @@ final class Block {
             .drop(while: { $0.isBlank })
             .reversed()
     }
+    
+    var isLastLineBlank: Bool {
+        ((textLines.last?.isBlank ?? false) && parser.canHaveLastLineBlank(self))
+            || (children.last?.isLastLineBlank ?? false)
+    }
+    
+    var isLastChild: Bool {
+        parent?.children.last === self
+    }
 }
 
 extension Block {

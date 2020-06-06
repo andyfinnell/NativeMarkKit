@@ -12,4 +12,6 @@ enum BlockKind: Equatable {
     case heading6
     case blockQuote
     case codeBlock(infoString: String)
+    case item
+    case list(ListStyle)
 }

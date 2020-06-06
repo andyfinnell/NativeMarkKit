@@ -8,4 +8,6 @@ protocol BlockParser {
     func attemptContinuation(_ block: Block, with line: Line) -> LineResult<Bool>
 
     func close(_ block: Block)
+    
+    func canHaveLastLineBlank(_ block: Block) -> Bool
 }

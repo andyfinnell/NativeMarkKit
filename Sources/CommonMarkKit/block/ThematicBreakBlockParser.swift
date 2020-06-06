@@ -14,4 +14,8 @@ struct ThematicBreakBlockParser: BlockParser {
     func close(_ block: Block) {
         // nop
     }
+    
+    func canHaveLastLineBlank(_ block: Block) -> Bool {
+        true
+    }
 }

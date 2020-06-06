@@ -12,7 +12,7 @@ struct FencedCodeBlockStarter: BlockStarter {
         let remainingLine = realLine.replace(startMatch, with: "")
         let fence = realLine.text.matchedText(startMatch)
         
-        let parser = FencedCodeBlockParser(fenceOffset: line.text.count - realLine.text.count,
+        let parser = FencedCodeBlockParser(fenceOffset: realLine.startColumn - line.startColumn,
                                            fence: fence)
         closer.close()
         let codeBlock = Block(kind: .codeBlock(infoString: ""), parser: parser)

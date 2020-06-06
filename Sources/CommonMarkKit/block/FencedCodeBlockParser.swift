@@ -3,9 +3,9 @@ import Foundation
 struct FencedCodeBlockParser: BlockParser {
     private static let endingRegex = try! NSRegularExpression(pattern: "^(?:`{3,}|~{3,})(?= *$)", options: [])
     private let fence: String
-    private let fenceOffset: Int
+    private let fenceOffset: LineColumnCount
     
-    init(fenceOffset: Int, fence: String) {
+    init(fenceOffset: LineColumnCount, fence: String) {
         self.fenceOffset = fenceOffset
         self.fence = fence
     }
@@ -30,6 +30,10 @@ struct FencedCodeBlockParser: BlockParser {
     func close(_ block: Block) {
         let infoString = block.removeFirstLine().text.trimmingCharacters(in: .whitespacesAndNewlines)
         block.kind = .codeBlock(infoString: infoString)
+    }
+    
+    func canHaveLastLineBlank(_ block: Block) -> Bool {
+        false
     }
 }
 
