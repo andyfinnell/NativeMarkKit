@@ -1,7 +1,7 @@
 import XCTest
 
-import CommonMarkKitTests
+import NativeMarkKitTests
 
 var tests = [XCTestCaseEntry]()
-tests += CommonMarkKitTests.allTests()
+tests += NativeMarkKitTests.allTests()
 XCTMain(tests)

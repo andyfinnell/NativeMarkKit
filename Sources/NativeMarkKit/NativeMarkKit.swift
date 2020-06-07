@@ -1,3 +1,3 @@
-struct CommonMarkKit {
+struct NativeMarkKit {
     var text = "Hello, World!"
 }
