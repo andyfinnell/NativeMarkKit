@@ -18,4 +18,8 @@ struct ThematicBreakBlockParser: BlockParser {
     func canHaveLastLineBlank(_ block: Block) -> Bool {
         true
     }
+    
+    func parseLinkDefinitions(_ block: Block) {
+        // nop
+    }
 }

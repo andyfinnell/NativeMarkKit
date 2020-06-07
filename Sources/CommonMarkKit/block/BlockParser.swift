@@ -10,4 +10,6 @@ protocol BlockParser {
     func close(_ block: Block)
     
     func canHaveLastLineBlank(_ block: Block) -> Bool
+    
+    func parseLinkDefinitions(_ block: Block)
 }

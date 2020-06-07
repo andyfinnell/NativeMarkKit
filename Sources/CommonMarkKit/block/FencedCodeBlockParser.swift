@@ -35,6 +35,10 @@ struct FencedCodeBlockParser: BlockParser {
     func canHaveLastLineBlank(_ block: Block) -> Bool {
         false
     }
+    
+    func parseLinkDefinitions(_ block: Block) {
+        // nop
+    }
 }
 
 private extension FencedCodeBlockParser {

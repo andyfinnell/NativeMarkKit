@@ -36,4 +36,8 @@ struct ItemBlockParser: BlockParser {
     func canHaveLastLineBlank(_ block: Block) -> Bool {
         !block.children.isEmpty
     }
+    
+    func parseLinkDefinitions(_ block: Block) {
+        // nop
+    }
 }

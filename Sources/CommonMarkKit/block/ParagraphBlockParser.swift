@@ -16,10 +16,25 @@ struct ParagraphBlockParser: BlockParser {
     }
 
     func close(_ block: Block) {
-        // TODO: look for link defs
+        parseLinkDefinitions(block)
+        
+        if !block.hasText && !block.linkDefinitions.isEmpty {
+            block.removeFromParent()
+        }
     }
     
     func canHaveLastLineBlank(_ block: Block) -> Bool {
         true
+    }
+    
+    func parseLinkDefinitions(_ block: Block) {
+        let parser = LinkDefinitionsLineParser()
+        var definitions = [LinkDefinition]()
+        block.updateText { lines in
+            let result = parser.parse(lines)
+            definitions = result.0
+            return result.1
+        }
+        block.addLinkDefinitions(definitions)
     }
 }

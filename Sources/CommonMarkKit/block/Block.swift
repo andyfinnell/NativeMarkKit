@@ -5,6 +5,7 @@ final class Block {
     private(set) var isOpen = true
     private(set) var children = [Block]()
     private(set) var textLines = [Line]()
+    private(set) var linkDefinitions = [String: LinkDefinition]()
     private let parser: BlockParser
     private(set) weak var parent: Block?
     
@@ -26,6 +27,20 @@ final class Block {
     
     func addText(_ line: Line) {
         textLines.append(line)
+    }
+    
+    func updateText(_ transform: ([Line]) -> [Line]) {
+        textLines = transform(textLines)
+    }
+    
+    func addLinkDefinitions(_ definitions: [LinkDefinition]) {
+        if let parent = self.parent {
+            parent.addLinkDefinitions(definitions)
+        } else {
+            for definition in definitions {
+                linkDefinitions[definition.key] = definition
+            }
+        }
     }
     
     var hasText: Bool {
@@ -57,6 +72,7 @@ final class Block {
     var isLastChild: Bool {
         parent?.children.last === self
     }
+    
 }
 
 extension Block {
@@ -72,5 +88,9 @@ extension Block {
         }
         parser.close(self)
         isOpen = false
+    }
+    
+    func parseLinkDefinitions() {
+        parser.parseLinkDefinitions(self)
     }
 }

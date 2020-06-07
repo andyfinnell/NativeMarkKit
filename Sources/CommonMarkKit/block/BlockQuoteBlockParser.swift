@@ -26,4 +26,8 @@ struct BlockQuoteBlockParser: BlockParser {
     func canHaveLastLineBlank(_ block: Block) -> Bool {
         false
     }
+    
+    func parseLinkDefinitions(_ block: Block) {
+        // nop
+    }
 }

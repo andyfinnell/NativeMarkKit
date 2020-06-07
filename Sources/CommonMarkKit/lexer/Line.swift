@@ -16,9 +16,7 @@ extension Line {
     }
     
     func firstMatch(_ regex: NSRegularExpression) -> NSTextCheckingResult? {
-        regex.firstMatch(in: text,
-                         options: [],
-                         range: NSRange(text.startIndex..<text.endIndex, in: text))
+        text.firstMatch(of: regex)
     }
     
     func replace(_ match: NSTextCheckingResult, with replacementText: String) -> Line {

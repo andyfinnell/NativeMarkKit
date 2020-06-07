@@ -23,6 +23,10 @@ struct ListBlockParser: BlockParser {
     func canHaveLastLineBlank(_ block: Block) -> Bool {
         true
     }
+    
+    func parseLinkDefinitions(_ block: Block) {
+        // nop
+    }
 }
 
 private extension ListBlockParser {

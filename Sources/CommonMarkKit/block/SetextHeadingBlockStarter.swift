@@ -9,7 +9,7 @@ struct SetextHeadingBlockStarter: BlockStarter {
             return LineResult(remainingLine: line, value: .none)
         }
         
-        // TODO: the paragraph could have a link definition; we need to skip it
+        container.parseLinkDefinitions()
         
         guard container.hasText else {
             return LineResult(remainingLine: line, value: .none)
