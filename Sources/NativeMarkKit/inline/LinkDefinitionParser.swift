@@ -6,19 +6,19 @@ struct LinkDefinitionParser {
     func parse(input: TextCursor) -> TextResult<LinkDefinition?> {
         let labelResult = LinkLabelParser().parse(input)
         guard labelResult.value.isNotEmpty else {
-            return TextResult(remaining: input, value: nil)
+            return input.noMatch(nil)
         }
         
         let colonResult = labelResult.remaining.parse(":")
         guard colonResult.value.isNotEmpty else {
-            return TextResult(remaining: input, value: nil)
+            return input.noMatch(nil)
         }
 
         let spacesResult = SpacesAndNewlineParser().parse(colonResult.remaining)
         
         let destinationResult = LinkDestinationParser().parse(spacesResult.remaining)
         guard let destination = destinationResult.value else {
-            return TextResult(remaining: input, value: nil)
+            return input.noMatch(nil)
         }
         
         let beforeTitle = destinationResult.remaining
@@ -27,25 +27,27 @@ struct LinkDefinitionParser {
         var isAtEndOfLineResult = isAtEndOfLine(titleResult.remaining)
         if !isAtEndOfLineResult.value {
             if titleResult.value.isEmpty {
-                isAtEndOfLineResult = TextResult(remaining: input, value: false)
+                isAtEndOfLineResult = input.noMatch(false)
             } else {
-                titleResult = TextResult(remaining: beforeTitle, value: "")
+                titleResult = beforeTitle.noMatch("")
                 isAtEndOfLineResult = isAtEndOfLine(beforeTitle)
             }
         }
 
         guard isAtEndOfLineResult.value else {
-            return TextResult(remaining: input, value: nil)
+            return input.noMatch(nil)
         }
         
         let definition = LinkDefinition(label: labelResult.value,
                                         url: destination,
                                         title: titleResult.value)
         guard definition.key.isNotEmpty else {
-            return TextResult(remaining: input, value: nil)
+            return input.noMatch(nil)
         }
         
-        return TextResult(remaining: isAtEndOfLineResult.remaining, value: definition)
+        return TextResult(remaining: isAtEndOfLineResult.remaining,
+                          value: definition,
+                          valueLocation: input)
     }
 }
 
@@ -55,12 +57,12 @@ private extension LinkDefinitionParser {
         
         // If spaces, then could be a title
         guard spacesResult.value.isNotEmpty else {
-            return TextResult(remaining: input, value: "")
+            return input.noMatch("")
         }
         
         let titleResult = LinkTitleParser().parse(spacesResult.remaining)
         guard titleResult.value.isNotEmpty else {
-            return TextResult(remaining: input, value: "")
+            return input.noMatch("")
         }
         return titleResult
     }

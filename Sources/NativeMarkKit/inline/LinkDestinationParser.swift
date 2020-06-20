@@ -16,7 +16,7 @@ private extension LinkDestinationParser {
         var current = start
         while current.isNotEnd && current != ">" {
             if current.isNewline {
-                return TextResult(remaining: input, value: nil)
+                return input.noMatch(nil)
             }
             
             if current == "\\" {
@@ -27,12 +27,13 @@ private extension LinkDestinationParser {
         }
         
         guard current == ">" else {
-            return TextResult(remaining: input, value: nil)
+            return input.noMatch(nil)
         }
         
         let urlString = start.substring(upto: current).unescaped()
         return TextResult(remaining: current.advance(),
-                          value: URL(string: urlString))
+                          value: URL(string: urlString),
+                          valueLocation: input)
     }
     
     func parseUnquoted(_ input: TextCursor) -> TextResult<URL?> {
@@ -53,6 +54,7 @@ private extension LinkDestinationParser {
         
         let urlString = start.substring(upto: current).unescaped()
         return TextResult(remaining: current,
-                          value: URL(string: urlString))
+                          value: URL(string: urlString),
+                          valueLocation: input)
     }
 }
