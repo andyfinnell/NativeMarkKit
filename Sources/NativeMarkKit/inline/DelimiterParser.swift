@@ -1,13 +1,5 @@
 import Foundation
 
-struct Delimiter {
-    let character: String
-    let count: Int
-    let canOpen: Bool
-    let canClose: Bool
-    let inlineText: InlineText
-}
-
 struct DelimiterParser {
     private let delimiter: String
     
