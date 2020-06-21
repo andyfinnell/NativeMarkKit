@@ -21,7 +21,8 @@ struct DelimiterParser {
                       count: count,
                       canOpen: canOpen,
                       canClose: canClose,
-                      inlineText: .text(inlineText))
+                      inlineText: .text(inlineText),
+                      startCursor: input)
         }
     }
 }

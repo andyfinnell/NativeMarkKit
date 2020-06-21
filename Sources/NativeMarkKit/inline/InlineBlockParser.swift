@@ -1,13 +1,13 @@
 import Foundation
 
 struct InlineBlockParser {
-    func parse(_ block: Block) -> [InlineText] {
+    func parse(_ block: Block, using linkDefs: [LinkLabel: LinkDefinition]) -> [InlineText] {
         let delimiterStack = DelimiterStack()
         let buffer = block.textLines.map { $0.text }.joined(separator: "\n").trimmingCharacters(in: .whitespaces)
-        var current = parseInline(TextCursor(text: buffer), into: delimiterStack)
+        var current = parseInline(TextCursor(text: buffer), into: delimiterStack, using: linkDefs)
 
         while current.value {
-            current = parseInline(current.remaining, into: delimiterStack)
+            current = parseInline(current.remaining, into: delimiterStack, using: linkDefs)
         }
         
         // TODO: process emphasis
@@ -17,7 +17,7 @@ struct InlineBlockParser {
 }
 
 private extension InlineBlockParser {
-    func parseInline(_ input: TextCursor, into delimiterStack: DelimiterStack) -> TextResult<Bool> {
+    func parseInline(_ input: TextCursor, into delimiterStack: DelimiterStack, using linkDefs: [LinkLabel: LinkDefinition]) -> TextResult<Bool> {
         guard let char = input.character else {
             return input.noMatch(false)
         }
@@ -49,8 +49,9 @@ private extension InlineBlockParser {
             delimiterStack.push(bang.value)
             wasParsed = bang.map { $0 != nil }
         case "]":
-            // TODO: implement close bracket
-            wasParsed = input.parse("]").map { _ in true }
+            let closeBracket = CloseBracketParser().parse(input, with: delimiterStack, linkDefs: linkDefs)
+            delimiterStack.push(closeBracket.value)
+            wasParsed = closeBracket.map { $0 != nil }
         case "<":
             let autolink = AutolinkParser().parse(input)
             delimiterStack.push(autolink.value)

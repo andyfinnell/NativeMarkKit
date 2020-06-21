@@ -12,7 +12,8 @@ struct OpenBracketParser {
                       count: 1,
                       canOpen: true,
                       canClose: false,
-                      inlineText: .text($0))
+                      inlineText: .text($0),
+                      startCursor: input)
         }
     }
 }

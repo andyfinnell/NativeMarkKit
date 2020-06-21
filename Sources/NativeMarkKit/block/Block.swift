@@ -5,7 +5,7 @@ final class Block {
     private(set) var isOpen = true
     private(set) var children = [Block]()
     private(set) var textLines = [Line]()
-    private(set) var linkDefinitions = [String: LinkDefinition]()
+    private(set) var linkDefinitions = [LinkLabel: LinkDefinition]()
     private let parser: BlockParser
     private(set) weak var parent: Block?
     
