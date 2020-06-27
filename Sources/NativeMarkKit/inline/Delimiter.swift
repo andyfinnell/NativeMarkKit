@@ -1,26 +1,30 @@
 import Foundation
 
 final class Delimiter {
-    let character: String
-    let count: Int
+    var character: String
+    let originalCount: Int
+    var count: Int
     let canOpen: Bool
     let canClose: Bool
     var isActive: Bool
-    let inlineText: InlineText
     let startCursor: TextCursor
     var after: [InlineText]
     
-    init(character: String, count: Int, canOpen: Bool, canClose: Bool, inlineText: InlineText, startCursor: TextCursor) {
+    init(character: String, count: Int, canOpen: Bool, canClose: Bool, startCursor: TextCursor) {
         self.character = character
         self.count = count
         self.canOpen = canOpen
         self.canClose = canClose
-        self.inlineText = inlineText
         self.startCursor = startCursor
+        originalCount = count
         isActive = true
         after = []
     }
     
+    var inlineText: InlineText {
+        .text(String(repeating: character, count: count))
+    }
+
     func push(_ inlineText: InlineText) {
         after = after + [inlineText]
     }
@@ -39,5 +43,5 @@ final class Delimiter {
 }
 
 extension Delimiter {
-    static let starting = Delimiter(character: "", count: 0, canOpen: false, canClose: false, inlineText: .linebreak, startCursor: TextCursor(text: ""))
+    static let starting = Delimiter(character: "", count: 0, canOpen: false, canClose: false, startCursor: TextCursor(text: ""))
 }

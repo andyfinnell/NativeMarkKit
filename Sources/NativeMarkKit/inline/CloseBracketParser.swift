@@ -30,11 +30,10 @@ struct CloseBracketParser {
         let isImage = openBracket.isImageOpener
         
         let substack = delimiterStack.popSubstack(starting: openBracket)
+        substack.processEmphasis()
         let contents = Array(substack.inlineText.dropFirst())
         let inlineText = isImage ? InlineText.image(link, text: contents) : .link(link, text: contents)
-        
-        // TODO: process emphasis on substack
-        
+                
         if openBracket.isLinkOpener {
             delimiterStack.deactivateLinkOpeners()
         }

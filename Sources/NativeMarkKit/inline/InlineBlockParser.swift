@@ -10,7 +10,7 @@ struct InlineBlockParser {
             current = parseInline(current.remaining, into: delimiterStack, using: linkDefs)
         }
         
-        // TODO: process emphasis
+        delimiterStack.processEmphasis()
         
         return delimiterStack.inlineText
     }

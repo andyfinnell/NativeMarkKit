@@ -14,14 +14,12 @@ struct DelimiterParser {
         }
         
         let (canOpen, canClose) = openingAndClosing(countResult)
-        let inlineText = text(countResult)
         
         return countResult.map { count in
             Delimiter(character: delimiter,
                       count: count,
                       canOpen: canOpen,
                       canClose: canClose,
-                      inlineText: .text(inlineText),
                       startCursor: input)
         }
     }
@@ -87,13 +85,5 @@ private extension DelimiterParser {
         }
         
         return (canOpen: canOpen, canClose: canClose)
-    }
-    
-    func text(_ count: TextResult<Int>) -> String {
-        switch delimiter {
-        case "''": return "\u{2019}"
-        case "\"": return "\u{201C}"
-        default: return count.valueLocation.substring(upto: count.remaining)
-        }
     }
 }

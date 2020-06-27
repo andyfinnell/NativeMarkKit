@@ -8,11 +8,10 @@ struct OpenBracketParser {
         }
 
         return bracket.map {
-            Delimiter(character: "[",
+            Delimiter(character: $0,
                       count: 1,
                       canOpen: true,
                       canClose: false,
-                      inlineText: .text($0),
                       startCursor: input)
         }
     }

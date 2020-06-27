@@ -9,7 +9,6 @@ struct BangParser {
                                      count: 1,
                                      canOpen: true,
                                      canClose: false,
-                                     inlineText: .text($0),
                                      startCursor: input))
             }
         }
