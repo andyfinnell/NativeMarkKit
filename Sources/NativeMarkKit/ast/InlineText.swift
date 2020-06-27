@@ -1,6 +1,6 @@
 import Foundation
 
-indirect enum InlineText {
+indirect enum InlineText: Equatable {
     case code(String)
     case text(String)
     case linebreak

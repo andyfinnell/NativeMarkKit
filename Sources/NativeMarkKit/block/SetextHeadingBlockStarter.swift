@@ -32,6 +32,6 @@ struct SetextHeadingBlockStarter: BlockStarter {
 
 private extension SetextHeadingBlockStarter {
     func kind(from text: String) -> BlockKind {
-        text.hasPrefix("=") ? .heading1 : .heading2
+        text.hasPrefix("=") ? .heading(1) : .heading(2)
     }
 }

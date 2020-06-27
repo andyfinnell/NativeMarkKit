@@ -1,6 +1,6 @@
 import Foundation
 
-struct Link {
+struct Link: Equatable {
     let title: String
     let url: URL
 }

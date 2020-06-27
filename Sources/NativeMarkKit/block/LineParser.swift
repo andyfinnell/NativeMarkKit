@@ -5,7 +5,7 @@ struct LineParser {
     private let startParser = BlockStartParser()
     private let lineInserter = LineInserter()
     
-    func parse(_ lines: AnySequence<Line>, into root: Block) {
+    func parse(_ lines: [Line], into root: Block) {
         let tip = lines.reduce(root) { tip, line in
             parse(line, into: root, tip: tip)
         }

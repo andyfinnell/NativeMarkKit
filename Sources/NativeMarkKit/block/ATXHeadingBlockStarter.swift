@@ -29,15 +29,6 @@ struct ATXHeadingBlockStarter: BlockStarter {
 
 private extension ATXHeadingBlockStarter {
     func kind(fromCount count: Int) -> BlockKind {
-        switch count {
-        case 1: return .heading1
-        case 2: return .heading2
-        case 3: return .heading3
-        case 4: return .heading4
-        case 5: return .heading5
-        case 6: return .heading6
-        default:
-            return .heading6
-        }
+        .heading(min(count, 6))
     }
 }
