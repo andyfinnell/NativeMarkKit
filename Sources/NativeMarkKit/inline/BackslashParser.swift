@@ -9,12 +9,12 @@ struct BackslashPaser {
             return input.noMatch(nil)
         }
         
-        let newline = input.parse("\n")
+        let newline = backslash.remaining.parse("\n")
         if newline.value.isNotEmpty {
             return newline.map { _ in .linebreak }
         }
         
-        let escapable = input.parse(Self.escapableRegex)
+        let escapable = backslash.remaining.parse(Self.escapableRegex)
         if escapable.value.isNotEmpty {
             return escapable.map { .text($0) }
         }

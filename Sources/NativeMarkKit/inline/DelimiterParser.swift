@@ -64,10 +64,10 @@ private extension DelimiterParser {
     func openingAndClosing(_ count: TextResult<Int>) -> (canOpen: Bool, canClose: Bool) {
         let (isPreviousWhitespace, isPreviousPunctuation) = previousCharacter(count)
         let (isNextWhitespace, isNextPunctuation) = nextCharacter(count)
-                
+        
         let isLeftFlanking = !isNextWhitespace
             && (!isNextPunctuation || isPreviousWhitespace || isPreviousPunctuation)
-        let isRightFlanking = !isNextWhitespace
+        let isRightFlanking = !isPreviousWhitespace
             && (!isPreviousPunctuation || isNextWhitespace || isNextPunctuation)
         
         let canOpen: Bool

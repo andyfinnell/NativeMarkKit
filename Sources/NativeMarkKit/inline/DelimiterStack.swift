@@ -191,7 +191,7 @@ private extension DelimiterStack {
         opener.after = [isEmphasis ? InlineText.emphasis(content) : .strong(content)]
         
         if opener.count == 0 {
-            removeDelimiter(opener)
+            demoteDelimiter(opener)
         }
         
         guard let updatedCloserIndex = delimiters.firstIndex(where: { $0 === closer }) else {
@@ -199,7 +199,7 @@ private extension DelimiterStack {
         }
         
         if closer.count == 0 {
-            removeDelimiter(closer)
+            demoteDelimiter(closer)
         }
         
         return updatedCloserIndex
