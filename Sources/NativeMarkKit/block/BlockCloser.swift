@@ -13,7 +13,7 @@ final class BlockCloser {
     }
     
     func close() {
-        guard haveBlocksBeenClosed else {
+        guard !haveBlocksBeenClosed else {
             return
         }
         for block in blocks.reversed() {
