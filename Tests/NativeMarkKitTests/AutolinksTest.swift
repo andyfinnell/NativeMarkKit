@@ -9,56 +9,56 @@ final class AutolinksTest: XCTestCase {
         // HTML: <p><a href=\"http://foo.bar.baz\">http://foo.bar.baz</a></p>\n
         // Debug: <p><a>http://foo.bar.baz</a></p>\n
         XCTAssertEqual(try compile("<http://foo.bar.baz>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "http://foo.bar.baz")!), text: [.text("http://foo.bar.baz")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "http://foo.bar.baz")), text: [.text("http://foo.bar.baz")])])]))
     }
 
     func testCase591() throws {
         // HTML: <p><a href=\"http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean\">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>\n
         // Debug: <p><a>http://foo.bar.baz/test?q=hello&id=22&boolean</a></p>\n
         XCTAssertEqual(try compile("<http://foo.bar.baz/test?q=hello&id=22&boolean>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "http://foo.bar.baz/test?q=hello&id=22&boolean")!), text: [.text("http://foo.bar.baz/test?q=hello&id=22&boolean")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "http://foo.bar.baz/test?q=hello&id=22&boolean")), text: [.text("http://foo.bar.baz/test?q=hello&id=22&boolean")])])]))
     }
 
     func testCase592() throws {
         // HTML: <p><a href=\"irc://foo.bar:2233/baz\">irc://foo.bar:2233/baz</a></p>\n
         // Debug: <p><a>irc://foo.bar:2233/baz</a></p>\n
         XCTAssertEqual(try compile("<irc://foo.bar:2233/baz>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "irc://foo.bar:2233/baz")!), text: [.text("irc://foo.bar:2233/baz")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "irc://foo.bar:2233/baz")), text: [.text("irc://foo.bar:2233/baz")])])]))
     }
 
     func testCase593() throws {
         // HTML: <p><a href=\"MAILTO:FOO@BAR.BAZ\">MAILTO:FOO@BAR.BAZ</a></p>\n
         // Debug: <p><a>MAILTO:FOO@BAR.BAZ</a></p>\n
         XCTAssertEqual(try compile("<MAILTO:FOO@BAR.BAZ>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "MAILTO:FOO@BAR.BAZ")!), text: [.text("MAILTO:FOO@BAR.BAZ")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "MAILTO:FOO@BAR.BAZ")), text: [.text("MAILTO:FOO@BAR.BAZ")])])]))
     }
 
     func testCase594() throws {
         // HTML: <p><a href=\"a+b+c:d\">a+b+c:d</a></p>\n
         // Debug: <p><a>a+b+c:d</a></p>\n
         XCTAssertEqual(try compile("<a+b+c:d>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "a+b+c:d")!), text: [.text("a+b+c:d")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "a+b+c:d")), text: [.text("a+b+c:d")])])]))
     }
 
     func testCase595() throws {
         // HTML: <p><a href=\"made-up-scheme://foo,bar\">made-up-scheme://foo,bar</a></p>\n
         // Debug: <p><a>made-up-scheme://foo,bar</a></p>\n
         XCTAssertEqual(try compile("<made-up-scheme://foo,bar>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "made-up-scheme://foo,bar")!), text: [.text("made-up-scheme://foo,bar")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "made-up-scheme://foo,bar")), text: [.text("made-up-scheme://foo,bar")])])]))
     }
 
     func testCase596() throws {
         // HTML: <p><a href=\"http://../\">http://../</a></p>\n
         // Debug: <p><a>http://../</a></p>\n
         XCTAssertEqual(try compile("<http://../>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "http://../")!), text: [.text("http://../")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "http://../")), text: [.text("http://../")])])]))
     }
 
     func testCase597() throws {
         // HTML: <p><a href=\"localhost:5001/foo\">localhost:5001/foo</a></p>\n
         // Debug: <p><a>localhost:5001/foo</a></p>\n
         XCTAssertEqual(try compile("<localhost:5001/foo>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "localhost:5001/foo")!), text: [.text("localhost:5001/foo")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "localhost:5001/foo")), text: [.text("localhost:5001/foo")])])]))
     }
 
     func testCase598() throws {
@@ -72,21 +72,21 @@ final class AutolinksTest: XCTestCase {
         // HTML: <p><a href=\"http://example.com/%5C%5B%5C\">http://example.com/\\[\\</a></p>\n
         // Debug: <p><a>http://example.com/\\[\\</a></p>\n
         XCTAssertEqual(try compile("<http://example.com/\\[\\>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "http://example.com/%5C%5B%5C")!), text: [.text("http://example.com/\\[\\")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "http://example.com/%5C%5B%5C")), text: [.text("http://example.com/\\[\\")])])]))
     }
 
     func testCase600() throws {
         // HTML: <p><a href=\"mailto:foo@bar.example.com\">foo@bar.example.com</a></p>\n
         // Debug: <p><a>foo@bar.example.com</a></p>\n
         XCTAssertEqual(try compile("<foo@bar.example.com>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "mailto:foo@bar.example.com")!), text: [.text("foo@bar.example.com")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "mailto:foo@bar.example.com")), text: [.text("foo@bar.example.com")])])]))
     }
 
     func testCase601() throws {
         // HTML: <p><a href=\"mailto:foo+special@Bar.baz-bar0.com\">foo+special@Bar.baz-bar0.com</a></p>\n
         // Debug: <p><a>foo+special@Bar.baz-bar0.com</a></p>\n
         XCTAssertEqual(try compile("<foo+special@Bar.baz-bar0.com>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "mailto:foo+special@Bar.baz-bar0.com")!), text: [.text("foo+special@Bar.baz-bar0.com")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "mailto:foo+special@Bar.baz-bar0.com")), text: [.text("foo+special@Bar.baz-bar0.com")])])]))
     }
 
     func testCase602() throws {

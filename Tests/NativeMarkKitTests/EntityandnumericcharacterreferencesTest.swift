@@ -51,21 +51,21 @@ final class EntityandnumericcharacterreferencesTest: XCTestCase {
         // HTML: <a href=\"&ouml;&ouml;.html\">\n
         // Debug: <a>\n</a>
         XCTAssertEqual(try compile("<a href=\"&ouml;&ouml;.html\">\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "öö.html")!), text: [])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "öö.html")), text: [])])]))
     }
 
     func testCase318() throws {
         // HTML: <p><a href=\"/f%C3%B6%C3%B6\" title=\"föö\">foo</a></p>\n
         // Debug: <p><a>foo</a></p>\n
         XCTAssertEqual(try compile("[foo](/f&ouml;&ouml; \"f&ouml;&ouml;\")\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "föö", url: URL(string: "/f%C3%B6%C3%B6")!), text: [.text("foo")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "föö", url: URL(string: "/f%C3%B6%C3%B6")), text: [.text("foo")])])]))
     }
 
     func testCase319() throws {
         // HTML: <p><a href=\"/f%C3%B6%C3%B6\" title=\"föö\">foo</a></p>\n
         // Debug: <p><a>foo</a></p>\n
         XCTAssertEqual(try compile("[foo]\n\n[foo]: /f&ouml;&ouml; \"f&ouml;&ouml;\"\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "föö", url: URL(string: "/f%C3%B6%C3%B6")!), text: [.text("foo")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "föö", url: URL(string: "/f%C3%B6%C3%B6")), text: [.text("foo")])])]))
     }
 
     func testCase320() throws {

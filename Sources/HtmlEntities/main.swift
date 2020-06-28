@@ -18,9 +18,10 @@ enum HtmlEntities {
     static let entities = [
 
 """
+var seenKeys = [String: String]()
 
 for (key, value) in entities {
-    let normalizedKey = key.uppercased().lowercased()
+    let normalizedKey = key
     let escapedCharacters: [Character] = value.characters.flatMap { ch -> [Character] in
         switch ch {
         case "\\": return ["\\", "\\"]
@@ -31,7 +32,14 @@ for (key, value) in entities {
         }
     }
     let escapedString = String(escapedCharacters)
+    
+    if let previousValue = seenKeys[normalizedKey] {
+        print("duplicate of \(key); previous value = \(previousValue); now = \(escapedString)")
+        continue
+    }
+
     output.append("\t\t\"\(normalizedKey)\": \"\(escapedString)\",\n")
+    seenKeys[normalizedKey] = escapedString
 }
 
 output += """

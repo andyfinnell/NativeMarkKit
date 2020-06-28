@@ -76,13 +76,26 @@ extension String {
         return result
     }
     
-    private static let escapableRegex = try! NSRegularExpression(pattern: "\\\\\(Self.escapablePattern)|\(Self.entityPattern)", options: .caseInsensitive)
+    private static let escapableRegex = try! NSRegularExpression(pattern: "\\\\\(Self.escapablePattern.escapeForRegex())|\(Self.entityPattern.escapeForRegex())", options: .caseInsensitive)
     private static let escapableCharacterSet = Set<Character>(["\\", "&"])
     func unescaped() -> String {
         guard contains(where: { Self.escapableCharacterSet.contains($0) }) else {
             return self
         }
         return replacingOccurrences(of: Self.escapableRegex, using: Self.unescape(_:))
+    }
+    
+    func escapeForRegex() -> String {
+        let escapedCharacters: [Character] = self.flatMap { ch -> [Character] in
+            switch ch {
+            case "\\": return ["\\", "\\"]
+            case "\"": return ["\\", "\""]
+            case "\n": return ["\\", "n"]
+            case "\t": return ["\\", "t"]
+            default: return [ch]
+            }
+        }
+        return String(escapedCharacters)
     }
 }
 

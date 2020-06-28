@@ -72,14 +72,14 @@ final class HardlinebreaksTest: XCTestCase {
         // HTML: <p><a href=\"foo  \nbar\"></p>\n
         // Debug: <p><a></a></p><a>\n</a>
         XCTAssertEqual(try compile("<a href=\"foo  \nbar\">\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "foo  \nbar")!), text: [])]), .paragraph([.link(Link(title: "", url: URL(string: "foo  \nbar")!), text: [])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "foo  \nbar")), text: [])]), .paragraph([.link(Link(title: "", url: URL(string: "foo  \nbar")), text: [])])]))
     }
 
     func testCase640() throws {
         // HTML: <p><a href=\"foo\\\nbar\"></p>\n
         // Debug: <p><a></a></p><a>\n</a>
         XCTAssertEqual(try compile("<a href=\"foo\\\nbar\">\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "foo\\\nbar")!), text: [])]), .paragraph([.link(Link(title: "", url: URL(string: "foo\\\nbar")!), text: [])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "foo\\\nbar")), text: [])]), .paragraph([.link(Link(title: "", url: URL(string: "foo\\\nbar")), text: [])])]))
     }
 
     func testCase641() throws {
