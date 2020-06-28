@@ -43,5 +43,7 @@ final class Delimiter {
 }
 
 extension Delimiter {
-    static let starting = Delimiter(character: "", count: 0, canOpen: false, canClose: false, startCursor: TextCursor(text: ""))
+    static func starting() -> Delimiter {
+        Delimiter(character: "", count: 0, canOpen: false, canClose: false, startCursor: TextCursor(text: ""))
+    }
 }

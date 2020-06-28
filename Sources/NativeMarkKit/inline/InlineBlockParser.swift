@@ -12,7 +12,7 @@ struct InlineBlockParser {
         
         delimiterStack.processEmphasis()
         
-        return delimiterStack.inlineText
+        return coalesceText(delimiterStack.inlineText)
     }
 }
 
@@ -73,5 +73,29 @@ private extension InlineBlockParser {
             delimiterStack.push(unhandled.value)
             return unhandled.map { _ in true }
         }
+    }
+    
+    func coalesceText(_ inlines: [InlineText]) -> [InlineText] {
+        var output = [InlineText]()
+        var currentText = ""
+        
+        for inline in inlines {
+            if case let .text(text) = inline {
+                currentText += text
+            } else {
+                if !currentText.isEmpty {
+                    output.append(.text(currentText))
+                    currentText = ""
+                }
+                output.append(inline)
+            }
+        }
+        
+        if !currentText.isEmpty {
+            output.append(.text(currentText))
+            currentText = ""
+        }
+
+        return output
     }
 }

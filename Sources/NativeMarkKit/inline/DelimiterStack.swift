@@ -1,7 +1,7 @@
 import Foundation
 
 final class DelimiterStack {
-    private var delimiters = [Delimiter.starting]
+    private var delimiters = [Delimiter.starting()]
     
     init() {
         
