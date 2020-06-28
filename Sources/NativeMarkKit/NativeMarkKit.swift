@@ -1,6 +1,4 @@
-struct NativeMarkKit {
-    var text = "Hello, World!"
-}
+import Foundation
 
 func compile(_ markdownText: String) throws -> Document {
     let lines = Lexer().scan(markdownText)
