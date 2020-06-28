@@ -380,7 +380,7 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
         // HTML: <p><em>foo <a href=\"/url\">bar</a></em></p>\n
         // Debug: <p><em>foo <a>bar</a></em></p>\n
         XCTAssertEqual(try compile("*foo [bar](/url)*\n"),
-                       Document(elements: [.paragraph([.emphasis([.text("foo "), .link(Link(title: "", url: URL(string: "/url")), text: [.text("bar")])])])]))
+                       Document(elements: [.paragraph([.emphasis([.text("foo "), .link(Link(title: "", url: "/url"), text: [.text("bar")])])])]))
     }
 
     func testCase404() throws {
@@ -485,7 +485,7 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
         // HTML: <p><em>foo <a href=\"/url\"><em>bar</em></a></em></p>\n
         // Debug: <p><em>foo <a><em>bar</em></a></em></p>\n
         XCTAssertEqual(try compile("*foo [*bar*](/url)*\n"),
-                       Document(elements: [.paragraph([.emphasis([.text("foo "), .link(Link(title: "", url: URL(string: "/url")), text: [.emphasis([.text("bar")])])])])]))
+                       Document(elements: [.paragraph([.emphasis([.text("foo "), .link(Link(title: "", url: "/url"), text: [.emphasis([.text("bar")])])])])]))
     }
 
     func testCase419() throws {
@@ -506,7 +506,7 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
         // HTML: <p><strong>foo <a href=\"/url\">bar</a></strong></p>\n
         // Debug: <p><strong>foo <a>bar</a></strong></p>\n
         XCTAssertEqual(try compile("**foo [bar](/url)**\n"),
-                       Document(elements: [.paragraph([.strong([.text("foo "), .link(Link(title: "", url: URL(string: "/url")), text: [.text("bar")])])])]))
+                       Document(elements: [.paragraph([.strong([.text("foo "), .link(Link(title: "", url: "/url"), text: [.text("bar")])])])]))
     }
 
     func testCase422() throws {
@@ -583,7 +583,7 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
         // HTML: <p><strong>foo <a href=\"/url\"><em>bar</em></a></strong></p>\n
         // Debug: <p><strong>foo <a><em>bar</em></a></strong></p>\n
         XCTAssertEqual(try compile("**foo [*bar*](/url)**\n"),
-                       Document(elements: [.paragraph([.strong([.text("foo "), .link(Link(title: "", url: URL(string: "/url")), text: [.emphasis([.text("bar")])])])])]))
+                       Document(elements: [.paragraph([.strong([.text("foo "), .link(Link(title: "", url: "/url"), text: [.emphasis([.text("bar")])])])])]))
     }
 
     func testCase433() throws {
@@ -863,35 +863,35 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
         // HTML: <p>*<a href=\"/url\">bar*</a></p>\n
         // Debug: <p>*<a>bar*</a></p>\n
         XCTAssertEqual(try compile("*[bar*](/url)\n"),
-                       Document(elements: [.paragraph([.text("*"), .link(Link(title: "", url: URL(string: "/url")), text: [.text("bar*")])])]))
+                       Document(elements: [.paragraph([.text("*"), .link(Link(title: "", url: "/url"), text: [.text("bar*")])])]))
     }
 
     func testCase473() throws {
         // HTML: <p>_foo <a href=\"/url\">bar_</a></p>\n
         // Debug: <p>_foo <a>bar_</a></p>\n
         XCTAssertEqual(try compile("_foo [bar_](/url)\n"),
-                       Document(elements: [.paragraph([.text("_foo "), .link(Link(title: "", url: URL(string: "/url")), text: [.text("bar_")])])]))
+                       Document(elements: [.paragraph([.text("_foo "), .link(Link(title: "", url: "/url"), text: [.text("bar_")])])]))
     }
 
     func testCase474() throws {
         // HTML: <p>*<img src=\"foo\" title=\"*\"/></p>\n
         // Debug: <p>*<img></img></p>\n
         XCTAssertEqual(try compile("*<img src=\"foo\" title=\"*\"/>\n"),
-                       Document(elements: [.paragraph([.text("*"), .image(Link(title: "*", url: URL(string: "foo")), text: [])])]))
+                       Document(elements: [.paragraph([.text("*"), .image(Link(title: "*", url: "foo"), text: [])])]))
     }
 
     func testCase475() throws {
         // HTML: <p>**<a href=\"**\"></p>\n
         // Debug: <p>**<a></a></p><a>\n</a>
         XCTAssertEqual(try compile("**<a href=\"**\">\n"),
-                       Document(elements: [.paragraph([.text("**"), .link(Link(title: "", url: URL(string: "**")), text: [])]), .paragraph([.link(Link(title: "", url: URL(string: "**")), text: [])])]))
+                       Document(elements: [.paragraph([.text("**"), .link(Link(title: "", url: "**"), text: [])]), .paragraph([.link(Link(title: "", url: "**"), text: [])])]))
     }
 
     func testCase476() throws {
         // HTML: <p>__<a href=\"__\"></p>\n
         // Debug: <p>__<a></a></p><a>\n</a>
         XCTAssertEqual(try compile("__<a href=\"__\">\n"),
-                       Document(elements: [.paragraph([.text("__"), .link(Link(title: "", url: URL(string: "__")), text: [])]), .paragraph([.link(Link(title: "", url: URL(string: "__")), text: [])])]))
+                       Document(elements: [.paragraph([.text("__"), .link(Link(title: "", url: "__"), text: [])]), .paragraph([.link(Link(title: "", url: "__"), text: [])])]))
     }
 
     func testCase477() throws {
@@ -912,14 +912,14 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
         // HTML: <p>**a<a href=\"http://foo.bar/?q=**\">http://foo.bar/?q=**</a></p>\n
         // Debug: <p>**a<a>http://foo.bar/?q=**</a></p>\n
         XCTAssertEqual(try compile("**a<http://foo.bar/?q=**>\n"),
-                       Document(elements: [.paragraph([.text("**a"), .link(Link(title: "", url: URL(string: "http://foo.bar/?q=**")), text: [.text("http://foo.bar/?q=**")])])]))
+                       Document(elements: [.paragraph([.text("**a"), .link(Link(title: "", url: "http://foo.bar/?q=**"), text: [.text("http://foo.bar/?q=**")])])]))
     }
 
     func testCase480() throws {
         // HTML: <p>__a<a href=\"http://foo.bar/?q=__\">http://foo.bar/?q=__</a></p>\n
         // Debug: <p>__a<a>http://foo.bar/?q=__</a></p>\n
         XCTAssertEqual(try compile("__a<http://foo.bar/?q=__>\n"),
-                       Document(elements: [.paragraph([.text("__a"), .link(Link(title: "", url: URL(string: "http://foo.bar/?q=__")), text: [.text("http://foo.bar/?q=__")])])]))
+                       Document(elements: [.paragraph([.text("__a"), .link(Link(title: "", url: "http://foo.bar/?q=__"), text: [.text("http://foo.bar/?q=__")])])]))
     }
 
     

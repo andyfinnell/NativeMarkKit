@@ -1,7 +1,7 @@
 import Foundation
 
 struct LinkDestinationParser {
-    func parse(_ input: TextCursor) -> TextResult<URL?> {
+    func parse(_ input: TextCursor) -> TextResult<String?> {
         if input == "<" {
             return parseQuoted(input)
         } else {
@@ -11,7 +11,7 @@ struct LinkDestinationParser {
 }
 
 private extension LinkDestinationParser {
-    func parseQuoted(_ input: TextCursor) -> TextResult<URL?> {
+    func parseQuoted(_ input: TextCursor) -> TextResult<String?> {
         let start = input.advance()
         var current = start
         while current.isNotEnd && current != ">" {
@@ -32,11 +32,11 @@ private extension LinkDestinationParser {
         
         let urlString = start.substring(upto: current).unescaped()
         return TextResult(remaining: current.advance(),
-                          value: URL(string: urlString),
+                          value: urlString,
                           valueLocation: input)
     }
     
-    func parseUnquoted(_ input: TextCursor) -> TextResult<URL?> {
+    func parseUnquoted(_ input: TextCursor) -> TextResult<String?> {
         let start = input
         var current = start
         var openCount = 0
@@ -54,7 +54,7 @@ private extension LinkDestinationParser {
         
         let urlString = start.substring(upto: current).unescaped()
         return TextResult(remaining: current,
-                          value: URL(string: urlString),
+                          value: urlString,
                           valueLocation: input)
     }
 }

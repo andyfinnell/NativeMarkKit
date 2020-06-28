@@ -9,28 +9,28 @@ final class RawhtmlTest: XCTestCase {
         // HTML: <p><a><bab><c2c></p>\n
         // Debug: <p><a><bab><c2c></c2c></bab></a></p><a>\n</a>
         XCTAssertEqual(try compile("<a><bab><c2c>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "")), text: [.text("<bab>"), .softbreak, .text(" "), .softbreak, .text("</bab>")])]), .paragraph([.link(Link(title: "", url: URL(string: "")), text: [])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: ""), text: [.text("<bab>"), .softbreak, .text(" "), .softbreak, .text("</bab>")])]), .paragraph([.link(Link(title: "", url: ""), text: [])])]))
     }
 
     func testCase610() throws {
         // HTML: <p><a/><b2/></p>\n
         // Debug: <p><a></a><b2></b2></p>\n
         XCTAssertEqual(try compile("<a/><b2/>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "")), text: [])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: ""), text: [])])]))
     }
 
     func testCase611() throws {
         // HTML: <p><a  /><b2\ndata=\"foo\" ></p>\n
         // Debug: <p><a></a><b2></b2></p>\n
         XCTAssertEqual(try compile("<a  /><b2\ndata=\"foo\" >\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "")), text: [])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: ""), text: [])])]))
     }
 
     func testCase612() throws {
         // HTML: <p><a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 /></p>\n
         // Debug: <p><a></a></p>\n
         XCTAssertEqual(try compile("<a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 />\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "")), text: [])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: ""), text: [])])]))
     }
 
     func testCase613() throws {
@@ -135,14 +135,14 @@ final class RawhtmlTest: XCTestCase {
         // HTML: <p>foo <a href=\"&ouml;\"></p>\n
         // Debug: <p>foo <a></a></p><a>\n</a>
         XCTAssertEqual(try compile("foo <a href=\"&ouml;\">\n"),
-                       Document(elements: [.paragraph([.text("foo "), .link(Link(title: "", url: URL(string: "ö")), text: [])]), .paragraph([.link(Link(title: "", url: URL(string: "ö")), text: [])])]))
+                       Document(elements: [.paragraph([.text("foo "), .link(Link(title: "", url: "ö"), text: [])]), .paragraph([.link(Link(title: "", url: "ö"), text: [])])]))
     }
 
     func testCase628() throws {
         // HTML: <p>foo <a href=\"\\*\"></p>\n
         // Debug: <p>foo <a></a></p><a>\n</a>
         XCTAssertEqual(try compile("foo <a href=\"\\*\">\n"),
-                       Document(elements: [.paragraph([.text("foo "), .link(Link(title: "", url: URL(string: "\\*")), text: [])]), .paragraph([.link(Link(title: "", url: URL(string: "\\*")), text: [])])]))
+                       Document(elements: [.paragraph([.text("foo "), .link(Link(title: "", url: "\\*"), text: [])]), .paragraph([.link(Link(title: "", url: "\\*"), text: [])])]))
     }
 
     func testCase629() throws {

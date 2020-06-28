@@ -65,28 +65,28 @@ final class BackslashescapesTest: XCTestCase {
         // HTML: <p><a href=\"http://example.com?find=%5C*\">http://example.com?find=\\*</a></p>\n
         // Debug: <p><a>http://example.com?find=\\*</a></p>\n
         XCTAssertEqual(try compile("<http://example.com?find=\\*>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "http://example.com?find=%5C*")), text: [.text("http://example.com?find=\\*")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "http://example.com?find=%5C*"), text: [.text("http://example.com?find=\\*")])])]))
     }
 
     func testCase307() throws {
         // HTML: <a href=\"/bar\\/)\">\n
         // Debug: <a>\n</a>
         XCTAssertEqual(try compile("<a href=\"/bar\\/)\">\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "/bar\\/)")), text: [])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "/bar\\/)"), text: [])])]))
     }
 
     func testCase308() throws {
         // HTML: <p><a href=\"/bar*\" title=\"ti*tle\">foo</a></p>\n
         // Debug: <p><a>foo</a></p>\n
         XCTAssertEqual(try compile("[foo](/bar\\* \"ti\\*tle\")\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "ti*tle", url: URL(string: "/bar*")), text: [.text("foo")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "ti*tle", url: "/bar*"), text: [.text("foo")])])]))
     }
 
     func testCase309() throws {
         // HTML: <p><a href=\"/bar*\" title=\"ti*tle\">foo</a></p>\n
         // Debug: <p><a>foo</a></p>\n
         XCTAssertEqual(try compile("[foo]\n\n[foo]: /bar\\* \"ti\\*tle\"\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "ti*tle", url: URL(string: "/bar*")), text: [.text("foo")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "ti*tle", url: "/bar*"), text: [.text("foo")])])]))
     }
 
     func testCase310() throws {

@@ -7,19 +7,15 @@ struct AutolinkParser {
     func parse(_ input: TextCursor) -> TextResult<InlineText?> {
         let email = input.parse(Self.emailAutolinkRegex)
         if email.value.isNotEmpty {
-            let mailto = "mailto:\(email.value.trimmed(by: 1))"
-            guard let url = URL(string: mailto) else {
-                return email.map { _ in nil } // invalid url
-            }
-            return email.map { _ in .link(Link(title: "", url: url), text: []) }
+            let mailtoText = email.value.trimmed(by: 1)
+            let mailto = "mailto:\(mailtoText)"
+            return email.map { _ in .link(Link(title: "", url: mailto), text: [.text(mailtoText)]) }
         }
         
         let autolink = input.parse(Self.autolinkRegex)
         if autolink.value.isNotEmpty {
-            guard let url = URL(string: autolink.value) else {
-                return autolink.map { _ in nil } // invalid url
-            }
-            return autolink.map { _ in .link(Link(title: "", url: url), text: []) }
+            let autolinkText = autolink.value.trimmed(by: 1)
+            return autolink.map { _ in .link(Link(title: "", url: autolinkText), text: [.text(autolinkText)]) }
         }
         
         return input.noMatch(nil)

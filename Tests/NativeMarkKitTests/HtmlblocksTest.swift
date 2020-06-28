@@ -23,7 +23,7 @@ final class HtmlblocksTest: XCTestCase {
         // HTML:  <div>\n  *hello*\n         <foo><a>\n
         // Debug:  <div>\n  *hello*\n         <foo><a>\n</a></foo></div>
         XCTAssertEqual(try compile(" <div>\n  *hello*\n         <foo><a>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "")), text: [])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: ""), text: [])])]))
     }
 
     func testCase121() throws {
@@ -86,7 +86,7 @@ final class HtmlblocksTest: XCTestCase {
         // HTML: <div><a href=\"bar\">*foo*</a></div>\n
         // Debug: <div><a>*foo*</a></div>\n
         XCTAssertEqual(try compile("<div><a href=\"bar\">*foo*</a></div>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "bar")), text: [.text("*foo*")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "bar"), text: [.text("*foo*")])])]))
     }
 
     func testCase130() throws {
@@ -107,7 +107,7 @@ final class HtmlblocksTest: XCTestCase {
         // HTML: <a href=\"foo\">\n*bar*\n</a>\n
         // Debug: <a>\n*bar*\n</a>\n
         XCTAssertEqual(try compile("<a href=\"foo\">\n*bar*\n</a>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: URL(string: "foo")), text: [.text("*bar*")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "foo"), text: [.text("*bar*")])])]))
     }
 
     func testCase133() throws {
@@ -275,7 +275,7 @@ final class HtmlblocksTest: XCTestCase {
         // HTML: <p>Foo\n<a href=\"bar\">\nbaz</p>\n
         // Debug: <p>Foo\n<a>\nbaz</a></p><a>\n</a>
         XCTAssertEqual(try compile("Foo\n<a href=\"bar\">\nbaz\n"),
-                       Document(elements: [.paragraph([.text("Foo"), .link(Link(title: "", url: URL(string: "bar")), text: [.text("baz")])]), .paragraph([.link(Link(title: "", url: URL(string: "bar")), text: [])])]))
+                       Document(elements: [.paragraph([.text("Foo"), .link(Link(title: "", url: "bar"), text: [.text("baz")])]), .paragraph([.link(Link(title: "", url: "bar"), text: [])])]))
     }
 
     func testCase157() throws {
