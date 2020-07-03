@@ -79,9 +79,10 @@ struct TextCursor: Equatable {
         }
         
         let remaining = TextCursor(text: text, index: matchedRange.upperBound)
+        let valueLocation = TextCursor(text: text, index: matchedRange.lowerBound)
         return TextResult(remaining: remaining,
                           value: text.matchedText(match),
-                          valueLocation: self)
+                          valueLocation: valueLocation)
     }
     
     func substring(upto stopCursor: TextCursor) -> String {
