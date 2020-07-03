@@ -221,7 +221,7 @@ private extension DelimiterStack {
         start.after = []
         delimiters.removeSubrange(remainderIndex..<endIndex)
         
-        return inlineText
+        return coalesceText(inlineText)
     }
     
     func removeDelimiter(_ delimiter: Delimiter) {
