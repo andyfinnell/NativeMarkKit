@@ -9,7 +9,7 @@ final class PrecedenceTest: XCTestCase {
         // HTML: <ul>\n<li>`one</li>\n<li>two`</li>\n</ul>\n
         // Debug: <ul>\n<li>`one</li>\n<li>two`</li>\n</ul>\n
         XCTAssertEqual(try compile("- `one\n- two`\n"),
-                       Document(elements: [.list(ListStyle(isTight: true, kind: .bulleted("*")), items: [ListItem(elements: []), ListItem(elements: [])])]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: []), ListItem(elements: [])])]))
     }
 
     

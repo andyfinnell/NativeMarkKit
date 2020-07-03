@@ -18,7 +18,7 @@ struct ItemBlockStarter: BlockStarter {
         closer.close()
         
         var list = container
-        if isSameKindOfList(container, as: itemMarkerResult.value.kind) {
+        if !isSameKindOfList(container, as: itemMarkerResult.value.kind) {
             let listStyle = ListStyle(isTight: true, kind: itemMarkerResult.value.kind)
             list = Block(kind: .list(listStyle), parser: ListBlockParser())
             _ = container.addChild(list)

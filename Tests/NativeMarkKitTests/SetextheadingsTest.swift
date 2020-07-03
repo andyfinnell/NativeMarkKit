@@ -107,7 +107,7 @@ final class SetextheadingsTest: XCTestCase {
         // HTML: <ul>\n<li>Foo</li>\n</ul>\n<hr />\n
         // Debug: <ul>\n<li>Foo</li>\n</ul>\n<hr></hr>\n
         XCTAssertEqual(try compile("- Foo\n---\n"),
-                       Document(elements: [.list(ListStyle(isTight: true, kind: .bulleted("*")), items: [ListItem(elements: [])]), .thematicBreak]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [])]), .thematicBreak]))
     }
 
     func testCase65() throws {
@@ -142,7 +142,7 @@ final class SetextheadingsTest: XCTestCase {
         // HTML: <ul>\n<li>foo</li>\n</ul>\n<hr />\n
         // Debug: <ul>\n<li>foo</li>\n</ul>\n<hr></hr>\n
         XCTAssertEqual(try compile("- foo\n-----\n"),
-                       Document(elements: [.list(ListStyle(isTight: true, kind: .bulleted("*")), items: [ListItem(elements: [])]), .thematicBreak]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [])]), .thematicBreak]))
     }
 
     func testCase70() throws {

@@ -191,7 +191,7 @@ final class HtmlblocksTest: XCTestCase {
         // HTML: <ul>\n<li>\n<div>\n</li>\n<li>foo</li>\n</ul>\n
         // Debug: <ul>\n<li>\n<div>\n</div></li>\n<li>foo</li>\n</ul>\n
         XCTAssertEqual(try compile("- <div>\n- foo\n"),
-                       Document(elements: [.list(ListStyle(isTight: true, kind: .bulleted("*")), items: [ListItem(elements: []), ListItem(elements: [])])]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: []), ListItem(elements: [])])]))
     }
 
     func testCase145() throws {

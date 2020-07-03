@@ -107,7 +107,7 @@ final class ThematicbreaksTest: XCTestCase {
         // HTML: <ul>\n<li>foo</li>\n</ul>\n<hr />\n<ul>\n<li>bar</li>\n</ul>\n
         // Debug: <ul>\n<li>foo</li>\n</ul>\n<hr></hr>\n<ul>\n<li>bar</li>\n</ul>\n
         XCTAssertEqual(try compile("- foo\n***\n- bar\n"),
-                       Document(elements: [.list(ListStyle(isTight: true, kind: .bulleted("*")), items: [ListItem(elements: [])]), .thematicBreak, .list(ListStyle(isTight: true, kind: .bulleted("*")), items: [ListItem(elements: [])])]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [])]), .thematicBreak, .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [])])]))
     }
 
     func testCase28() throws {
@@ -128,14 +128,14 @@ final class ThematicbreaksTest: XCTestCase {
         // HTML: <ul>\n<li>Foo</li>\n</ul>\n<hr />\n<ul>\n<li>Bar</li>\n</ul>\n
         // Debug: <ul>\n<li>Foo</li>\n</ul>\n<hr></hr>\n<ul>\n<li>Bar</li>\n</ul>\n
         XCTAssertEqual(try compile("* Foo\n* * *\n* Bar\n"),
-                       Document(elements: [.list(ListStyle(isTight: true, kind: .bulleted("*")), items: [ListItem(elements: [])]), .thematicBreak, .list(ListStyle(isTight: true, kind: .bulleted("*")), items: [ListItem(elements: [])])]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [])]), .thematicBreak, .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [])])]))
     }
 
     func testCase31() throws {
         // HTML: <ul>\n<li>Foo</li>\n<li>\n<hr />\n</li>\n</ul>\n
         // Debug: <ul>\n<li>Foo</li>\n<li>\n<hr></hr>\n</li>\n</ul>\n
         XCTAssertEqual(try compile("- Foo\n- * * *\n"),
-                       Document(elements: [.list(ListStyle(isTight: true, kind: .bulleted("*")), items: [ListItem(elements: []), ListItem(elements: [.thematicBreak])])]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: []), ListItem(elements: [.thematicBreak])])]))
     }
 
     

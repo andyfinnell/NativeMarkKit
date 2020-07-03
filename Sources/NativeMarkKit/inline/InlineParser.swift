@@ -53,7 +53,7 @@ private extension InlineParser {
     }
 
     func list(_ block: Block, style: ListStyle, linkDefs: [LinkLabel: LinkDefinition]) throws -> Element {
-        try .list(style, items: block.children.map { try listItem($0, linkDefs: linkDefs) })
+        try .list(listInfo(style), items: block.children.map { try listItem($0, linkDefs: linkDefs) })
     }
 
     func paragraph(_ block: Block, linkDefs: [LinkLabel: LinkDefinition]) -> Element {
@@ -67,5 +67,16 @@ private extension InlineParser {
         }
         
         return try ListItem(elements: block.children.map { try element($0, linkDefs: linkDefs) })
+    }
+    
+    func listInfo(_ style: ListStyle) -> ListInfo {
+        let kind: ListInfoKind
+        switch style.kind {
+        case .bulleted:
+            kind = .bulleted
+        case .ordered(start: let start, delimiter: _):
+            kind = .ordered(start: start)
+        }
+        return ListInfo(isTight: style.isTight, kind: kind)
     }
 }

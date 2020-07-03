@@ -58,7 +58,7 @@ final class BlockquotesTest: XCTestCase {
         // HTML: <blockquote>\n<ul>\n<li>foo</li>\n</ul>\n</blockquote>\n<ul>\n<li>bar</li>\n</ul>\n
         // Debug: <blockquote>\n<ul>\n<li>foo</li>\n</ul>\n</blockquote>\n<ul>\n<li>bar</li>\n</ul>\n
         XCTAssertEqual(try compile("> - foo\n- bar\n"),
-                       Document(elements: [.blockQuote([.list(ListStyle(isTight: true, kind: .bulleted("*")), items: [ListItem(elements: [])])]), .list(ListStyle(isTight: true, kind: .bulleted("*")), items: [ListItem(elements: [])])]))
+                       Document(elements: [.blockQuote([.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [])])]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [])])]))
     }
 
     func testCase206() throws {

@@ -6,5 +6,5 @@ indirect enum Element: Equatable {
     case heading(level: Int, text: [InlineText])
     case blockQuote([Element])
     case codeBlock(infoString: String, content: String)
-    case list(ListStyle, items: [ListItem])
+    case list(ListInfo, items: [ListItem])
 }
