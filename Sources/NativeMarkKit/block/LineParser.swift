@@ -17,7 +17,10 @@ private extension LineParser {
     func parse(_ line: Line, into root: Block, tip: Block) -> Block {
         let continuation = continutationParser.parse(line, for: root)
         let closeParser = BlockCloser(blocks: continuation.value.unmatchedBlocks)
-        let startMatch = startParser.parse(continuation.remainingLine, for: continuation.value.openBlock, using: closeParser)
+        let startMatch = startParser.parse(continuation.remainingLine,
+                                           root: continuation.value.openBlock,
+                                           tip: tip,
+                                           using: closeParser)
         
         return lineInserter.insert(startMatch.remainingLine,
                                    into: startMatch.value.tip,

@@ -3,7 +3,7 @@ import Foundation
 struct ThematicBreakBlockStarter: BlockStarter {
     private static let startRegex = try! NSRegularExpression(pattern: "^(?:(?:\\*[ \\t]*){3,}|(?:_[ \\t]*){3,}|(?:-[ \\t]*){3,})[ \\t]*$", options: [])
     
-    func parseStart(_ line: Line, in container: Block, using closer: BlockCloser) -> LineResult<BlockStartMatch> {
+    func parseStart(_ line: Line, in container: Block, tip: Block, using closer: BlockCloser) -> LineResult<BlockStartMatch> {
         let realLine = line.nonIndentedStart
         guard realLine.firstMatch(Self.startRegex) != nil else {
             return LineResult(remainingLine: line, value: .none)

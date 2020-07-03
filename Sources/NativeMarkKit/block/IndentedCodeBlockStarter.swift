@@ -1,8 +1,8 @@
 import Foundation
 
 struct IndentedCodeBlockStarter: BlockStarter {
-    func parseStart(_ line: Line, in container: Block, using closer: BlockCloser) -> LineResult<BlockStartMatch> {
-        guard line.hasIndent && !line.isBlank && container.kind != .paragraph else {
+    func parseStart(_ line: Line, in container: Block, tip: Block, using closer: BlockCloser) -> LineResult<BlockStartMatch> {
+        guard line.hasIndent && !line.isBlank && tip.kind != .paragraph else {
             return LineResult(remainingLine: line, value: .none)
         }
         

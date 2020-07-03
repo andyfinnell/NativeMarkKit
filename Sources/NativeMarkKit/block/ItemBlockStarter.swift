@@ -10,7 +10,7 @@ struct ItemBlockStarter: BlockStarter {
         let kind: ListKind
     }
 
-    func parseStart(_ line: Line, in container: Block, using closer: BlockCloser) -> LineResult<BlockStartMatch> {
+    func parseStart(_ line: Line, in container: Block, tip: Block, using closer: BlockCloser) -> LineResult<BlockStartMatch> {
         guard let itemMarkerResult = parseMarker(line, in: container) else {
             return LineResult(remainingLine: line, value: .none)
         }
