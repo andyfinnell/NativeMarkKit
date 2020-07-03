@@ -36,7 +36,10 @@ final class DelimiterStack {
         }
         
         let substack = DelimiterStack()
-        substack.delimiters = substack.delimiters + delimiters[index..<delimiters.endIndex]
+        let firstDelimiter = Delimiter.starting()
+        firstDelimiter.after = delimiter.after
+        let afterIndex = delimiters.index(after: index)
+        substack.delimiters = [firstDelimiter] + delimiters[afterIndex..<delimiters.endIndex]
         
         delimiters = Array(delimiters[delimiters.startIndex..<index])
         
@@ -83,7 +86,7 @@ final class DelimiterStack {
     }
     
     var inlineText: [InlineText] {
-        delimiters.reduce([]) { $0 + [$1.inlineText] + $1.after }
+        coalesceText(delimiters.reduce([]) { $0 + [$1.inlineText] + $1.after })
     }
     
     func processEmphasis() {
@@ -227,4 +230,29 @@ private extension DelimiterStack {
         }
         delimiters.remove(at: index)
     }
+    
+    func coalesceText(_ inlines: [InlineText]) -> [InlineText] {
+        var output = [InlineText]()
+        var currentText = ""
+        
+        for inline in inlines {
+            if case let .text(text) = inline {
+                currentText += text
+            } else {
+                if !currentText.isEmpty {
+                    output.append(.text(currentText))
+                    currentText = ""
+                }
+                output.append(inline)
+            }
+        }
+        
+        if !currentText.isEmpty {
+            output.append(.text(currentText))
+            currentText = ""
+        }
+
+        return output
+    }
+
 }

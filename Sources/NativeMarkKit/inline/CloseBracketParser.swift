@@ -31,7 +31,7 @@ struct CloseBracketParser {
         
         let substack = delimiterStack.popSubstack(starting: openBracket)
         substack.processEmphasis()
-        let contents = Array(substack.inlineText.dropFirst())
+        let contents = substack.inlineText
         let inlineText = isImage ? InlineText.image(link, text: contents) : .link(link, text: contents)
                 
         if openBracket.isLinkOpener {
@@ -74,11 +74,7 @@ private extension CloseBracketParser {
     }
     
     func parseLinkReference(_ input: TextCursor, linkDefs: [LinkLabel: LinkDefinition], openingBracket: Delimiter) -> TextResult<UnknownLink?> {
-        let linkLabelResult = LinkLabelParser().parse(input)
-        guard linkLabelResult.value.isNotEmpty else {
-            return input.noMatch(nil)
-        }
-        
+        let linkLabelResult = LinkLabelParser().parse(input)        
         let linkLabel: LinkLabel?
         if linkLabelResult.value.count > 2 {
             linkLabel = LinkLabel(linkLabelResult.value)

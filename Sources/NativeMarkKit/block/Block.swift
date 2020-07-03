@@ -90,7 +90,7 @@ extension Block {
         isOpen = false
     }
     
-    func parseLinkDefinitions() {
+    func parseLinkDefinitions() -> Bool {
         parser.parseLinkDefinitions(self)
     }
 }

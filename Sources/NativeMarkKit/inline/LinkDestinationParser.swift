@@ -44,6 +44,9 @@ private extension LinkDestinationParser {
             if current == "(" {
                 openCount += 1
             } else if current == ")" {
+                guard openCount > 1 else {
+                    break
+                }
                 openCount -= 1
             } else if current == "\\" {
                 current = current.advance()

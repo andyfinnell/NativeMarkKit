@@ -19,7 +19,8 @@ struct HeadingBlockParser: BlockParser {
         true
     }
     
-    func parseLinkDefinitions(_ block: Block) {
+    func parseLinkDefinitions(_ block: Block) -> Bool {
         // nop
+        false
     }
 }

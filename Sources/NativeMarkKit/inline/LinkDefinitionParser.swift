@@ -72,10 +72,10 @@ private extension LinkDefinitionParser {
     }
     
     func isAtEndOfLine(_ input: TextCursor) -> TextResult<Bool> {
-        return parseSpacesAtEndOfLine(input).map { $0.isNotEmpty }
-    }
-    
-    func reparseTitle(_ input: TextCursor, titleResult: TextResult<String>) {
-        
+        if input.isAtEnd {
+            return TextResult(remaining: input, value: true, valueLocation: input)
+        } else {
+            return parseSpacesAtEndOfLine(input).map { $0.isNotEmpty }
+        }
     }
 }

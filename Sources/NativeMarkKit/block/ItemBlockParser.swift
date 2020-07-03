@@ -37,7 +37,8 @@ struct ItemBlockParser: BlockParser {
         !block.children.isEmpty
     }
     
-    func parseLinkDefinitions(_ block: Block) {
+    func parseLinkDefinitions(_ block: Block) -> Bool {
         // nop
+        false
     }
 }

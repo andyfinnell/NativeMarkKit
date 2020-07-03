@@ -16,9 +16,9 @@ struct ParagraphBlockParser: BlockParser {
     }
 
     func close(_ block: Block) {
-        parseLinkDefinitions(block)
+        let hadDefinitions = parseLinkDefinitions(block)
         
-        if !block.hasText && !block.linkDefinitions.isEmpty {
+        if !block.hasText && hadDefinitions {
             block.removeFromParent()
         }
     }
@@ -27,7 +27,7 @@ struct ParagraphBlockParser: BlockParser {
         true
     }
     
-    func parseLinkDefinitions(_ block: Block) {
+    func parseLinkDefinitions(_ block: Block) -> Bool {
         let parser = LinkDefinitionsLineParser()
         var definitions = [LinkDefinition]()
         block.updateText { lines in
@@ -36,5 +36,6 @@ struct ParagraphBlockParser: BlockParser {
             return result.1
         }
         block.addLinkDefinitions(definitions)
+        return !definitions.isEmpty
     }
 }

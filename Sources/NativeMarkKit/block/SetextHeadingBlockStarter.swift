@@ -9,7 +9,7 @@ struct SetextHeadingBlockStarter: BlockStarter {
             return LineResult(remainingLine: line, value: .none)
         }
         
-        container.parseLinkDefinitions()
+        _ = container.parseLinkDefinitions()
         
         guard container.hasText else {
             return LineResult(remainingLine: line, value: .none)

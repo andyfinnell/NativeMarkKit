@@ -36,8 +36,9 @@ struct FencedCodeBlockParser: BlockParser {
         false
     }
     
-    func parseLinkDefinitions(_ block: Block) {
+    func parseLinkDefinitions(_ block: Block) -> Bool {
         // nop
+        false
     }
 }
 

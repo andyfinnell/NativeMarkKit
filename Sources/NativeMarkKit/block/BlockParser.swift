@@ -11,5 +11,5 @@ protocol BlockParser {
     
     func canHaveLastLineBlank(_ block: Block) -> Bool
     
-    func parseLinkDefinitions(_ block: Block)
+    func parseLinkDefinitions(_ block: Block) -> Bool
 }
