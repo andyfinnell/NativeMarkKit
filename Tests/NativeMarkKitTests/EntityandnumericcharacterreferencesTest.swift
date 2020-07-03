@@ -98,9 +98,9 @@ final class EntityandnumericcharacterreferencesTest: XCTestCase {
 
     func testCase324() throws {
         // HTML: <p>* foo</p>\n<ul>\n<li>foo</li>\n</ul>\n
-        // Debug: <p>* foo</p>\n<ul>\n<li>foo</li>\n</ul>\n
+        // Debug: <p>* foo</p>\n<ul>\n<li>{foo caused p to open}foo</li>\n</ul>\n
         XCTAssertEqual(try compile("&#42; foo\n\n* foo\n"),
-                       Document(elements: [.paragraph([.text("* foo")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [])])]))
+                       Document(elements: [.paragraph([.text("* foo")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")])])])]))
     }
 
     func testCase325() throws {
