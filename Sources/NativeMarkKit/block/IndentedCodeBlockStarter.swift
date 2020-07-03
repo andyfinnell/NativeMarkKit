@@ -10,9 +10,8 @@ struct IndentedCodeBlockStarter: BlockStarter {
         
         closer.close()
         let codeBlock = Block(kind: .codeBlock(infoString: ""), parser: IndentedCodeBlockParser())
-        codeBlock.addText(content)
         let newContainer = container.addChild(codeBlock)
         
-        return LineResult(remainingLine: .blank, value: .leaf(newContainer))
+        return LineResult(remainingLine: content, value: .leaf(newContainer))
     }
 }
