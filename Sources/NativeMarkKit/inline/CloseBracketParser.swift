@@ -94,8 +94,7 @@ private extension CloseBracketParser {
         if let link = linkDefs[label] {
             return linkLabelResult.map { _ in .valid(link.link) }
         } else {
-            // skip over this, as it's syntactically correct, but unknown ref
-            return linkLabelResult.map { _ in .invalid }
+            return input.noMatch(nil)
         }
     }
 }
