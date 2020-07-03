@@ -44,7 +44,7 @@ final class LinksTest: XCTestCase {
         // HTML: <p><a href=\"/my%20uri\">link</a></p>\n
         // Debug: <p><a>link</a></p>\n
         XCTAssertEqual(try compile("[link](</my uri>)\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: "/my%20uri"), text: [.text("link")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "/my uri"), text: [.text("link")])])]))
     }
 
     func testCase487() throws {
@@ -128,21 +128,21 @@ final class LinksTest: XCTestCase {
         // HTML: <p><a href=\"foo%5Cbar\">link</a></p>\n
         // Debug: <p><a>link</a></p>\n
         XCTAssertEqual(try compile("[link](foo\\bar)\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: "foo%5Cbar"), text: [.text("link")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "foo\\bar"), text: [.text("link")])])]))
     }
 
     func testCase499() throws {
         // HTML: <p><a href=\"foo%20b%C3%A4\">link</a></p>\n
         // Debug: <p><a>link</a></p>\n
         XCTAssertEqual(try compile("[link](foo%20b&auml;)\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: "foo%20b%C3%A4"), text: [.text("link")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "foo bä"), text: [.text("link")])])]))
     }
 
     func testCase500() throws {
         // HTML: <p><a href=\"%22title%22\">link</a></p>\n
         // Debug: <p><a>link</a></p>\n
         XCTAssertEqual(try compile("[link](\"title\")\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: "%22title%22"), text: [.text("link")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "\"title\""), text: [.text("link")])])]))
     }
 
     func testCase501() throws {
@@ -163,7 +163,7 @@ final class LinksTest: XCTestCase {
         // HTML: <p><a href=\"/url%C2%A0%22title%22\">link</a></p>\n
         // Debug: <p><a>link</a></p>\n
         XCTAssertEqual(try compile("[link](/url \"title\")\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: "/url%C2%A0%22title%22"), text: [.text("link")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "/url \"title\""), text: [.text("link")])])]))
     }
 
     func testCase504() throws {
@@ -296,7 +296,7 @@ final class LinksTest: XCTestCase {
         // HTML: <p>[foo<a href=\"http://example.com/?search=%5D(uri)\">http://example.com/?search=](uri)</a></p>\n
         // Debug: <p>[foo<a>http://example.com/?search=](uri)</a></p>\n
         XCTAssertEqual(try compile("[foo<http://example.com/?search=](uri)>\n"),
-                       Document(elements: [.paragraph([.text("[foo"), .link(Link(title: "", url: "http://example.com/?search=%5D(uri)"), text: [.text("http://example.com/?search=](uri)")])])]))
+                       Document(elements: [.paragraph([.text("[foo"), .link(Link(title: "", url: "http://example.com/?search=](uri)"), text: [.text("http://example.com/?search=](uri)")])])]))
     }
 
     func testCase523() throws {
@@ -380,7 +380,7 @@ final class LinksTest: XCTestCase {
         // HTML: <p>[foo<a href=\"http://example.com/?search=%5D%5Bref%5D\">http://example.com/?search=][ref]</a></p>\n
         // Debug: <p>[foo<a>http://example.com/?search=][ref]</a></p>\n
         XCTAssertEqual(try compile("[foo<http://example.com/?search=][ref]>\n\n[ref]: /uri\n"),
-                       Document(elements: [.paragraph([.text("[foo"), .link(Link(title: "", url: "http://example.com/?search=%5D%5Bref%5D"), text: [.text("http://example.com/?search=][ref]")])])]))
+                       Document(elements: [.paragraph([.text("[foo"), .link(Link(title: "", url: "http://example.com/?search=][ref]"), text: [.text("http://example.com/?search=][ref]")])])]))
     }
 
     func testCase535() throws {

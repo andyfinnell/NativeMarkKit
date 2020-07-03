@@ -30,7 +30,7 @@ final class LinkreferencedefinitionsTest: XCTestCase {
         // HTML: <p><a href=\"my%20url\" title=\"title\">Foo bar</a></p>\n
         // Debug: <p><a>Foo bar</a></p>\n
         XCTAssertEqual(try compile("[Foo bar]:\n<my url>\n'title'\n\n[Foo bar]\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "title", url: "my%20url"), text: [.text("Foo bar")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "title", url: "my url"), text: [.text("Foo bar")])])]))
     }
 
     func testCase165() throws {
@@ -79,7 +79,7 @@ final class LinkreferencedefinitionsTest: XCTestCase {
         // HTML: <p><a href=\"/url%5Cbar*baz\" title=\"foo&quot;bar\\baz\">foo</a></p>\n
         // Debug: <p><a>foo</a></p>\n
         XCTAssertEqual(try compile("[foo]: /url\\bar\\*baz \"foo\\\"bar\\baz\"\n\n[foo]\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "foo\"bar\\baz", url: "/url%5Cbar*baz"), text: [.text("foo")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "foo\"bar\\baz", url: "/url\\bar*baz"), text: [.text("foo")])])]))
     }
 
     func testCase172() throws {
@@ -107,7 +107,7 @@ final class LinkreferencedefinitionsTest: XCTestCase {
         // HTML: <p><a href=\"/%CF%86%CE%BF%CF%85\">αγω</a></p>\n
         // Debug: <p><a>αγω</a></p>\n
         XCTAssertEqual(try compile("[ΑΓΩ]: /φου\n\n[αγω]\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: "/%CF%86%CE%BF%CF%85"), text: [.text("αγω")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "/φου"), text: [.text("αγω")])])]))
     }
 
     func testCase176() throws {

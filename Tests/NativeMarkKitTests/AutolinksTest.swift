@@ -72,7 +72,7 @@ final class AutolinksTest: XCTestCase {
         // HTML: <p><a href=\"http://example.com/%5C%5B%5C\">http://example.com/\\[\\</a></p>\n
         // Debug: <p><a>http://example.com/\\[\\</a></p>\n
         XCTAssertEqual(try compile("<http://example.com/\\[\\>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: "http://example.com/%5C%5B%5C"), text: [.text("http://example.com/\\[\\")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "http://example.com/\\[\\"), text: [.text("http://example.com/\\[\\")])])]))
     }
 
     func testCase600() throws {

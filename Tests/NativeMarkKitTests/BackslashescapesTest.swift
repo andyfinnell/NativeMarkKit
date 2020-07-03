@@ -65,7 +65,7 @@ final class BackslashescapesTest: XCTestCase {
         // HTML: <p><a href=\"http://example.com?find=%5C*\">http://example.com?find=\\*</a></p>\n
         // Debug: <p><a>http://example.com?find=\\*</a></p>\n
         XCTAssertEqual(try compile("<http://example.com?find=\\*>\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: "http://example.com?find=%5C*"), text: [.text("http://example.com?find=\\*")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "http://example.com?find=\\*"), text: [.text("http://example.com?find=\\*")])])]))
     }
 
     func testCase307() throws {

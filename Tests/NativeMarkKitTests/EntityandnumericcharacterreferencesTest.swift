@@ -58,14 +58,14 @@ final class EntityandnumericcharacterreferencesTest: XCTestCase {
         // HTML: <p><a href=\"/f%C3%B6%C3%B6\" title=\"föö\">foo</a></p>\n
         // Debug: <p><a>foo</a></p>\n
         XCTAssertEqual(try compile("[foo](/f&ouml;&ouml; \"f&ouml;&ouml;\")\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "föö", url: "/f%C3%B6%C3%B6"), text: [.text("foo")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "föö", url: "/föö"), text: [.text("foo")])])]))
     }
 
     func testCase319() throws {
         // HTML: <p><a href=\"/f%C3%B6%C3%B6\" title=\"föö\">foo</a></p>\n
         // Debug: <p><a>foo</a></p>\n
         XCTAssertEqual(try compile("[foo]\n\n[foo]: /f&ouml;&ouml; \"f&ouml;&ouml;\"\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "föö", url: "/f%C3%B6%C3%B6"), text: [.text("foo")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "föö", url: "/föö"), text: [.text("foo")])])]))
     }
 
     func testCase320() throws {
