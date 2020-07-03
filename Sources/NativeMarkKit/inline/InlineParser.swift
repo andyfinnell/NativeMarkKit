@@ -43,7 +43,7 @@ private extension InlineParser {
     
     func codeBlock(_ block: Block, infoString: String, linkDefs: [LinkLabel: LinkDefinition]) -> Element {
         let text = block.textLines.map { $0.text }.joined(separator: "\n")
-        let suffix = text.hasSuffix("\n") ? "" : "\n"
+        let suffix = (text.isEmpty || text.hasSuffix("\n")) ? "" : "\n"
         return .codeBlock(infoString: infoString, content: text + suffix)
     }
     
