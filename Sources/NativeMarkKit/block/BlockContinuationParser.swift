@@ -41,10 +41,16 @@ private extension BlockContinuationParser {
     func matchBlocks(_ blocks: [Block], with line: Line) -> ([OpenBlock], Line) {
         var currentLine = line
         var matchedBlocks = [OpenBlock]()
+        var didParentMatch = true
         for block in blocks {
-            let result = block.attemptContinuation(with: currentLine)
-            currentLine = result.remainingLine
-            matchedBlocks.append(OpenBlock(block: block, matched: result.value))
+            if didParentMatch {
+                let result = block.attemptContinuation(with: currentLine)
+                currentLine = result.remainingLine
+                matchedBlocks.append(OpenBlock(block: block, matched: result.value))
+                didParentMatch = result.value
+            } else {
+                matchedBlocks.append(OpenBlock(block: block, matched: false))
+            }
         }
         return (matchedBlocks, currentLine)
     }
