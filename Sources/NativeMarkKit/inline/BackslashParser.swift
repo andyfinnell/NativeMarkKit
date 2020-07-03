@@ -1,7 +1,7 @@
 import Foundation
 
 struct BackslashPaser {
-    private static let escapableRegex = try! NSRegularExpression(pattern: "^\(String.escapablePattern.escapeForRegex())", options: [])
+    private static let escapableRegex = try! NSRegularExpression(pattern: "^\(String.escapablePattern)", options: [])
     
     func parse(_ input: TextCursor) -> TextResult<InlineText?> {
         let backslash = input.parse("\\")
