@@ -106,9 +106,10 @@ private extension CloseBracketParser {
             case let .code(t):
                 return sum + t
             case .linebreak,
-                 .softbreak,
-                 .image:
+                 .softbreak:
                 return sum
+            case let .image(_, alt: alt):
+                return sum + alt
             case let .link(_, text: t):
                 return sum + plainText(t)
             case let .emphasis(t):

@@ -11,7 +11,7 @@ struct IndentedCodeBlockParser: BlockParser {
         if line.hasIndent {
             return LineResult(remainingLine: line.trimIndent(), value: true)
         } else if line.isBlank {
-            return LineResult(remainingLine: line, value: true)
+            return LineResult(remainingLine: line.trimIndent(), value: true)
         } else {
             return LineResult(remainingLine: line, value: false)
         }

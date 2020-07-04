@@ -114,7 +114,7 @@ final class ImagesTest: XCTestCase {
         // HTML: <p><img src=\"/url\" alt=\"foo\" title=\"title\" />\n[]</p>\n
         // Debug: <p><img src=\"/url\" alt=\"foo\" title=\"title\" />\n[]</p>\n
         XCTAssertEqual(try compile("![foo] \n[]\n\n[foo]: /url \"title\"\n"),
-                       Document(elements: [.paragraph([.image(Link(title: "title", url: "/url"), alt: "foo"), .softbreak, .text("[]")])]))
+                       Document(elements: [.paragraph([.image(Link(title: "title", url: "/url"), alt: "foo"), .text(" "), .softbreak, .text("[]")])]))
     }
 
     func testCase584() throws {
