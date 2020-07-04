@@ -114,7 +114,7 @@ final class CodespansTest: XCTestCase {
         // HTML: <p><code>&lt;a href=&quot;</code>&quot;&gt;`</p>\n
         // Debug: <p><code>&lt;a href=&quot;</code>&quot;&gt;`</p>\n
         XCTAssertEqual(try compile("`<a href=\"`\">`\n"),
-                       Document(elements: [.paragraph([.code("<a href=\""), .text("\">`")])]))
+                       Document(elements: [.paragraph([.code("<a href=\""), .text("“>`")])]))
     }
 
     func testCase344() throws {

@@ -170,7 +170,7 @@ final class LinksTest: XCTestCase {
         // HTML: <p>[link](/url &quot;title &quot;and&quot; title&quot;)</p>\n
         // Debug: <p>[link](/url &quot;title &quot;and&quot; title&quot;)</p>\n
         XCTAssertEqual(try compile("[link](/url \"title \"and\" title\")\n"),
-                       Document(elements: [.paragraph([.text("[link](/url \"title \"and\" title\")")])]))
+                       Document(elements: [.paragraph([.text("[link](/url “title ”and“ title”)")])]))
     }
 
     func testCase505() throws {
@@ -282,7 +282,7 @@ final class LinksTest: XCTestCase {
         // HTML: <p>[foo <bar attr=\"](baz)\"></p>\n
         // Debug: <p>[foo <bar attr=\"](baz)\"></p>\n
         XCTAssertEqual(try compile("[foo <bar attr=\"](baz)\">\n"),
-                       Document(elements: [.paragraph([.text("[foo <bar attr=\"](baz)\">")])]))
+                       Document(elements: [.paragraph([.text("[foo <bar attr=“](baz)”>")])]))
     }
 
     func testCase521() throws {
@@ -366,7 +366,7 @@ final class LinksTest: XCTestCase {
         // HTML: <p>[foo <bar attr=\"][ref]\"></p>\n
         // Debug: <p>[foo <bar attr=\"][ref]\"></p>\n
         XCTAssertEqual(try compile("[foo <bar attr=\"][ref]\">\n\n[ref]: /uri\n"),
-                       Document(elements: [.paragraph([.text("[foo <bar attr=\"][ref]\">")])]))
+                       Document(elements: [.paragraph([.text("[foo <bar attr=“][ref]”>")])]))
     }
 
     func testCase533() throws {

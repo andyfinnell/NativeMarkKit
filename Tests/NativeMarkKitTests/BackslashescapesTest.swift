@@ -9,7 +9,7 @@ final class BackslashescapesTest: XCTestCase {
         // HTML: <p>!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~</p>\n
         // Debug: <p>!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~</p>\n
         XCTAssertEqual(try compile("\\!\\\"\\#\\$\\%\\&\\'\\(\\)\\*\\+\\,\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\[\\\\\\]\\^\\_\\`\\{\\|\\}\\~\n"),
-                       Document(elements: [.paragraph([.text("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")])]))
+                       Document(elements: [.paragraph([.text("!“#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")])]))
     }
 
     func testCase299() throws {
@@ -23,7 +23,7 @@ final class BackslashescapesTest: XCTestCase {
         // HTML: <p>*not emphasized*\n&lt;br/&gt; not a tag\n[not a link](/foo)\n`not code`\n1. not a list\n* not a list\n# not a heading\n[foo]: /url &quot;not a reference&quot;\n&amp;ouml; not a character entity</p>\n
         // Debug: <p>*not emphasized*\n&lt;br/&gt; not a tag\n[not a link](/foo)\n`not code`\n1. not a list\n* not a list\n# not a heading\n[foo]: /url &quot;not a reference&quot;\n&amp;ouml; not a character entity</p>\n
         XCTAssertEqual(try compile("\\*not emphasized*\n\\<br/> not a tag\n\\[not a link](/foo)\n\\`not code`\n1\\. not a list\n\\* not a list\n\\# not a heading\n\\[foo]: /url \"not a reference\"\n\\&ouml; not a character entity\n"),
-                       Document(elements: [.paragraph([.text("*not emphasized*"), .softbreak, .text("<br/> not a tag"), .softbreak, .text("[not a link](/foo)"), .softbreak, .text("`not code`"), .softbreak, .text("1. not a list"), .softbreak, .text("* not a list"), .softbreak, .text("# not a heading"), .softbreak, .text("[foo]: /url \"not a reference\""), .softbreak, .text("&ouml; not a character entity")])]))
+                       Document(elements: [.paragraph([.text("*not emphasized*"), .softbreak, .text("<br/> not a tag"), .softbreak, .text("[not a link](/foo)"), .softbreak, .text("`not code`"), .softbreak, .text("1. not a list"), .softbreak, .text("* not a list"), .softbreak, .text("# not a heading"), .softbreak, .text("[foo]: /url “not a reference”"), .softbreak, .text("&ouml; not a character entity")])]))
     }
 
     func testCase301() throws {

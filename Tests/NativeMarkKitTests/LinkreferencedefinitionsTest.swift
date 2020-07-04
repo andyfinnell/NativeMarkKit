@@ -128,14 +128,14 @@ final class LinkreferencedefinitionsTest: XCTestCase {
         // HTML: <p>[foo]: /url &quot;title&quot; ok</p>\n
         // Debug: <p>[foo]: /url &quot;title&quot; ok</p>\n
         XCTAssertEqual(try compile("[foo]: /url \"title\" ok\n"),
-                       Document(elements: [.paragraph([.text("[foo]: /url \"title\" ok")])]))
+                       Document(elements: [.paragraph([.text("[foo]: /url “title” ok")])]))
     }
 
     func testCase179() throws {
         // HTML: <p>&quot;title&quot; ok</p>\n
         // Debug: <p>&quot;title&quot; ok</p>\n
         XCTAssertEqual(try compile("[foo]: /url\n\"title\" ok\n"),
-                       Document(elements: [.paragraph([.text("\"title\" ok")])]))
+                       Document(elements: [.paragraph([.text("“title” ok")])]))
     }
 
     func testCase180() throws {

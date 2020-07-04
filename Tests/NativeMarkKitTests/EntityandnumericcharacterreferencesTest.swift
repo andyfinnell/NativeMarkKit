@@ -23,7 +23,7 @@ final class EntityandnumericcharacterreferencesTest: XCTestCase {
         // HTML: <p>&quot; ആ ಫ</p>\n
         // Debug: <p>&quot; ആ ಫ</p>\n
         XCTAssertEqual(try compile("&#X22; &#XD06; &#xcab;\n"),
-                       Document(elements: [.paragraph([.text("\" ആ ಫ")])]))
+                       Document(elements: [.paragraph([.text("“ ആ ಫ")])]))
     }
 
     func testCase314() throws {
@@ -121,7 +121,7 @@ final class EntityandnumericcharacterreferencesTest: XCTestCase {
         // HTML: <p>[a](url &quot;tit&quot;)</p>\n
         // Debug: <p>[a](url &quot;tit&quot;)</p>\n
         XCTAssertEqual(try compile("[a](url &quot;tit&quot;)\n"),
-                       Document(elements: [.paragraph([.text("[a](url \"tit\")")])]))
+                       Document(elements: [.paragraph([.text("[a](url “tit”)")])]))
     }
 
     

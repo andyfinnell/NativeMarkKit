@@ -23,7 +23,7 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
         // HTML: <p>a*&quot;foo&quot;*</p>\n
         // Debug: <p>a*&quot;foo&quot;*</p>\n
         XCTAssertEqual(try compile("a*\"foo\"*\n"),
-                       Document(elements: [.paragraph([.text("a*\"foo\"*")])]))
+                       Document(elements: [.paragraph([.text("a*“foo”*")])]))
     }
 
     func testCase353() throws {
@@ -65,7 +65,7 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
         // HTML: <p>a_&quot;foo&quot;_</p>\n
         // Debug: <p>a_&quot;foo&quot;_</p>\n
         XCTAssertEqual(try compile("a_\"foo\"_\n"),
-                       Document(elements: [.paragraph([.text("a_\"foo\"_")])]))
+                       Document(elements: [.paragraph([.text("a_“foo”_")])]))
     }
 
     func testCase359() throws {
@@ -93,7 +93,7 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
         // HTML: <p>aa_&quot;bb&quot;_cc</p>\n
         // Debug: <p>aa_&quot;bb&quot;_cc</p>\n
         XCTAssertEqual(try compile("aa_\"bb\"_cc\n"),
-                       Document(elements: [.paragraph([.text("aa_\"bb\"_cc")])]))
+                       Document(elements: [.paragraph([.text("aa_“bb”_cc")])]))
     }
 
     func testCase363() throws {
@@ -212,7 +212,7 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
         // HTML: <p>a**&quot;foo&quot;**</p>\n
         // Debug: <p>a**&quot;foo&quot;**</p>\n
         XCTAssertEqual(try compile("a**\"foo\"**\n"),
-                       Document(elements: [.paragraph([.text("a**\"foo\"**")])]))
+                       Document(elements: [.paragraph([.text("a**“foo”**")])]))
     }
 
     func testCase380() throws {
@@ -247,7 +247,7 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
         // HTML: <p>a__&quot;foo&quot;__</p>\n
         // Debug: <p>a__&quot;foo&quot;__</p>\n
         XCTAssertEqual(try compile("a__\"foo\"__\n"),
-                       Document(elements: [.paragraph([.text("a__\"foo\"__")])]))
+                       Document(elements: [.paragraph([.text("a__“foo”__")])]))
     }
 
     func testCase385() throws {
@@ -317,7 +317,7 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
         // HTML: <p><strong>foo &quot;<em>bar</em>&quot; foo</strong></p>\n
         // Debug: <p><strong>foo &quot;<em>bar</em>&quot; foo</strong></p>\n
         XCTAssertEqual(try compile("**foo \"*bar*\" foo**\n"),
-                       Document(elements: [.paragraph([.strong([.text("foo \""), .emphasis([.text("bar")]), .text("\" foo")])])]))
+                       Document(elements: [.paragraph([.strong([.text("foo “"), .emphasis([.text("bar")]), .text("“ foo")])])]))
     }
 
     func testCase395() throws {

@@ -37,21 +37,21 @@ final class HtmlblocksTest: XCTestCase {
         // HTML: <DIV CLASS=\"foo\">\n<p><em>Markdown</em></p>\n</DIV>\n
         // Debug: {<DIV CLASS=\"foo\"> caused p to open}<DIV CLASS=\"foo\">\n<p><em>Markdown</em></p>\n{</DIV> caused p to open}</DIV>\n
         XCTAssertEqual(try compile("<DIV CLASS=\"foo\">\n\n*Markdown*\n\n</DIV>\n"),
-                       Document(elements: [.paragraph([.text("<DIV CLASS=\"foo\">")]), .paragraph([.emphasis([.text("Markdown")])]), .paragraph([.text("</DIV>")])]))
+                       Document(elements: [.paragraph([.text("<DIV CLASS=“foo”>")]), .paragraph([.emphasis([.text("Markdown")])]), .paragraph([.text("</DIV>")])]))
     }
 
     func testCase123() throws {
         // HTML: <div id=\"foo\"\n  class=\"bar\">\n</div>\n
         // Debug: {<div id=\"foo\"\n  class=\"bar\"> caused p to open}<div id=\"foo\"\n  class=\"bar\">\n{</div> caused p to open}</div>\n
         XCTAssertEqual(try compile("<div id=\"foo\"\n  class=\"bar\">\n</div>\n"),
-                       Document(elements: [.paragraph([.text("<div id=\"foo\""), .softbreak, .text("  class=\"bar\">")]), .paragraph([.text("</div>")])]))
+                       Document(elements: [.paragraph([.text("<div id=“foo”"), .softbreak, .text("  class=“bar”>")]), .paragraph([.text("</div>")])]))
     }
 
     func testCase124() throws {
         // HTML: <div id=\"foo\" class=\"bar\n  baz\">\n</div>\n
         // Debug: {<div id=\"foo\" class=\"bar\n  baz\"> caused p to open}<div id=\"foo\" class=\"bar\n  baz\">\n{</div> caused p to open}</div>\n
         XCTAssertEqual(try compile("<div id=\"foo\" class=\"bar\n  baz\">\n</div>\n"),
-                       Document(elements: [.paragraph([.text("<div id=\"foo\" class=\"bar"), .softbreak, .text("  baz\">")]), .paragraph([.text("</div>")])]))
+                       Document(elements: [.paragraph([.text("<div id=“foo” class=“bar"), .softbreak, .text("  baz“>")]), .paragraph([.text("</div>")])]))
     }
 
     func testCase125() throws {
@@ -65,7 +65,7 @@ final class HtmlblocksTest: XCTestCase {
         // HTML: <div id=\"foo\"\n*hi*\n
         // Debug: {< caused p to open}<{div id=\"foo\"\n*hi* caused p to open}div id=\"foo\"\n*hi*\n
         XCTAssertEqual(try compile("<div id=\"foo\"\n*hi*\n"),
-                       Document(elements: [.paragraph([.text("<")]), .paragraph([.text("div id=\"foo\""), .softbreak, .text("*hi*")])]))
+                       Document(elements: [.paragraph([.text("<")]), .paragraph([.text("div id=“foo”"), .softbreak, .text("*hi*")])]))
     }
 
     func testCase127() throws {
@@ -121,7 +121,7 @@ final class HtmlblocksTest: XCTestCase {
         // HTML: <i class=\"foo\">\n*bar*\n</i>\n
         // Debug: {<i class=\"foo\"> caused p to open}<i class=\"foo\">{*bar* caused p to open}\n*bar*\n{</i> caused p to open}</i>\n
         XCTAssertEqual(try compile("<i class=\"foo\">\n*bar*\n</i>\n"),
-                       Document(elements: [.paragraph([.text("<i class=\"foo\">")]), .paragraph([.text("*bar*")]), .paragraph([.text("</i>")])]))
+                       Document(elements: [.paragraph([.text("<i class=“foo”>")]), .paragraph([.text("*bar*")]), .paragraph([.text("</i>")])]))
     }
 
     func testCase135() throws {
@@ -163,21 +163,21 @@ final class HtmlblocksTest: XCTestCase {
         // HTML: <script type=\"text/javascript\">\n// JavaScript example\n\ndocument.getElementById(\"demo\").innerHTML = \"Hello JavaScript!\";\n</script>\n<p>okay</p>\n
         // Debug: {<script type=\"text/javascript\"> caused p to open}<script type=\"text/javascript\">{// JavaScript example\n\ndocument.getElementById(\"demo\").innerHTML = \"Hello JavaScript!\"; caused p to open}\n// JavaScript example\n\ndocument.getElementById(\"demo\").innerHTML = \"Hello JavaScript!\";\n{</script> caused p to open}</script>\n<p>okay</p>\n
         XCTAssertEqual(try compile("<script type=\"text/javascript\">\n// JavaScript example\n\ndocument.getElementById(\"demo\").innerHTML = \"Hello JavaScript!\";\n</script>\nokay\n"),
-                       Document(elements: [.paragraph([.text("<script type=\"text/javascript\">")]), .paragraph([.text("// JavaScript example"), .softbreak, .text("document.getElementById(\"demo\").innerHTML = \"Hello JavaScript!\";")]), .paragraph([.text("</script>")]), .paragraph([.text("okay")])]))
+                       Document(elements: [.paragraph([.text("<script type=“text/javascript”>")]), .paragraph([.text("// JavaScript example"), .softbreak, .text("document.getElementById(“demo”).innerHTML = “Hello JavaScript!”;")]), .paragraph([.text("</script>")]), .paragraph([.text("okay")])]))
     }
 
     func testCase141() throws {
         // HTML: <style\n  type=\"text/css\">\nh1 {color:red;}\n\np {color:blue;}\n</style>\n<p>okay</p>\n
         // Debug: {<style\n  type=\"text/css\"> caused p to open}<style\n  type=\"text/css\">{h1 {color:red;}\n\np {color:blue;} caused p to open}\nh1 {color:red;}\n\np {color:blue;}\n{</style> caused p to open}</style>\n<p>okay</p>\n
         XCTAssertEqual(try compile("<style\n  type=\"text/css\">\nh1 {color:red;}\n\np {color:blue;}\n</style>\nokay\n"),
-                       Document(elements: [.paragraph([.text("<style"), .softbreak, .text("  type=\"text/css\">")]), .paragraph([.text("h1 {color:red;}"), .softbreak, .text("p {color:blue;}")]), .paragraph([.text("</style>")]), .paragraph([.text("okay")])]))
+                       Document(elements: [.paragraph([.text("<style"), .softbreak, .text("  type=“text/css”>")]), .paragraph([.text("h1 {color:red;}"), .softbreak, .text("p {color:blue;}")]), .paragraph([.text("</style>")]), .paragraph([.text("okay")])]))
     }
 
     func testCase142() throws {
         // HTML: <style\n  type=\"text/css\">\n\nfoo\n
         // Debug: {<style\n  type=\"text/css\"> caused p to open}<style\n  type=\"text/css\">{foo caused p to open}\n\nfoo\n
         XCTAssertEqual(try compile("<style\n  type=\"text/css\">\n\nfoo\n"),
-                       Document(elements: [.paragraph([.text("<style"), .softbreak, .text("  type=\"text/css\">")]), .paragraph([.text("foo")])]))
+                       Document(elements: [.paragraph([.text("<style"), .softbreak, .text("  type=“text/css”>")]), .paragraph([.text("foo")])]))
     }
 
     func testCase143() throws {

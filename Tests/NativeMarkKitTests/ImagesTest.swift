@@ -135,7 +135,7 @@ final class ImagesTest: XCTestCase {
         // HTML: <p>![[foo]]</p>\n<p>[[foo]]: /url &quot;title&quot;</p>\n
         // Debug: <p>![[foo]]</p>\n<p>[[foo]]: /url &quot;title&quot;</p>\n
         XCTAssertEqual(try compile("![[foo]]\n\n[[foo]]: /url \"title\"\n"),
-                       Document(elements: [.paragraph([.text("![[foo]]")]), .paragraph([.text("[[foo]]: /url \"title\"")])]))
+                       Document(elements: [.paragraph([.text("![[foo]]")]), .paragraph([.text("[[foo]]: /url “title”")])]))
     }
 
     func testCase587() throws {
