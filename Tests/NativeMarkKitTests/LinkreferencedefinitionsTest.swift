@@ -177,14 +177,14 @@ final class LinkreferencedefinitionsTest: XCTestCase {
         // HTML: <p>===\n<a href=\"/url\">foo</a></p>\n
         // Debug: <p>===\n<a href=\"/url\">foo</a></p>\n
         XCTAssertEqual(try compile("[foo]: /url\n===\n[foo]\n"),
-                       Document(elements: [.paragraph([.text("==="), .link(Link(title: "", url: "/url"), text: [.text("foo")])])]))
+                       Document(elements: [.paragraph([.text("==="), .softbreak, .link(Link(title: "", url: "/url"), text: [.text("foo")])])]))
     }
 
     func testCase186() throws {
         // HTML: <p><a href=\"/foo-url\" title=\"foo\">foo</a>,\n<a href=\"/bar-url\" title=\"bar\">bar</a>,\n<a href=\"/baz-url\">baz</a></p>\n
         // Debug: <p><a href=\"/foo-url\" title=\"foo\">foo</a>,\n<a href=\"/bar-url\" title=\"bar\">bar</a>,\n<a href=\"/baz-url\">baz</a></p>\n
         XCTAssertEqual(try compile("[foo]: /foo-url \"foo\"\n[bar]: /bar-url\n  \"bar\"\n[baz]: /baz-url\n\n[foo],\n[bar],\n[baz]\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "foo", url: "/foo-url"), text: [.text("foo")]), .text(","), .link(Link(title: "bar", url: "/bar-url"), text: [.text("bar")]), .text(","), .link(Link(title: "", url: "/baz-url"), text: [.text("baz")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "foo", url: "/foo-url"), text: [.text("foo")]), .text(","), .softbreak, .link(Link(title: "bar", url: "/bar-url"), text: [.text("bar")]), .text(","), .softbreak, .link(Link(title: "", url: "/baz-url"), text: [.text("baz")])])]))
     }
 
     func testCase187() throws {

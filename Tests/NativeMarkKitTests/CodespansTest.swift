@@ -51,7 +51,7 @@ final class CodespansTest: XCTestCase {
         // HTML: <p><code> </code>\n<code>  </code></p>\n
         // Debug: <p><code> </code>\n<code>  </code></p>\n
         XCTAssertEqual(try compile("` `\n`  `\n"),
-                       Document(elements: [.paragraph([.code(" "), .code("  ")])]))
+                       Document(elements: [.paragraph([.code(" "), .softbreak, .code("  ")])]))
     }
 
     func testCase335() throws {

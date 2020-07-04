@@ -310,7 +310,7 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
         // HTML: <p><strong>Gomphocarpus (<em>Gomphocarpus physocarpus</em>, syn.\n<em>Asclepias physocarpa</em>)</strong></p>\n
         // Debug: <p><strong>Gomphocarpus (<em>Gomphocarpus physocarpus</em>, syn.\n<em>Asclepias physocarpa</em>)</strong></p>\n
         XCTAssertEqual(try compile("**Gomphocarpus (*Gomphocarpus physocarpus*, syn.\n*Asclepias physocarpa*)**\n"),
-                       Document(elements: [.paragraph([.strong([.text("Gomphocarpus ("), .emphasis([.text("Gomphocarpus physocarpus")]), .text(", syn."), .emphasis([.text("Asclepias physocarpa")]), .text(")")])])]))
+                       Document(elements: [.paragraph([.strong([.text("Gomphocarpus ("), .emphasis([.text("Gomphocarpus physocarpus")]), .text(", syn."), .softbreak, .emphasis([.text("Asclepias physocarpa")]), .text(")")])])]))
     }
 
     func testCase394() throws {
@@ -576,7 +576,7 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
         // HTML: <p><strong>foo <em>bar <strong>baz</strong>\nbim</em> bop</strong></p>\n
         // Debug: <p><strong>foo <em>bar <strong>baz</strong>\nbim</em> bop</strong></p>\n
         XCTAssertEqual(try compile("**foo *bar **baz**\nbim* bop**\n"),
-                       Document(elements: [.paragraph([.strong([.text("foo "), .emphasis([.text("bar "), .strong([.text("baz")]), .text("bim")]), .text(" bop")])])]))
+                       Document(elements: [.paragraph([.strong([.text("foo "), .emphasis([.text("bar "), .strong([.text("baz")]), .softbreak, .text("bim")]), .text(" bop")])])]))
     }
 
     func testCase432() throws {

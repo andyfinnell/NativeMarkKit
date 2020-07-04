@@ -72,7 +72,7 @@ final class BackslashescapesTest: XCTestCase {
         // HTML: <a href=\"/bar\\/)\">\n
         // Debug: <a href=\"/bar\\/)\">\n{debug: implicitly closing a}{debug: implicitly closing p}
         XCTAssertEqual(try compile("<a href=\"/bar\\/)\">\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: "/bar\\/)"), text: [])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "/bar\\/)"), text: [.softbreak])])]))
     }
 
     func testCase308() throws {

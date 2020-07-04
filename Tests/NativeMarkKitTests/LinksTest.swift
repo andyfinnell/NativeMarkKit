@@ -149,7 +149,7 @@ final class LinksTest: XCTestCase {
         // HTML: <p><a href=\"/url\" title=\"title\">link</a>\n<a href=\"/url\" title=\"title\">link</a>\n<a href=\"/url\" title=\"title\">link</a></p>\n
         // Debug: <p><a href=\"/url\" title=\"title\">link</a>\n<a href=\"/url\" title=\"title\">link</a>\n<a href=\"/url\" title=\"title\">link</a></p>\n
         XCTAssertEqual(try compile("[link](/url \"title\")\n[link](/url 'title')\n[link](/url (title))\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "title", url: "/url"), text: [.text("link")]), .link(Link(title: "title", url: "/url"), text: [.text("link")]), .link(Link(title: "title", url: "/url"), text: [.text("link")])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "title", url: "/url"), text: [.text("link")]), .softbreak, .link(Link(title: "title", url: "/url"), text: [.text("link")]), .softbreak, .link(Link(title: "title", url: "/url"), text: [.text("link")])])]))
     }
 
     func testCase502() throws {
@@ -415,7 +415,7 @@ final class LinksTest: XCTestCase {
         // HTML: <p>[foo]\n<a href=\"/url\" title=\"title\">bar</a></p>\n
         // Debug: <p>[foo]\n<a href=\"/url\" title=\"title\">bar</a></p>\n
         XCTAssertEqual(try compile("[foo]\n[bar]\n\n[bar]: /url \"title\"\n"),
-                       Document(elements: [.paragraph([.text("[foo]"), .link(Link(title: "title", url: "/url"), text: [.text("bar")])])]))
+                       Document(elements: [.paragraph([.text("[foo]"), .softbreak, .link(Link(title: "title", url: "/url"), text: [.text("bar")])])]))
     }
 
     func testCase540() throws {
@@ -506,7 +506,7 @@ final class LinksTest: XCTestCase {
         // HTML: <p><a href=\"/url\" title=\"title\">foo</a>\n[]</p>\n
         // Debug: <p><a href=\"/url\" title=\"title\">foo</a>\n[]</p>\n
         XCTAssertEqual(try compile("[foo] \n[]\n\n[foo]: /url \"title\"\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "title", url: "/url"), text: [.text("foo")]), .text("[]")])]))
+                       Document(elements: [.paragraph([.link(Link(title: "title", url: "/url"), text: [.text("foo")]), .softbreak, .text("[]")])]))
     }
 
     func testCase553() throws {

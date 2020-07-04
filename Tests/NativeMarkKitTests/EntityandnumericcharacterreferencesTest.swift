@@ -51,7 +51,7 @@ final class EntityandnumericcharacterreferencesTest: XCTestCase {
         // HTML: <a href=\"&ouml;&ouml;.html\">\n
         // Debug: <a href=\"&ouml;&ouml;.html\">\n{debug: implicitly closing a}{debug: implicitly closing p}
         XCTAssertEqual(try compile("<a href=\"&ouml;&ouml;.html\">\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: "öö.html"), text: [])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "öö.html"), text: [.softbreak])])]))
     }
 
     func testCase318() throws {
@@ -93,7 +93,7 @@ final class EntityandnumericcharacterreferencesTest: XCTestCase {
         // HTML: <p>*foo*\n<em>foo</em></p>\n
         // Debug: <p>*foo*\n<em>foo</em></p>\n
         XCTAssertEqual(try compile("&#42;foo&#42;\n*foo*\n"),
-                       Document(elements: [.paragraph([.text("*foo*"), .emphasis([.text("foo")])])]))
+                       Document(elements: [.paragraph([.text("*foo*"), .softbreak, .emphasis([.text("foo")])])]))
     }
 
     func testCase324() throws {
@@ -107,7 +107,7 @@ final class EntityandnumericcharacterreferencesTest: XCTestCase {
         // HTML: <p>foo\n\nbar</p>\n
         // Debug: <p>foo\n\nbar</p>\n
         XCTAssertEqual(try compile("foo&#10;&#10;bar\n"),
-                       Document(elements: [.paragraph([.text("foo"), .softbreak, .text("bar")])]))
+                       Document(elements: [.paragraph([.text("foo"), .softbreak, .softbreak, .text("bar")])]))
     }
 
     func testCase326() throws {

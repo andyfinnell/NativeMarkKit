@@ -142,7 +142,7 @@ final class FencedcodeblocksTest: XCTestCase {
         // HTML: <p><code> </code>\naaa</p>\n
         // Debug: <p><code> </code>\naaa</p>\n
         XCTAssertEqual(try compile("``` ```\naaa\n"),
-                       Document(elements: [.paragraph([.code(" "), .text("aaa")])]))
+                       Document(elements: [.paragraph([.code(" "), .softbreak, .text("aaa")])]))
     }
 
     func testCase109() throws {
@@ -191,7 +191,7 @@ final class FencedcodeblocksTest: XCTestCase {
         // HTML: <p><code>aa</code>\nfoo</p>\n
         // Debug: <p><code>aa</code>\nfoo</p>\n
         XCTAssertEqual(try compile("``` aa ```\nfoo\n"),
-                       Document(elements: [.paragraph([.code("aa"), .text("foo")])]))
+                       Document(elements: [.paragraph([.code("aa"), .softbreak, .text("foo")])]))
     }
 
     func testCase116() throws {
