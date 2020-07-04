@@ -81,7 +81,7 @@ final class HtmlblocksTest: XCTestCase {
         // HTML: <div *???-&&&-<---\n*foo*\n
         // Debug: {< caused p to open}<{div *???-&&&- caused p to open}div *???-&&&-{< caused p to open}<{---\n*foo* caused p to open}---\n*foo*\n
         XCTAssertEqual(try compile("<div *???-&&&-<---\n*foo*\n"),
-                       Document(elements: [.paragraph([.text("<")]), .paragraph([.text("div *???-&&&-")]), .paragraph([.text("<")]), .paragraph([.text("---"), .softbreak, .text("*foo*")])]))
+                       Document(elements: [.paragraph([.text("<")]), .paragraph([.text("div *???-&&&-")]), .paragraph([.text("<")]), .paragraph([.text("—"), .softbreak, .text("*foo*")])]))
     }
 
     func testCase129() throws {
@@ -210,7 +210,7 @@ final class HtmlblocksTest: XCTestCase {
         // HTML: <!-- foo -->*bar*\n<p><em>baz</em></p>\n
         // Debug: {<!-- foo --> caused p to open}<!-- foo -->{*bar* caused p to open}*bar*\n<p><em>baz</em></p>\n
         XCTAssertEqual(try compile("<!-- foo -->*bar*\n*baz*\n"),
-                       Document(elements: [.paragraph([.text("<!-- foo -->")]), .paragraph([.text("*bar*")]), .paragraph([.emphasis([.text("baz")])])]))
+                       Document(elements: [.paragraph([.text("<!– foo –>")]), .paragraph([.text("*bar*")]), .paragraph([.emphasis([.text("baz")])])]))
     }
 
     func testCase147() throws {
@@ -224,7 +224,7 @@ final class HtmlblocksTest: XCTestCase {
         // HTML: <!-- Foo\n\nbar\n   baz -->\n<p>okay</p>\n
         // Debug: {<!-- Foo\n\nbar\n   baz --> caused p to open}<!-- Foo\n\nbar\n   baz -->\n<p>okay</p>\n
         XCTAssertEqual(try compile("<!-- Foo\n\nbar\n   baz -->\nokay\n"),
-                       Document(elements: [.paragraph([.text("<!-- Foo"), .softbreak, .softbreak, .text("bar"), .softbreak, .text("   baz -->")]), .paragraph([.text("okay")])]))
+                       Document(elements: [.paragraph([.text("<!– Foo"), .softbreak, .softbreak, .text("bar"), .softbreak, .text("   baz –>")]), .paragraph([.text("okay")])]))
     }
 
     func testCase149() throws {
@@ -252,7 +252,7 @@ final class HtmlblocksTest: XCTestCase {
         // HTML:   <!-- foo -->\n<pre><code>&lt;!-- foo --&gt;\n</code></pre>\n
         // Debug:   {<!-- foo --> caused p to open}<!-- foo -->\n<pre><code>&lt;!-- foo --&gt;\n</code></pre>\n
         XCTAssertEqual(try compile("  <!-- foo -->\n\n    <!-- foo -->\n"),
-                       Document(elements: [.paragraph([.text("<!-- foo -->")]), .codeBlock(infoString: "", content: "<!-- foo -->\n")]))
+                       Document(elements: [.paragraph([.text("<!– foo –>")]), .codeBlock(infoString: "", content: "<!-- foo -->\n")]))
     }
 
     func testCase153() throws {

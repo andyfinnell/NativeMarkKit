@@ -58,14 +58,14 @@ final class ListsTest: XCTestCase {
         // HTML: <ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n<!-- -->\n<ul>\n<li>baz</li>\n<li>bim</li>\n</ul>\n
         // Debug: <ul>\n<li>{foo caused p to open}foo</li>\n<li>{bar caused p to open}bar</li>\n</ul>\n{<!-- --> caused p to open}<!-- -->\n<ul>\n<li>{baz caused p to open}baz</li>\n<li>{bim caused p to open}bim</li>\n</ul>\n
         XCTAssertEqual(try compile("- foo\n- bar\n\n<!-- -->\n\n- baz\n- bim\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")])]), ListItem(elements: [.paragraph([.text("bar")])])]), .paragraph([.text("<!-- -->")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("baz")])]), ListItem(elements: [.paragraph([.text("bim")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")])]), ListItem(elements: [.paragraph([.text("bar")])])]), .paragraph([.text("<!– –>")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("baz")])]), ListItem(elements: [.paragraph([.text("bim")])])])]))
     }
 
     func testCase279() throws {
         // HTML: <ul>\n<li>\n<p>foo</p>\n<p>notcode</p>\n</li>\n<li>\n<p>foo</p>\n</li>\n</ul>\n<!-- -->\n<pre><code>code\n</code></pre>\n
         // Debug: <ul>\n<li>\n<p>foo</p>\n<p>notcode</p>\n</li>\n<li>\n<p>foo</p>\n</li>\n</ul>\n{<!-- --> caused p to open}<!-- -->\n<pre><code>code\n</code></pre>\n
         XCTAssertEqual(try compile("-   foo\n\n    notcode\n\n-   foo\n\n<!-- -->\n\n    code\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .paragraph([.text("notcode")])]), ListItem(elements: [.paragraph([.text("foo")])])]), .paragraph([.text("<!-- -->")]), .codeBlock(infoString: "", content: "code\n")]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .paragraph([.text("notcode")])]), ListItem(elements: [.paragraph([.text("foo")])])]), .paragraph([.text("<!– –>")]), .codeBlock(infoString: "", content: "code\n")]))
     }
 
     func testCase280() throws {

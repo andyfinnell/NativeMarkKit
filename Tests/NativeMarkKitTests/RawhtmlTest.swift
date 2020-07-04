@@ -99,21 +99,21 @@ final class RawhtmlTest: XCTestCase {
         // HTML: <p>foo <!-- this is a\ncomment - with hyphen --></p>\n
         // Debug: <p>foo <!-- this is a\ncomment - with hyphen --></p>\n
         XCTAssertEqual(try compile("foo <!-- this is a\ncomment - with hyphen -->\n"),
-                       Document(elements: [.paragraph([.text("foo <!-- this is a"), .softbreak, .text("comment - with hyphen -->")])]))
+                       Document(elements: [.paragraph([.text("foo <!– this is a"), .softbreak, .text("comment - with hyphen –>")])]))
     }
 
     func testCase622() throws {
         // HTML: <p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>\n
         // Debug: <p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>\n
         XCTAssertEqual(try compile("foo <!-- not a comment -- two hyphens -->\n"),
-                       Document(elements: [.paragraph([.text("foo <!-- not a comment -- two hyphens -->")])]))
+                       Document(elements: [.paragraph([.text("foo <!– not a comment – two hyphens –>")])]))
     }
 
     func testCase623() throws {
         // HTML: <p>foo &lt;!--&gt; foo --&gt;</p>\n<p>foo &lt;!-- foo---&gt;</p>\n
         // Debug: <p>foo &lt;!--&gt; foo --&gt;</p>\n<p>foo &lt;!-- foo---&gt;</p>\n
         XCTAssertEqual(try compile("foo <!--> foo -->\n\nfoo <!-- foo--->\n"),
-                       Document(elements: [.paragraph([.text("foo <!--> foo -->")]), .paragraph([.text("foo <!-- foo--->")])]))
+                       Document(elements: [.paragraph([.text("foo <!–> foo –>")]), .paragraph([.text("foo <!– foo—>")])]))
     }
 
     func testCase624() throws {

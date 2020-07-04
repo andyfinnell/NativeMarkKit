@@ -58,7 +58,7 @@ final class SetextheadingsTest: XCTestCase {
         // HTML: <p>Foo\n---</p>\n
         // Debug: <p>Foo\n---</p>\n
         XCTAssertEqual(try compile("Foo\n    ---\n"),
-                       Document(elements: [.paragraph([.text("Foo"), .softbreak, .text("---")])]))
+                       Document(elements: [.paragraph([.text("Foo"), .softbreak, .text("—")])]))
     }
 
     func testCase58() throws {
@@ -192,7 +192,7 @@ final class SetextheadingsTest: XCTestCase {
         // HTML: <p>Foo\nbar\n---\nbaz</p>\n
         // Debug: <p>Foo\nbar\n---\nbaz</p>\n
         XCTAssertEqual(try compile("Foo\nbar\n\\---\nbaz\n"),
-                       Document(elements: [.paragraph([.text("Foo"), .softbreak, .text("bar"), .softbreak, .text("---"), .softbreak, .text("baz")])]))
+                       Document(elements: [.paragraph([.text("Foo"), .softbreak, .text("bar"), .softbreak, .text("—"), .softbreak, .text("baz")])]))
     }
 
     

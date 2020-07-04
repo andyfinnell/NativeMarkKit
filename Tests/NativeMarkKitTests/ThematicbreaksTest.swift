@@ -30,7 +30,7 @@ final class ThematicbreaksTest: XCTestCase {
         // HTML: <p>--\n**\n__</p>\n
         // Debug: <p>--\n**\n__</p>\n
         XCTAssertEqual(try compile("--\n**\n__\n"),
-                       Document(elements: [.paragraph([.text("--"), .softbreak, .text("**"), .softbreak, .text("__")])]))
+                       Document(elements: [.paragraph([.text("–"), .softbreak, .text("**"), .softbreak, .text("__")])]))
     }
 
     func testCase17() throws {
@@ -93,7 +93,7 @@ final class ThematicbreaksTest: XCTestCase {
         // HTML: <p>_ _ _ _ a</p>\n<p>a------</p>\n<p>---a---</p>\n
         // Debug: <p>_ _ _ _ a</p>\n<p>a------</p>\n<p>---a---</p>\n
         XCTAssertEqual(try compile("_ _ _ _ a\n\na------\n\n---a---\n"),
-                       Document(elements: [.paragraph([.text("_ _ _ _ a")]), .paragraph([.text("a------")]), .paragraph([.text("---a---")])]))
+                       Document(elements: [.paragraph([.text("_ _ _ _ a")]), .paragraph([.text("a——")]), .paragraph([.text("—a—")])]))
     }
 
     func testCase26() throws {
