@@ -34,7 +34,7 @@ final class RawhtmlTest: XCTestCase {
         // Input: <a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 />\n
         // HTML: <p><a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 /></p>\n
         // XCTAssertEqual(try compile("<a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 />\n"),
-        //                Document(elements: [.paragraph([.text("<a foo=“bar” bam = 'baz "), .emphasis([.text("“")]), .text("'"), .softbreak, .text("_boolean zoop:33=zoop:33 />")])]))
+        //                Document(elements: [.paragraph([.text("<a foo=“bar” bam = 'baz "), .emphasis([.text("\"")]), .text("'"), .softbreak, .text("_boolean zoop:33=zoop:33 />")])]))
     }
 
     func testCase613() throws {
@@ -62,7 +62,7 @@ final class RawhtmlTest: XCTestCase {
         // HTML: <p>&lt;a href=&quot;hi'&gt; &lt;a href=hi'&gt;</p>\n
         // Debug: <p>&lt;a href=&quot;hi'&gt; &lt;a href=hi'&gt;</p>\n
         XCTAssertEqual(try compile("<a href=\"hi'> <a href=hi'>\n"),
-                       Document(elements: [.paragraph([.text("<a href=“hi'> <a href=hi'>")])]))
+                       Document(elements: [.paragraph([.text("<a href=\"hi'> <a href=hi'>")])]))
     }
 
     func testCase617() throws {
@@ -158,7 +158,7 @@ final class RawhtmlTest: XCTestCase {
         // Input: <a href=\"\\\"\">\n
         // HTML: <p>&lt;a href=&quot;&quot;&quot;&gt;</p>\n
         // XCTAssertEqual(try compile("<a href=\"\\\"\">\n"),
-        //                Document(elements: [.paragraph([.text("<a href=“”“>")])]))
+        //                Document(elements: [.paragraph([.text("<a href=“”\">")])]))
     }
 
     

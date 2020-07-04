@@ -9,7 +9,7 @@ final class BackslashescapesTest: XCTestCase {
         // HTML: <p>!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~</p>\n
         // Debug: <p>!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~</p>\n
         XCTAssertEqual(try compile("\\!\\\"\\#\\$\\%\\&\\'\\(\\)\\*\\+\\,\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\[\\\\\\]\\^\\_\\`\\{\\|\\}\\~\n"),
-                       Document(elements: [.paragraph([.text("!“#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")])]))
+                       Document(elements: [.paragraph([.text("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")])]))
     }
 
     func testCase299() throws {
