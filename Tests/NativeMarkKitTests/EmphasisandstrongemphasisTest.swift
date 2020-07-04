@@ -874,27 +874,24 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
     }
 
     func testCase474() throws {
-        // TODO: skipped because markdown is ambiguous for importer
         // Input: *<img src=\"foo\" title=\"*\"/>\n
         // HTML: <p>*<img src=\"foo\" title=\"*\"/></p>\n
-        // XCTAssertEqual(try compile("*<img src=\"foo\" title=\"*\"/>\n"),
-        //                Document(elements: [.paragraph([.text("*"), .image(Link(title: "*", url: "foo"), text: [])])]))
+         XCTAssertEqual(try compile("*<img src=\"foo\" title=\"*\"/>\n"),
+                        Document(elements: [.paragraph([.text("*"), .image(Link(title: "*", url: "foo"), text: [])])]))
     }
 
     func testCase475() throws {
-        // TODO: skipped because markdown is ambiguous for importer
         // Input: **<a href=\"**\">\n
         // HTML: <p>**<a href=\"**\"></p>\n
-        // XCTAssertEqual(try compile("**<a href=\"**\">\n"),
-        //                Document(elements: [.paragraph([.text("**"), .link(Link(title: "", url: "**"), text: [])])]))
+         XCTAssertEqual(try compile("**<a href=\"**\">\n"),
+                        Document(elements: [.paragraph([.text("**"), .link(Link(title: "", url: "**"), text: [])])]))
     }
 
     func testCase476() throws {
-        // TODO: skipped because markdown is ambiguous for importer
         // Input: __<a href=\"__\">\n
         // HTML: <p>__<a href=\"__\"></p>\n
-        // XCTAssertEqual(try compile("__<a href=\"__\">\n"),
-        //                Document(elements: [.paragraph([.text("__"), .link(Link(title: "", url: "__"), text: [])])]))
+         XCTAssertEqual(try compile("__<a href=\"__\">\n"),
+                        Document(elements: [.paragraph([.text("__"), .link(Link(title: "", url: "__"), text: [])])]))
     }
 
     func testCase477() throws {

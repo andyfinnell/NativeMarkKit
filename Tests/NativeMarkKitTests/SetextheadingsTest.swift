@@ -83,11 +83,10 @@ final class SetextheadingsTest: XCTestCase {
     }
 
     func testCase61() throws {
-        // TODO: skipped because markdown is ambiguous for importer
         // Input: `Foo\n----\n`\n\n<a title=\"a lot\n---\nof dashes\"/>\n
         // HTML: <h2>`Foo</h2>\n<p>`</p>\n<h2>&lt;a title=&quot;a lot</h2>\n<p>of dashes&quot;/&gt;</p>\n
-        // XCTAssertEqual(try compile("`Foo\n----\n`\n\n<a title=\"a lot\n---\nof dashes\"/>\n"),
-        //                Document(elements: [.heading(level: 2, text: [.text("`Foo")]), .paragraph([.text("`")]), .heading(level: 2, text: [.text("<a title=“a lot")]), .paragraph([.text("of dashes”/>")])]))
+         XCTAssertEqual(try compile("`Foo\n----\n`\n\n<a title=\"a lot\n---\nof dashes\"/>\n"),
+                        Document(elements: [.heading(level: 2, text: [.text("`Foo")]), .paragraph([.text("`")]), .heading(level: 2, text: [.text("<a title=“a lot")]), .paragraph([.text("of dashes”/>")])]))
     }
 
     func testCase62() throws {
@@ -106,7 +105,7 @@ final class SetextheadingsTest: XCTestCase {
 
     func testCase64() throws {
         // HTML: <ul>\n<li>Foo</li>\n</ul>\n<hr />\n
-        // Debug: <ul>\n<li>{Foo caused p to open}Foo</li>\n</ul>\n<hr />\n
+        // Debug: <ul>\n<li>{Foo caused p to open}Foo{debug: implicitly closing p}</li>\n</ul>\n<hr />\n
         XCTAssertEqual(try compile("- Foo\n---\n"),
                        Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("Foo")])])]), .thematicBreak]))
     }
@@ -141,7 +140,7 @@ final class SetextheadingsTest: XCTestCase {
 
     func testCase69() throws {
         // HTML: <ul>\n<li>foo</li>\n</ul>\n<hr />\n
-        // Debug: <ul>\n<li>{foo caused p to open}foo</li>\n</ul>\n<hr />\n
+        // Debug: <ul>\n<li>{foo caused p to open}foo{debug: implicitly closing p}</li>\n</ul>\n<hr />\n
         XCTAssertEqual(try compile("- foo\n-----\n"),
                        Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")])])]), .thematicBreak]))
     }

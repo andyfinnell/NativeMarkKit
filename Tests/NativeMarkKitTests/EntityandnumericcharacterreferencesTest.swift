@@ -48,11 +48,10 @@ final class EntityandnumericcharacterreferencesTest: XCTestCase {
     }
 
     func testCase317() throws {
-        // TODO: skipped because markdown is ambiguous for importer
         // Input: <a href=\"&ouml;&ouml;.html\">\n
         // HTML: <a href=\"&ouml;&ouml;.html\">\n
-        // XCTAssertEqual(try compile("<a href=\"&ouml;&ouml;.html\">\n"),
-        //                Document(elements: [.paragraph([.link(Link(title: "", url: "öö.html"), text: [.softbreak])])]))
+         XCTAssertEqual(try compile("<a href=\"&ouml;&ouml;.html\">\n"),
+                        Document(elements: [.paragraph([.link(Link(title: "", url: "öö.html"), text: [.softbreak])])]))
     }
 
     func testCase318() throws {
@@ -99,7 +98,7 @@ final class EntityandnumericcharacterreferencesTest: XCTestCase {
 
     func testCase324() throws {
         // HTML: <p>* foo</p>\n<ul>\n<li>foo</li>\n</ul>\n
-        // Debug: <p>* foo</p>\n<ul>\n<li>{foo caused p to open}foo</li>\n</ul>\n
+        // Debug: <p>* foo</p>\n<ul>\n<li>{foo caused p to open}foo{debug: implicitly closing p}</li>\n</ul>\n
         XCTAssertEqual(try compile("&#42; foo\n\n* foo\n"),
                        Document(elements: [.paragraph([.text("* foo")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")])])])]))
     }

@@ -105,7 +105,7 @@ final class ThematicbreaksTest: XCTestCase {
 
     func testCase27() throws {
         // HTML: <ul>\n<li>foo</li>\n</ul>\n<hr />\n<ul>\n<li>bar</li>\n</ul>\n
-        // Debug: <ul>\n<li>{foo caused p to open}foo</li>\n</ul>\n<hr />\n<ul>\n<li>{bar caused p to open}bar</li>\n</ul>\n
+        // Debug: <ul>\n<li>{foo caused p to open}foo{debug: implicitly closing p}</li>\n</ul>\n<hr />\n<ul>\n<li>{bar caused p to open}bar{debug: implicitly closing p}</li>\n</ul>\n
         XCTAssertEqual(try compile("- foo\n***\n- bar\n"),
                        Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")])])]), .thematicBreak, .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("bar")])])])]))
     }
@@ -126,14 +126,14 @@ final class ThematicbreaksTest: XCTestCase {
 
     func testCase30() throws {
         // HTML: <ul>\n<li>Foo</li>\n</ul>\n<hr />\n<ul>\n<li>Bar</li>\n</ul>\n
-        // Debug: <ul>\n<li>{Foo caused p to open}Foo</li>\n</ul>\n<hr />\n<ul>\n<li>{Bar caused p to open}Bar</li>\n</ul>\n
+        // Debug: <ul>\n<li>{Foo caused p to open}Foo{debug: implicitly closing p}</li>\n</ul>\n<hr />\n<ul>\n<li>{Bar caused p to open}Bar{debug: implicitly closing p}</li>\n</ul>\n
         XCTAssertEqual(try compile("* Foo\n* * *\n* Bar\n"),
                        Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("Foo")])])]), .thematicBreak, .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("Bar")])])])]))
     }
 
     func testCase31() throws {
         // HTML: <ul>\n<li>Foo</li>\n<li>\n<hr />\n</li>\n</ul>\n
-        // Debug: <ul>\n<li>{Foo caused p to open}Foo</li>\n<li>\n<hr />\n</li>\n</ul>\n
+        // Debug: <ul>\n<li>{Foo caused p to open}Foo{debug: implicitly closing p}</li>\n<li>\n<hr />\n</li>\n</ul>\n
         XCTAssertEqual(try compile("- Foo\n- * * *\n"),
                        Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("Foo")])]), ListItem(elements: [.thematicBreak])])]))
     }

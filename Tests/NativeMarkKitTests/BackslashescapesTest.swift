@@ -20,11 +20,10 @@ final class BackslashescapesTest: XCTestCase {
     }
 
     func testCase300() throws {
-        // TODO: skipped because markdown is ambiguous for importer
         // Input: \\*not emphasized*\n\\<br/> not a tag\n\\[not a link](/foo)\n\\`not code`\n1\\. not a list\n\\* not a list\n\\# not a heading\n\\[foo]: /url \"not a reference\"\n\\&ouml; not a character entity\n
         // HTML: <p>*not emphasized*\n&lt;br/&gt; not a tag\n[not a link](/foo)\n`not code`\n1. not a list\n* not a list\n# not a heading\n[foo]: /url &quot;not a reference&quot;\n&amp;ouml; not a character entity</p>\n
-        // XCTAssertEqual(try compile("\\*not emphasized*\n\\<br/> not a tag\n\\[not a link](/foo)\n\\`not code`\n1\\. not a list\n\\* not a list\n\\# not a heading\n\\[foo]: /url \"not a reference\"\n\\&ouml; not a character entity\n"),
-        //                Document(elements: [.paragraph([.text("*not emphasized*"), .softbreak, .text("<br/> not a tag"), .softbreak, .text("[not a link](/foo)"), .softbreak, .text("`not code`"), .softbreak, .text("1. not a list"), .softbreak, .text("* not a list"), .softbreak, .text("# not a heading"), .softbreak, .text("[foo]: /url “not a reference”"), .softbreak, .text("&ouml; not a character entity")])]))
+         XCTAssertEqual(try compile("\\*not emphasized*\n\\<br/> not a tag\n\\[not a link](/foo)\n\\`not code`\n1\\. not a list\n\\* not a list\n\\# not a heading\n\\[foo]: /url \"not a reference\"\n\\&ouml; not a character entity\n"),
+                        Document(elements: [.paragraph([.text("*not emphasized*"), .softbreak, .text("<br/> not a tag"), .softbreak, .text("[not a link](/foo)"), .softbreak, .text("`not code`"), .softbreak, .text("1. not a list"), .softbreak, .text("* not a list"), .softbreak, .text("# not a heading"), .softbreak, .text("[foo]: /url “not a reference”"), .softbreak, .text("&ouml; not a character entity")])]))
     }
 
     func testCase301() throws {
@@ -70,11 +69,10 @@ final class BackslashescapesTest: XCTestCase {
     }
 
     func testCase307() throws {
-        // TODO: skipped because markdown is ambiguous for importer
         // Input: <a href=\"/bar\\/)\">\n
         // HTML: <a href=\"/bar\\/)\">\n
-        // XCTAssertEqual(try compile("<a href=\"/bar\\/)\">\n"),
-        //                Document(elements: [.paragraph([.link(Link(title: "", url: "/bar\\/)"), text: [.softbreak])])]))
+         XCTAssertEqual(try compile("<a href=\"/bar\\/)\">\n"),
+                        Document(elements: [.paragraph([.link(Link(title: "", url: "/bar\\/)"), text: [.softbreak])])]))
     }
 
     func testCase308() throws {
