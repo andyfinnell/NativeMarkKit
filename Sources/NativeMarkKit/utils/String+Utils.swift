@@ -84,6 +84,11 @@ extension String {
         }
         return replacingOccurrences(of: Self.escapableRegex, using: Self.unescape(_:))
     }
+    
+    private static let wordRegex = try! NSRegularExpression(pattern: "^\\S+", options: [])
+    func firstWord() -> String {
+        firstMatch(of: Self.wordRegex).map { matchedText($0) } ?? self
+    }
 }
 
 private extension String {

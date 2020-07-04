@@ -29,8 +29,9 @@ struct FencedCodeBlockParser: BlockParser {
 
     func close(_ block: Block) {
         let infoString = block.removeFirstLine().text
-            .trimmingCharacters(in: .whitespacesAndNewlines)
             .unescaped()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .firstWord()
         block.kind = .codeBlock(infoString: infoString)
     }
     
