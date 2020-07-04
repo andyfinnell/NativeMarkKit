@@ -317,7 +317,7 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
         // HTML: <p><strong>foo &quot;<em>bar</em>&quot; foo</strong></p>\n
         // Debug: <p><strong>foo &quot;<em>bar</em>&quot; foo</strong></p>\n
         XCTAssertEqual(try compile("**foo \"*bar*\" foo**\n"),
-                       Document(elements: [.paragraph([.strong([.text("foo “"), .emphasis([.text("bar")]), .text("“ foo")])])]))
+                       Document(elements: [.paragraph([.strong([.text("foo “"), .emphasis([.text("bar")]), .text("” foo")])])]))
     }
 
     func testCase395() throws {

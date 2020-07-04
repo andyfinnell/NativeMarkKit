@@ -90,9 +90,34 @@ private extension String {
     static func unescape(_ string: String) -> String {
         if string.hasPrefix("\\") {
             return String(string[string.index(after: string.startIndex)..<string.endIndex])
+        } else if string.hasPrefix("&#x") || string.hasPrefix("&#X") {
+            let hexString = string.trimmed(caseInsensitivePrefix: "&#x").trimmed(suffix: ";")
+            let number = Int(hexString, radix: 16) ?? 0
+            return String(Character(UnicodeScalar(number) ?? UnicodeScalar(32)))
+        } else if string.hasPrefix("&#") {
+            let decimalString = string.trimmed(caseInsensitivePrefix: "&#").trimmed(suffix: ";")
+            let number = Int(decimalString, radix: 10) ?? 0
+            return String(Character(UnicodeScalar(number) ?? UnicodeScalar(32)))
         } else {
-            let key = string
-            return HtmlEntities.entities[key] ?? string
+            return HtmlEntities.entities[string] ?? string
         }
+    }
+    
+    func trimmed(caseInsensitivePrefix prefix: String) -> String {
+        guard lowercased().hasPrefix(prefix.lowercased()) else {
+            return self
+        }
+        
+        let newStart = index(startIndex, offsetBy: prefix.count, limitedBy: endIndex) ?? startIndex
+        return String(self[newStart..<endIndex])
+    }
+
+    func trimmed(suffix: String) -> String {
+        guard hasSuffix(suffix) else {
+            return self
+        }
+        
+        let newEnd = index(endIndex, offsetBy: -suffix.count, limitedBy: startIndex) ?? endIndex
+        return String(self[startIndex..<newEnd])
     }
 }
