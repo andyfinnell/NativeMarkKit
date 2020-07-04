@@ -56,7 +56,7 @@ final class ParagraphsTest: XCTestCase {
 
     func testCase196() throws {
         // HTML: <p>aaa<br />\nbbb</p>\n
-        // Debug: <p>aaa<br></br>\nbbb</p>\n
+        // Debug: <p>aaa<br />\nbbb</p>\n
         XCTAssertEqual(try compile("aaa     \nbbb     \n"),
                        Document(elements: [.paragraph([.text("aaa"), .linebreak, .text("bbb")])]))
     }

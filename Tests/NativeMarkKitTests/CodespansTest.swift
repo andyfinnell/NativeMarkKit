@@ -112,28 +112,28 @@ final class CodespansTest: XCTestCase {
 
     func testCase343() throws {
         // HTML: <p><code>&lt;a href=&quot;</code>&quot;&gt;`</p>\n
-        // Debug: <p><code><a href=\"</code>\">`</p>\n
+        // Debug: <p><code>&lt;a href=&quot;</code>&quot;&gt;`</p>\n
         XCTAssertEqual(try compile("`<a href=\"`\">`\n"),
                        Document(elements: [.paragraph([.code("<a href=\""), .text("\">`")])]))
     }
 
     func testCase344() throws {
         // HTML: <p><a href=\"`\">`</p>\n
-        // Debug: <p><a>`</a></p><a>\n</a>
+        // Debug: <p><a href=\"`\">`{debug: implicitly closing a}</p>\n
         XCTAssertEqual(try compile("<a href=\"`\">`\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: "`"), text: [.text("`")])]), .paragraph([.link(Link(title: "", url: "`"), text: [])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "`"), text: [.text("`")])])]))
     }
 
     func testCase345() throws {
         // HTML: <p><code>&lt;http://foo.bar.</code>baz&gt;`</p>\n
-        // Debug: <p><code><http://foo.bar.</code>baz>`</p>\n
+        // Debug: <p><code>&lt;http://foo.bar.</code>baz&gt;`</p>\n
         XCTAssertEqual(try compile("`<http://foo.bar.`baz>`\n"),
                        Document(elements: [.paragraph([.code("<http://foo.bar."), .text("baz>`")])]))
     }
 
     func testCase346() throws {
         // HTML: <p><a href=\"http://foo.bar.%60baz\">http://foo.bar.`baz</a>`</p>\n
-        // Debug: <p><a>http://foo.bar.`baz</a>`</p>\n
+        // Debug: <p><a href=\"http://foo.bar.%60baz\">http://foo.bar.`baz</a>`</p>\n
         XCTAssertEqual(try compile("<http://foo.bar.`baz>`\n"),
                        Document(elements: [.paragraph([.link(Link(title: "", url: "http://foo.bar.`baz"), text: [.text("http://foo.bar.`baz")]), .text("`")])]))
     }

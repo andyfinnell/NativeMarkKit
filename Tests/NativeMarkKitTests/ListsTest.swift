@@ -14,7 +14,7 @@ final class ListsTest: XCTestCase {
 
     func testCase272() throws {
         // HTML: <ol>\n<li>foo</li>\n<li>bar</li>\n</ol>\n<ol start=\"3\">\n<li>baz</li>\n</ol>\n
-        // Debug: <ol>\n<li>{foo caused p to open}foo</li>\n<li>{bar caused p to open}bar</li>\n</ol>\n<ol>\n<li>{baz caused p to open}baz</li>\n</ol>\n
+        // Debug: <ol>\n<li>{foo caused p to open}foo</li>\n<li>{bar caused p to open}bar</li>\n</ol>\n<ol start=\"3\">\n<li>{baz caused p to open}baz</li>\n</ol>\n
         XCTAssertEqual(try compile("1. foo\n2. bar\n3) baz\n"),
                        Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("foo")])]), ListItem(elements: [.paragraph([.text("bar")])])]), .list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("baz")])])])]))
     }
@@ -56,14 +56,14 @@ final class ListsTest: XCTestCase {
 
     func testCase278() throws {
         // HTML: <ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n<!-- -->\n<ul>\n<li>baz</li>\n<li>bim</li>\n</ul>\n
-        // Debug: <ul>\n<li>{foo caused p to open}foo</li>\n<li>{bar caused p to open}bar</li>\n</ul>\n{<!-- --> caused p to open}\n<!-- -->\n<ul>\n<li>{baz caused p to open}baz</li>\n<li>{bim caused p to open}bim</li>\n</ul>\n
+        // Debug: <ul>\n<li>{foo caused p to open}foo</li>\n<li>{bar caused p to open}bar</li>\n</ul>\n{<!-- --> caused p to open}<!-- -->\n<ul>\n<li>{baz caused p to open}baz</li>\n<li>{bim caused p to open}bim</li>\n</ul>\n
         XCTAssertEqual(try compile("- foo\n- bar\n\n<!-- -->\n\n- baz\n- bim\n"),
                        Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")])]), ListItem(elements: [.paragraph([.text("bar")])])]), .paragraph([.text("<!-- -->")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("baz")])]), ListItem(elements: [.paragraph([.text("bim")])])])]))
     }
 
     func testCase279() throws {
         // HTML: <ul>\n<li>\n<p>foo</p>\n<p>notcode</p>\n</li>\n<li>\n<p>foo</p>\n</li>\n</ul>\n<!-- -->\n<pre><code>code\n</code></pre>\n
-        // Debug: <ul>\n<li>\n<p>foo</p>\n<p>notcode</p>\n</li>\n<li>\n<p>foo</p>\n</li>\n</ul>\n{<!-- --> caused p to open}\n<!-- -->\n<pre><code>code\n</code></pre>\n
+        // Debug: <ul>\n<li>\n<p>foo</p>\n<p>notcode</p>\n</li>\n<li>\n<p>foo</p>\n</li>\n</ul>\n{<!-- --> caused p to open}<!-- -->\n<pre><code>code\n</code></pre>\n
         XCTAssertEqual(try compile("-   foo\n\n    notcode\n\n-   foo\n\n<!-- -->\n\n    code\n"),
                        Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .paragraph([.text("notcode")])]), ListItem(elements: [.paragraph([.text("foo")])])]), .paragraph([.text("<!-- -->")]), .codeBlock(infoString: "", content: "code\n")]))
     }

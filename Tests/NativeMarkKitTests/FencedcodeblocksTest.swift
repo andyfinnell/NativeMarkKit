@@ -7,14 +7,14 @@ import XCTest
 final class FencedcodeblocksTest: XCTestCase {
     func testCase89() throws {
         // HTML: <pre><code>&lt;\n &gt;\n</code></pre>\n
-        // Debug: <pre><code><\n >\n</code></pre>\n
+        // Debug: <pre><code>&lt;\n &gt;\n</code></pre>\n
         XCTAssertEqual(try compile("```\n<\n >\n```\n"),
                        Document(elements: [.codeBlock(infoString: "", content: "<\n >\n")]))
     }
 
     func testCase90() throws {
         // HTML: <pre><code>&lt;\n &gt;\n</code></pre>\n
-        // Debug: <pre><code><\n >\n</code></pre>\n
+        // Debug: <pre><code>&lt;\n &gt;\n</code></pre>\n
         XCTAssertEqual(try compile("~~~\n<\n >\n~~~\n"),
                        Document(elements: [.codeBlock(infoString: "", content: "<\n >\n")]))
     }
@@ -168,21 +168,21 @@ final class FencedcodeblocksTest: XCTestCase {
 
     func testCase112() throws {
         // HTML: <pre><code class=\"language-ruby\">def foo(x)\n  return 3\nend\n</code></pre>\n
-        // Debug: <pre><code>def foo(x)\n  return 3\nend\n</code></pre>\n
+        // Debug: <pre><code class=\"language-ruby\">def foo(x)\n  return 3\nend\n</code></pre>\n
         XCTAssertEqual(try compile("```ruby\ndef foo(x)\n  return 3\nend\n```\n"),
                        Document(elements: [.codeBlock(infoString: "ruby", content: "def foo(x)\n  return 3\nend\n")]))
     }
 
     func testCase113() throws {
         // HTML: <pre><code class=\"language-ruby\">def foo(x)\n  return 3\nend\n</code></pre>\n
-        // Debug: <pre><code>def foo(x)\n  return 3\nend\n</code></pre>\n
+        // Debug: <pre><code class=\"language-ruby\">def foo(x)\n  return 3\nend\n</code></pre>\n
         XCTAssertEqual(try compile("~~~~    ruby startline=3 $%@#$\ndef foo(x)\n  return 3\nend\n~~~~~~~\n"),
                        Document(elements: [.codeBlock(infoString: "ruby", content: "def foo(x)\n  return 3\nend\n")]))
     }
 
     func testCase114() throws {
         // HTML: <pre><code class=\"language-;\"></code></pre>\n
-        // Debug: <pre><code></code></pre>\n
+        // Debug: <pre><code class=\"language-;\"></code></pre>\n
         XCTAssertEqual(try compile("````;\n````\n"),
                        Document(elements: [.codeBlock(infoString: ";", content: "")]))
     }
@@ -196,7 +196,7 @@ final class FencedcodeblocksTest: XCTestCase {
 
     func testCase116() throws {
         // HTML: <pre><code class=\"language-aa\">foo\n</code></pre>\n
-        // Debug: <pre><code>foo\n</code></pre>\n
+        // Debug: <pre><code class=\"language-aa\">foo\n</code></pre>\n
         XCTAssertEqual(try compile("~~~ aa ``` ~~~\nfoo\n~~~\n"),
                        Document(elements: [.codeBlock(infoString: "aa", content: "foo\n")]))
     }

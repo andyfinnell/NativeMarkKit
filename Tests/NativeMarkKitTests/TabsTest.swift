@@ -77,7 +77,7 @@ final class TabsTest: XCTestCase {
 
     func testCase11() throws {
         // HTML: <hr />\n
-        // Debug: <hr></hr>\n
+        // Debug: <hr />\n
         XCTAssertEqual(try compile("*\t*\t*\t\n"),
                        Document(elements: [.thematicBreak]))
     }

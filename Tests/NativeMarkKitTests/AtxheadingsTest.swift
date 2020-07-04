@@ -112,7 +112,7 @@ final class AtxheadingsTest: XCTestCase {
 
     func testCase47() throws {
         // HTML: <hr />\n<h2>foo</h2>\n<hr />\n
-        // Debug: <hr></hr>\n<h2>foo</h2>\n<hr></hr>\n
+        // Debug: <hr />\n<h2>foo</h2>\n<hr />\n
         XCTAssertEqual(try compile("****\n## foo\n****\n"),
                        Document(elements: [.thematicBreak, .heading(level: 2, text: [.text("foo")]), .thematicBreak]))
     }

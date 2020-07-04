@@ -7,49 +7,49 @@ import XCTest
 final class HardlinebreaksTest: XCTestCase {
     func testCase630() throws {
         // HTML: <p>foo<br />\nbaz</p>\n
-        // Debug: <p>foo<br></br>\nbaz</p>\n
+        // Debug: <p>foo<br />\nbaz</p>\n
         XCTAssertEqual(try compile("foo  \nbaz\n"),
                        Document(elements: [.paragraph([.text("foo"), .linebreak, .text("baz")])]))
     }
 
     func testCase631() throws {
         // HTML: <p>foo<br />\nbaz</p>\n
-        // Debug: <p>foo<br></br>\nbaz</p>\n
+        // Debug: <p>foo<br />\nbaz</p>\n
         XCTAssertEqual(try compile("foo\\\nbaz\n"),
                        Document(elements: [.paragraph([.text("foo"), .linebreak, .text("baz")])]))
     }
 
     func testCase632() throws {
         // HTML: <p>foo<br />\nbaz</p>\n
-        // Debug: <p>foo<br></br>\nbaz</p>\n
+        // Debug: <p>foo<br />\nbaz</p>\n
         XCTAssertEqual(try compile("foo       \nbaz\n"),
                        Document(elements: [.paragraph([.text("foo"), .linebreak, .text("baz")])]))
     }
 
     func testCase633() throws {
         // HTML: <p>foo<br />\nbar</p>\n
-        // Debug: <p>foo<br></br>\nbar</p>\n
+        // Debug: <p>foo<br />\nbar</p>\n
         XCTAssertEqual(try compile("foo  \n     bar\n"),
                        Document(elements: [.paragraph([.text("foo"), .linebreak, .text("bar")])]))
     }
 
     func testCase634() throws {
         // HTML: <p>foo<br />\nbar</p>\n
-        // Debug: <p>foo<br></br>\nbar</p>\n
+        // Debug: <p>foo<br />\nbar</p>\n
         XCTAssertEqual(try compile("foo\\\n     bar\n"),
                        Document(elements: [.paragraph([.text("foo"), .linebreak, .text("bar")])]))
     }
 
     func testCase635() throws {
         // HTML: <p><em>foo<br />\nbar</em></p>\n
-        // Debug: <p><em>foo<br></br>\nbar</em></p>\n
+        // Debug: <p><em>foo<br />\nbar</em></p>\n
         XCTAssertEqual(try compile("*foo  \nbar*\n"),
                        Document(elements: [.paragraph([.emphasis([.text("foo"), .linebreak, .text("bar")])])]))
     }
 
     func testCase636() throws {
         // HTML: <p><em>foo<br />\nbar</em></p>\n
-        // Debug: <p><em>foo<br></br>\nbar</em></p>\n
+        // Debug: <p><em>foo<br />\nbar</em></p>\n
         XCTAssertEqual(try compile("*foo\\\nbar*\n"),
                        Document(elements: [.paragraph([.emphasis([.text("foo"), .linebreak, .text("bar")])])]))
     }
@@ -70,16 +70,16 @@ final class HardlinebreaksTest: XCTestCase {
 
     func testCase639() throws {
         // HTML: <p><a href=\"foo  \nbar\"></p>\n
-        // Debug: <p><a></a></p><a>\n</a>
+        // Debug: <p><a href=\"foo  \nbar\">{debug: implicitly closing a}</p>\n
         XCTAssertEqual(try compile("<a href=\"foo  \nbar\">\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: "foo  \nbar"), text: [])]), .paragraph([.link(Link(title: "", url: "foo  \nbar"), text: [])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "foo  \nbar"), text: [])])]))
     }
 
     func testCase640() throws {
         // HTML: <p><a href=\"foo\\\nbar\"></p>\n
-        // Debug: <p><a></a></p><a>\n</a>
+        // Debug: <p><a href=\"foo\\\nbar\">{debug: implicitly closing a}</p>\n
         XCTAssertEqual(try compile("<a href=\"foo\\\nbar\">\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: "foo\\\nbar"), text: [])]), .paragraph([.link(Link(title: "", url: "foo\\\nbar"), text: [])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "foo\\\nbar"), text: [])])]))
     }
 
     func testCase641() throws {

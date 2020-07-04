@@ -28,7 +28,7 @@ final class BlockquotesTest: XCTestCase {
 
     func testCase201() throws {
         // HTML: <pre><code>&gt; # Foo\n&gt; bar\n&gt; baz\n</code></pre>\n
-        // Debug: <pre><code>> # Foo\n> bar\n> baz\n</code></pre>\n
+        // Debug: <pre><code>&gt; # Foo\n&gt; bar\n&gt; baz\n</code></pre>\n
         XCTAssertEqual(try compile("    > # Foo\n    > bar\n    > baz\n"),
                        Document(elements: [.codeBlock(infoString: "", content: "> # Foo\n> bar\n> baz\n")]))
     }
@@ -49,7 +49,7 @@ final class BlockquotesTest: XCTestCase {
 
     func testCase204() throws {
         // HTML: <blockquote>\n<p>foo</p>\n</blockquote>\n<hr />\n
-        // Debug: <blockquote>\n<p>foo</p>\n</blockquote>\n<hr></hr>\n
+        // Debug: <blockquote>\n<p>foo</p>\n</blockquote>\n<hr />\n
         XCTAssertEqual(try compile("> foo\n---\n"),
                        Document(elements: [.blockQuote([.paragraph([.text("foo")])]), .thematicBreak]))
     }
@@ -133,7 +133,7 @@ final class BlockquotesTest: XCTestCase {
 
     func testCase216() throws {
         // HTML: <blockquote>\n<p>aaa</p>\n</blockquote>\n<hr />\n<blockquote>\n<p>bbb</p>\n</blockquote>\n
-        // Debug: <blockquote>\n<p>aaa</p>\n</blockquote>\n<hr></hr>\n<blockquote>\n<p>bbb</p>\n</blockquote>\n
+        // Debug: <blockquote>\n<p>aaa</p>\n</blockquote>\n<hr />\n<blockquote>\n<p>bbb</p>\n</blockquote>\n
         XCTAssertEqual(try compile("> aaa\n***\n> bbb\n"),
                        Document(elements: [.blockQuote([.paragraph([.text("aaa")])]), .thematicBreak, .blockQuote([.paragraph([.text("bbb")])])]))
     }

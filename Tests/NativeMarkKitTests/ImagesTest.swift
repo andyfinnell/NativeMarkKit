@@ -7,140 +7,140 @@ import XCTest
 final class ImagesTest: XCTestCase {
     func testCase568() throws {
         // HTML: <p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>\n
-        // Debug: <p><img></img></p>\n
+        // Debug: <p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>\n
         XCTAssertEqual(try compile("![foo](/url \"title\")\n"),
                        Document(elements: [.paragraph([.image(Link(title: "title", url: "/url"), text: [.text("foo")])])]))
     }
 
     func testCase569() throws {
         // HTML: <p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>\n
-        // Debug: <p><img></img></p>\n
+        // Debug: <p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>\n
         XCTAssertEqual(try compile("![foo *bar*]\n\n[foo *bar*]: train.jpg \"train & tracks\"\n"),
                        Document(elements: [.paragraph([.image(Link(title: "train & tracks", url: "train.jpg"), text: [.text("foo bar")])])]))
     }
 
     func testCase570() throws {
         // HTML: <p><img src=\"/url2\" alt=\"foo bar\" /></p>\n
-        // Debug: <p><img></img></p>\n
+        // Debug: <p><img src=\"/url2\" alt=\"foo bar\" /></p>\n
         XCTAssertEqual(try compile("![foo ![bar](/url)](/url2)\n"),
                        Document(elements: [.paragraph([.image(Link(title: "", url: "/url2"), text: [.text("foo bar")])])]))
     }
 
     func testCase571() throws {
         // HTML: <p><img src=\"/url2\" alt=\"foo bar\" /></p>\n
-        // Debug: <p><img></img></p>\n
+        // Debug: <p><img src=\"/url2\" alt=\"foo bar\" /></p>\n
         XCTAssertEqual(try compile("![foo [bar](/url)](/url2)\n"),
                        Document(elements: [.paragraph([.image(Link(title: "", url: "/url2"), text: [.text("foo bar")])])]))
     }
 
     func testCase572() throws {
         // HTML: <p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>\n
-        // Debug: <p><img></img></p>\n
+        // Debug: <p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>\n
         XCTAssertEqual(try compile("![foo *bar*][]\n\n[foo *bar*]: train.jpg \"train & tracks\"\n"),
                        Document(elements: [.paragraph([.image(Link(title: "train & tracks", url: "train.jpg"), text: [.text("foo bar")])])]))
     }
 
     func testCase573() throws {
         // HTML: <p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>\n
-        // Debug: <p><img></img></p>\n
+        // Debug: <p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>\n
         XCTAssertEqual(try compile("![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"\n"),
                        Document(elements: [.paragraph([.image(Link(title: "train & tracks", url: "train.jpg"), text: [.text("foo bar")])])]))
     }
 
     func testCase574() throws {
         // HTML: <p><img src=\"train.jpg\" alt=\"foo\" /></p>\n
-        // Debug: <p><img></img></p>\n
+        // Debug: <p><img src=\"train.jpg\" alt=\"foo\" /></p>\n
         XCTAssertEqual(try compile("![foo](train.jpg)\n"),
                        Document(elements: [.paragraph([.image(Link(title: "", url: "train.jpg"), text: [.text("foo")])])]))
     }
 
     func testCase575() throws {
         // HTML: <p>My <img src=\"/path/to/train.jpg\" alt=\"foo bar\" title=\"title\" /></p>\n
-        // Debug: <p>My <img></img></p>\n
+        // Debug: <p>My <img src=\"/path/to/train.jpg\" alt=\"foo bar\" title=\"title\" /></p>\n
         XCTAssertEqual(try compile("My ![foo bar](/path/to/train.jpg  \"title\"   )\n"),
                        Document(elements: [.paragraph([.text("My "), .image(Link(title: "title", url: "/path/to/train.jpg"), text: [.text("foo bar")])])]))
     }
 
     func testCase576() throws {
         // HTML: <p><img src=\"url\" alt=\"foo\" /></p>\n
-        // Debug: <p><img></img></p>\n
+        // Debug: <p><img src=\"url\" alt=\"foo\" /></p>\n
         XCTAssertEqual(try compile("![foo](<url>)\n"),
                        Document(elements: [.paragraph([.image(Link(title: "", url: "url"), text: [.text("foo")])])]))
     }
 
     func testCase577() throws {
         // HTML: <p><img src=\"/url\" alt=\"\" /></p>\n
-        // Debug: <p><img></img></p>\n
+        // Debug: <p><img src=\"/url\" alt=\"\" /></p>\n
         XCTAssertEqual(try compile("![](/url)\n"),
                        Document(elements: [.paragraph([.image(Link(title: "", url: "/url"), text: [.text("")])])]))
     }
 
     func testCase578() throws {
         // HTML: <p><img src=\"/url\" alt=\"foo\" /></p>\n
-        // Debug: <p><img></img></p>\n
+        // Debug: <p><img src=\"/url\" alt=\"foo\" /></p>\n
         XCTAssertEqual(try compile("![foo][bar]\n\n[bar]: /url\n"),
                        Document(elements: [.paragraph([.image(Link(title: "", url: "/url"), text: [.text("foo")])])]))
     }
 
     func testCase579() throws {
         // HTML: <p><img src=\"/url\" alt=\"foo\" /></p>\n
-        // Debug: <p><img></img></p>\n
+        // Debug: <p><img src=\"/url\" alt=\"foo\" /></p>\n
         XCTAssertEqual(try compile("![foo][bar]\n\n[BAR]: /url\n"),
                        Document(elements: [.paragraph([.image(Link(title: "", url: "/url"), text: [.text("foo")])])]))
     }
 
     func testCase580() throws {
         // HTML: <p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>\n
-        // Debug: <p><img></img></p>\n
+        // Debug: <p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>\n
         XCTAssertEqual(try compile("![foo][]\n\n[foo]: /url \"title\"\n"),
                        Document(elements: [.paragraph([.image(Link(title: "title", url: "/url"), text: [.text("foo")])])]))
     }
 
     func testCase581() throws {
         // HTML: <p><img src=\"/url\" alt=\"foo bar\" title=\"title\" /></p>\n
-        // Debug: <p><img></img></p>\n
+        // Debug: <p><img src=\"/url\" alt=\"foo bar\" title=\"title\" /></p>\n
         XCTAssertEqual(try compile("![*foo* bar][]\n\n[*foo* bar]: /url \"title\"\n"),
                        Document(elements: [.paragraph([.image(Link(title: "title", url: "/url"), text: [.text("foo bar")])])]))
     }
 
     func testCase582() throws {
         // HTML: <p><img src=\"/url\" alt=\"Foo\" title=\"title\" /></p>\n
-        // Debug: <p><img></img></p>\n
+        // Debug: <p><img src=\"/url\" alt=\"Foo\" title=\"title\" /></p>\n
         XCTAssertEqual(try compile("![Foo][]\n\n[foo]: /url \"title\"\n"),
                        Document(elements: [.paragraph([.image(Link(title: "title", url: "/url"), text: [.text("Foo")])])]))
     }
 
     func testCase583() throws {
         // HTML: <p><img src=\"/url\" alt=\"foo\" title=\"title\" />\n[]</p>\n
-        // Debug: <p><img></img>\n[]</p>\n
+        // Debug: <p><img src=\"/url\" alt=\"foo\" title=\"title\" />\n[]</p>\n
         XCTAssertEqual(try compile("![foo] \n[]\n\n[foo]: /url \"title\"\n"),
                        Document(elements: [.paragraph([.image(Link(title: "title", url: "/url"), text: [.text("foo")]), .text("[]")])]))
     }
 
     func testCase584() throws {
         // HTML: <p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>\n
-        // Debug: <p><img></img></p>\n
+        // Debug: <p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>\n
         XCTAssertEqual(try compile("![foo]\n\n[foo]: /url \"title\"\n"),
                        Document(elements: [.paragraph([.image(Link(title: "title", url: "/url"), text: [.text("foo")])])]))
     }
 
     func testCase585() throws {
         // HTML: <p><img src=\"/url\" alt=\"foo bar\" title=\"title\" /></p>\n
-        // Debug: <p><img></img></p>\n
+        // Debug: <p><img src=\"/url\" alt=\"foo bar\" title=\"title\" /></p>\n
         XCTAssertEqual(try compile("![*foo* bar]\n\n[*foo* bar]: /url \"title\"\n"),
                        Document(elements: [.paragraph([.image(Link(title: "title", url: "/url"), text: [.text("foo bar")])])]))
     }
 
     func testCase586() throws {
         // HTML: <p>![[foo]]</p>\n<p>[[foo]]: /url &quot;title&quot;</p>\n
-        // Debug: <p>![[foo]]</p>\n<p>[[foo]]: /url \"title\"</p>\n
+        // Debug: <p>![[foo]]</p>\n<p>[[foo]]: /url &quot;title&quot;</p>\n
         XCTAssertEqual(try compile("![[foo]]\n\n[[foo]]: /url \"title\"\n"),
                        Document(elements: [.paragraph([.text("![[foo]]")]), .paragraph([.text("[[foo]]: /url \"title\"")])]))
     }
 
     func testCase587() throws {
         // HTML: <p><img src=\"/url\" alt=\"Foo\" title=\"title\" /></p>\n
-        // Debug: <p><img></img></p>\n
+        // Debug: <p><img src=\"/url\" alt=\"Foo\" title=\"title\" /></p>\n
         XCTAssertEqual(try compile("![Foo]\n\n[foo]: /url \"title\"\n"),
                        Document(elements: [.paragraph([.image(Link(title: "title", url: "/url"), text: [.text("Foo")])])]))
     }
@@ -154,7 +154,7 @@ final class ImagesTest: XCTestCase {
 
     func testCase589() throws {
         // HTML: <p>!<a href=\"/url\" title=\"title\">foo</a></p>\n
-        // Debug: <p>!<a>foo</a></p>\n
+        // Debug: <p>!<a href=\"/url\" title=\"title\">foo</a></p>\n
         XCTAssertEqual(try compile("\\![foo]\n\n[foo]: /url \"title\"\n"),
                        Document(elements: [.paragraph([.text("!"), .link(Link(title: "title", url: "/url"), text: [.text("foo")])])]))
     }

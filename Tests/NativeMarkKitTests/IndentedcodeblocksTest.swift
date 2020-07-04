@@ -28,7 +28,7 @@ final class IndentedcodeblocksTest: XCTestCase {
 
     func testCase80() throws {
         // HTML: <pre><code>&lt;a/&gt;\n*hi*\n\n- one\n</code></pre>\n
-        // Debug: <pre><code><a/>\n*hi*\n\n- one\n</code></pre>\n
+        // Debug: <pre><code>&lt;a/&gt;\n*hi*\n\n- one\n</code></pre>\n
         XCTAssertEqual(try compile("    <a/>\n    *hi*\n\n    - one\n"),
                        Document(elements: [.codeBlock(infoString: "", content: "<a/>\n*hi*\n\n- one\n")]))
     }
@@ -63,7 +63,7 @@ final class IndentedcodeblocksTest: XCTestCase {
 
     func testCase85() throws {
         // HTML: <h1>Heading</h1>\n<pre><code>foo\n</code></pre>\n<h2>Heading</h2>\n<pre><code>foo\n</code></pre>\n<hr />\n
-        // Debug: <h1>Heading</h1>\n<pre><code>foo\n</code></pre>\n<h2>Heading</h2>\n<pre><code>foo\n</code></pre>\n<hr></hr>\n
+        // Debug: <h1>Heading</h1>\n<pre><code>foo\n</code></pre>\n<h2>Heading</h2>\n<pre><code>foo\n</code></pre>\n<hr />\n
         XCTAssertEqual(try compile("# Heading\n    foo\nHeading\n------\n    foo\n----\n"),
                        Document(elements: [.heading(level: 1, text: [.text("Heading")]), .codeBlock(infoString: "", content: "foo\n"), .heading(level: 2, text: [.text("Heading")]), .codeBlock(infoString: "", content: "foo\n"), .thematicBreak]))
     }

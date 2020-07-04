@@ -91,7 +91,7 @@ private extension String {
         if string.hasPrefix("\\") {
             return String(string[string.index(after: string.startIndex)..<string.endIndex])
         } else {
-            let key = string.uppercased().lowercased()
+            let key = string
             return HtmlEntities.entities[key] ?? string
         }
     }
