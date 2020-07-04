@@ -38,6 +38,9 @@ final class Block {
             parent.addLinkDefinitions(definitions)
         } else {
             for definition in definitions {
+                guard linkDefinitions[definition.key] == nil else {
+                    continue
+                }
                 linkDefinitions[definition.key] = definition
             }
         }
