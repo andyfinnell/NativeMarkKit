@@ -2,7 +2,8 @@ import Foundation
 
 struct BackslashPaser {
     private static let escapableRegex = try! NSRegularExpression(pattern: "^\(String.escapablePattern)", options: [])
-    
+    private static let spacesRegex = try! NSRegularExpression(pattern: "^ *", options: [])
+
     func parse(_ input: TextCursor) -> TextResult<InlineText?> {
         let backslash = input.parse("\\")
         guard backslash.value.isNotEmpty else {
@@ -11,7 +12,10 @@ struct BackslashPaser {
         
         let newline = backslash.remaining.parse("\n")
         if newline.value.isNotEmpty {
-            return newline.map { _ in .linebreak }
+            let spaces = newline.remaining.parse(Self.spacesRegex)
+            return TextResult(remaining: spaces.remaining,
+                              value: .linebreak,
+                              valueLocation: newline.valueLocation)
         }
         
         let escapable = backslash.remaining.parse(Self.escapableRegex)

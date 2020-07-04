@@ -233,7 +233,7 @@ final class LinksTest: XCTestCase {
         // HTML: <p><a href=\"/uri\"><img src=\"moon.jpg\" alt=\"moon\" /></a></p>\n
         // Debug: <p><a href=\"/uri\"><img src=\"moon.jpg\" alt=\"moon\" /></a></p>\n
         XCTAssertEqual(try compile("[![moon](moon.jpg)](/uri)\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: "/uri"), text: [.image(Link(title: "", url: "moon.jpg"), text: [.text("moon")])])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "/uri"), text: [.image(Link(title: "", url: "moon.jpg"), alt: "moon")])])]))
     }
 
     func testCase514() throws {
@@ -254,7 +254,7 @@ final class LinksTest: XCTestCase {
         // HTML: <p><img src=\"uri3\" alt=\"[foo](uri2)\" /></p>\n
         // Debug: <p><img src=\"uri3\" alt=\"[foo](uri2)\" /></p>\n
         XCTAssertEqual(try compile("![[[foo](uri1)](uri2)](uri3)\n"),
-                       Document(elements: [.paragraph([.image(Link(title: "", url: "uri3"), text: [.text("[foo](uri2)")])])]))
+                       Document(elements: [.paragraph([.image(Link(title: "", url: "uri3"), alt: "[foo](uri2)")])]))
     }
 
     func testCase517() throws {
@@ -331,7 +331,7 @@ final class LinksTest: XCTestCase {
         // HTML: <p><a href=\"/uri\"><img src=\"moon.jpg\" alt=\"moon\" /></a></p>\n
         // Debug: <p><a href=\"/uri\"><img src=\"moon.jpg\" alt=\"moon\" /></a></p>\n
         XCTAssertEqual(try compile("[![moon](moon.jpg)][ref]\n\n[ref]: /uri\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "", url: "/uri"), text: [.image(Link(title: "", url: "moon.jpg"), text: [.text("moon")])])])]))
+                       Document(elements: [.paragraph([.link(Link(title: "", url: "/uri"), text: [.image(Link(title: "", url: "moon.jpg"), alt: "moon")])])]))
     }
 
     func testCase528() throws {

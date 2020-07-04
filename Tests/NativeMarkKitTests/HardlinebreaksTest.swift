@@ -72,14 +72,14 @@ final class HardlinebreaksTest: XCTestCase {
         // Input: <a href=\"foo  \nbar\">\n
         // HTML: <p><a href=\"foo  \nbar\"></p>\n
          XCTAssertEqual(try compile("<a href=\"foo  \nbar\">\n"),
-                        Document(elements: [.paragraph([.link(Link(title: "", url: "foo  \nbar"), text: [])])]))
+                        Document(elements: [.paragraph([.text("<a href=\u{201D}foo"), .linebreak, .text("bar\">")])]))
     }
 
     func testCase640() throws {
         // Input: <a href=\"foo\\\nbar\">\n
         // HTML: <p><a href=\"foo\\\nbar\"></p>\n
-         XCTAssertEqual(try compile("<a href=\"foo\\\nbar\">\n"),
-                        Document(elements: [.paragraph([.link(Link(title: "", url: "foo\\\nbar"), text: [])])]))
+        XCTAssertEqual(try compile("<a href=\"foo\\\nbar\">\n"),
+                       Document(elements: [.paragraph([.text("<a href=\u{201D}foo"), .linebreak, .text("bar\">")])]))
     }
 
     func testCase641() throws {

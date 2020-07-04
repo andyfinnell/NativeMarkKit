@@ -32,7 +32,7 @@ struct CloseBracketParser {
         let substack = delimiterStack.popSubstack(starting: openBracket)
         substack.processEmphasis()
         let contents = substack.inlineText
-        let inlineText = isImage ? InlineText.image(link, text: contents) : .link(link, text: contents)
+        let inlineText = isImage ? InlineText.image(link, alt: plainText(contents)) : .link(link, text: contents)
                 
         if openBracket.isLinkOpener {
             delimiterStack.deactivateLinkOpeners()
@@ -95,6 +95,27 @@ private extension CloseBracketParser {
             return linkLabelResult.map { _ in .valid(link.link) }
         } else {
             return input.noMatch(nil)
+        }
+    }
+    
+    func plainText(_ inlineText: [InlineText]) -> String {
+        inlineText.reduce("") { sum, inline in
+            switch inline {
+            case let .text(t):
+                return sum + t
+            case let .code(t):
+                return sum + t
+            case .linebreak,
+                 .softbreak,
+                 .image:
+                return sum
+            case let .link(_, text: t):
+                return sum + plainText(t)
+            case let .emphasis(t):
+                return sum + plainText(t)
+            case let .strong(t):
+                return sum + plainText(t)
+            }
         }
     }
 }

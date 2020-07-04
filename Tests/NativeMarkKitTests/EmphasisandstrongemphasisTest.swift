@@ -877,7 +877,7 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
         // Input: *<img src=\"foo\" title=\"*\"/>\n
         // HTML: <p>*<img src=\"foo\" title=\"*\"/></p>\n
          XCTAssertEqual(try compile("*<img src=\"foo\" title=\"*\"/>\n"),
-                        Document(elements: [.paragraph([.text("*"), .image(Link(title: "*", url: "foo"), text: [])])]))
+                        Document(elements: [.paragraph([.text("*"), .image(Link(title: "*", url: "foo"), alt: "")])]))
     }
 
     func testCase475() throws {
