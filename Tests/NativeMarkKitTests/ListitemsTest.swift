@@ -16,7 +16,7 @@ final class ListitemsTest: XCTestCase {
         // HTML: <ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>\n
         // Debug: <ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>\n
         XCTAssertEqual(try compile("1.  A paragraph\n    with two lines.\n\n        indented code\n\n    > A block quote.\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("A paragraph"), .softbreak, .text("with two lines.")]), .codeBlock(infoString: "", content: "indented code\n"), .blockQuote([.paragraph([.text("A block quote.")])])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("A paragraph"), .softbreak, .text("with two lines.")]), .codeBlock(infoString: "", content: "indented code\n"), .blockQuote([.paragraph([.text("A block quote.")])])])])]))
     }
 
     func testCase225() throws {
@@ -30,7 +30,7 @@ final class ListitemsTest: XCTestCase {
         // HTML: <ul>\n<li>\n<p>one</p>\n<p>two</p>\n</li>\n</ul>\n
         // Debug: <ul>\n<li>\n<p>one</p>\n<p>two</p>\n</li>\n</ul>\n
         XCTAssertEqual(try compile("- one\n\n  two\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("one")]), .paragraph([.text("two")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("one")]), .paragraph([.text("two")])])])]))
     }
 
     func testCase227() throws {
@@ -44,14 +44,14 @@ final class ListitemsTest: XCTestCase {
         // HTML: <ul>\n<li>\n<p>one</p>\n<p>two</p>\n</li>\n</ul>\n
         // Debug: <ul>\n<li>\n<p>one</p>\n<p>two</p>\n</li>\n</ul>\n
         XCTAssertEqual(try compile(" -    one\n\n      two\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("one")]), .paragraph([.text("two")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("one")]), .paragraph([.text("two")])])])]))
     }
 
     func testCase229() throws {
         // HTML: <blockquote>\n<blockquote>\n<ol>\n<li>\n<p>one</p>\n<p>two</p>\n</li>\n</ol>\n</blockquote>\n</blockquote>\n
         // Debug: <blockquote>\n<blockquote>\n<ol>\n<li>\n<p>one</p>\n<p>two</p>\n</li>\n</ol>\n</blockquote>\n</blockquote>\n
         XCTAssertEqual(try compile("   > > 1.  one\n>>\n>>     two\n"),
-                       Document(elements: [.blockQuote([.blockQuote([.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("one")]), .paragraph([.text("two")])])])])])]))
+                       Document(elements: [.blockQuote([.blockQuote([.list(ListInfo(isTight: false, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("one")]), .paragraph([.text("two")])])])])])]))
     }
 
     func testCase230() throws {
@@ -72,21 +72,21 @@ final class ListitemsTest: XCTestCase {
         // HTML: <ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>\n
         // Debug: <ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>\n
         XCTAssertEqual(try compile("- foo\n\n\n  bar\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .paragraph([.text("bar")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .paragraph([.text("bar")])])])]))
     }
 
     func testCase233() throws {
         // HTML: <ol>\n<li>\n<p>foo</p>\n<pre><code>bar\n</code></pre>\n<p>baz</p>\n<blockquote>\n<p>bam</p>\n</blockquote>\n</li>\n</ol>\n
         // Debug: <ol>\n<li>\n<p>foo</p>\n<pre><code>bar\n</code></pre>\n<p>baz</p>\n<blockquote>\n<p>bam</p>\n</blockquote>\n</li>\n</ol>\n
         XCTAssertEqual(try compile("1.  foo\n\n    ```\n    bar\n    ```\n\n    baz\n\n    > bam\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("foo")]), .codeBlock(infoString: "", content: "bar\n"), .paragraph([.text("baz")]), .blockQuote([.paragraph([.text("bam")])])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("foo")]), .codeBlock(infoString: "", content: "bar\n"), .paragraph([.text("baz")]), .blockQuote([.paragraph([.text("bam")])])])])]))
     }
 
     func testCase234() throws {
         // HTML: <ul>\n<li>\n<p>Foo</p>\n<pre><code>bar\n\n\nbaz\n</code></pre>\n</li>\n</ul>\n
         // Debug: <ul>\n<li>\n<p>Foo</p>\n<pre><code>bar\n\n\nbaz\n</code></pre>\n</li>\n</ul>\n
         XCTAssertEqual(try compile("- Foo\n\n      bar\n\n\n      baz\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("Foo")]), .codeBlock(infoString: "", content: "bar\n\n\nbaz\n")])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("Foo")]), .codeBlock(infoString: "", content: "bar\n\n\nbaz\n")])])]))
     }
 
     func testCase235() throws {
@@ -128,14 +128,14 @@ final class ListitemsTest: XCTestCase {
         // HTML: <ul>\n<li>\n<p>foo</p>\n<pre><code>bar\n</code></pre>\n</li>\n</ul>\n
         // Debug: <ul>\n<li>\n<p>foo</p>\n<pre><code>bar\n</code></pre>\n</li>\n</ul>\n
         XCTAssertEqual(try compile("- foo\n\n      bar\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .codeBlock(infoString: "", content: "bar\n")])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .codeBlock(infoString: "", content: "bar\n")])])]))
     }
 
     func testCase241() throws {
         // HTML: <ol start=\"10\">\n<li>\n<p>foo</p>\n<pre><code>bar\n</code></pre>\n</li>\n</ol>\n
         // Debug: <ol start=\"10\">\n<li>\n<p>foo</p>\n<pre><code>bar\n</code></pre>\n</li>\n</ol>\n
         XCTAssertEqual(try compile("  10.  foo\n\n           bar\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 10)), items: [ListItem(elements: [.paragraph([.text("foo")]), .codeBlock(infoString: "", content: "bar\n")])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .ordered(start: 10)), items: [ListItem(elements: [.paragraph([.text("foo")]), .codeBlock(infoString: "", content: "bar\n")])])]))
     }
 
     func testCase242() throws {
@@ -149,14 +149,14 @@ final class ListitemsTest: XCTestCase {
         // HTML: <ol>\n<li>\n<pre><code>indented code\n</code></pre>\n<p>paragraph</p>\n<pre><code>more code\n</code></pre>\n</li>\n</ol>\n
         // Debug: <ol>\n<li>\n<pre><code>indented code\n</code></pre>\n<p>paragraph</p>\n<pre><code>more code\n</code></pre>\n</li>\n</ol>\n
         XCTAssertEqual(try compile("1.     indented code\n\n   paragraph\n\n       more code\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.codeBlock(infoString: "", content: "indented code\n"), .paragraph([.text("paragraph")]), .codeBlock(infoString: "", content: "more code\n")])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .ordered(start: 1)), items: [ListItem(elements: [.codeBlock(infoString: "", content: "indented code\n"), .paragraph([.text("paragraph")]), .codeBlock(infoString: "", content: "more code\n")])])]))
     }
 
     func testCase244() throws {
         // HTML: <ol>\n<li>\n<pre><code> indented code\n</code></pre>\n<p>paragraph</p>\n<pre><code>more code\n</code></pre>\n</li>\n</ol>\n
         // Debug: <ol>\n<li>\n<pre><code> indented code\n</code></pre>\n<p>paragraph</p>\n<pre><code>more code\n</code></pre>\n</li>\n</ol>\n
         XCTAssertEqual(try compile("1.      indented code\n\n   paragraph\n\n       more code\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.codeBlock(infoString: "", content: " indented code\n"), .paragraph([.text("paragraph")]), .codeBlock(infoString: "", content: "more code\n")])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .ordered(start: 1)), items: [ListItem(elements: [.codeBlock(infoString: "", content: " indented code\n"), .paragraph([.text("paragraph")]), .codeBlock(infoString: "", content: "more code\n")])])]))
     }
 
     func testCase245() throws {
@@ -177,7 +177,7 @@ final class ListitemsTest: XCTestCase {
         // HTML: <ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>\n
         // Debug: <ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>\n
         XCTAssertEqual(try compile("-  foo\n\n   bar\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .paragraph([.text("bar")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .paragraph([.text("bar")])])])]))
     }
 
     func testCase248() throws {
@@ -240,21 +240,21 @@ final class ListitemsTest: XCTestCase {
         // HTML: <ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>\n
         // Debug: <ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>\n
         XCTAssertEqual(try compile(" 1.  A paragraph\n     with two lines.\n\n         indented code\n\n     > A block quote.\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("A paragraph"), .softbreak, .text("with two lines.")]), .codeBlock(infoString: "", content: "indented code\n"), .blockQuote([.paragraph([.text("A block quote.")])])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("A paragraph"), .softbreak, .text("with two lines.")]), .codeBlock(infoString: "", content: "indented code\n"), .blockQuote([.paragraph([.text("A block quote.")])])])])]))
     }
 
     func testCase257() throws {
         // HTML: <ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>\n
         // Debug: <ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>\n
         XCTAssertEqual(try compile("  1.  A paragraph\n      with two lines.\n\n          indented code\n\n      > A block quote.\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("A paragraph"), .softbreak, .text("with two lines.")]), .codeBlock(infoString: "", content: "indented code\n"), .blockQuote([.paragraph([.text("A block quote.")])])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("A paragraph"), .softbreak, .text("with two lines.")]), .codeBlock(infoString: "", content: "indented code\n"), .blockQuote([.paragraph([.text("A block quote.")])])])])]))
     }
 
     func testCase258() throws {
         // HTML: <ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>\n
         // Debug: <ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>\n
         XCTAssertEqual(try compile("   1.  A paragraph\n       with two lines.\n\n           indented code\n\n       > A block quote.\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("A paragraph"), .softbreak, .text("with two lines.")]), .codeBlock(infoString: "", content: "indented code\n"), .blockQuote([.paragraph([.text("A block quote.")])])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("A paragraph"), .softbreak, .text("with two lines.")]), .codeBlock(infoString: "", content: "indented code\n"), .blockQuote([.paragraph([.text("A block quote.")])])])])]))
     }
 
     func testCase259() throws {
@@ -268,7 +268,7 @@ final class ListitemsTest: XCTestCase {
         // HTML: <ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>\n
         // Debug: <ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>\n
         XCTAssertEqual(try compile("  1.  A paragraph\nwith two lines.\n\n          indented code\n\n      > A block quote.\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("A paragraph"), .softbreak, .text("with two lines.")]), .codeBlock(infoString: "", content: "indented code\n"), .blockQuote([.paragraph([.text("A block quote.")])])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("A paragraph"), .softbreak, .text("with two lines.")]), .codeBlock(infoString: "", content: "indented code\n"), .blockQuote([.paragraph([.text("A block quote.")])])])])]))
     }
 
     func testCase261() throws {

@@ -30,14 +30,14 @@ final class TabsTest: XCTestCase {
         // HTML: <ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>\n
         // Debug: <ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>\n
         XCTAssertEqual(try compile("  - foo\n\n\tbar\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .paragraph([.text("bar")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .paragraph([.text("bar")])])])]))
     }
 
     func testCase5() throws {
         // HTML: <ul>\n<li>\n<p>foo</p>\n<pre><code>  bar\n</code></pre>\n</li>\n</ul>\n
         // Debug: <ul>\n<li>\n<p>foo</p>\n<pre><code>  bar\n</code></pre>\n</li>\n</ul>\n
         XCTAssertEqual(try compile("- foo\n\n\t\tbar\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .codeBlock(infoString: "", content: "  bar\n")])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .codeBlock(infoString: "", content: "  bar\n")])])]))
     }
 
     func testCase6() throws {

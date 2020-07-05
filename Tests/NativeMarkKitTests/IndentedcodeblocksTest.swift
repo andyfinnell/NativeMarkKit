@@ -16,14 +16,14 @@ final class IndentedcodeblocksTest: XCTestCase {
         // HTML: <ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>\n
         // Debug: <ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>\n
         XCTAssertEqual(try compile("  - foo\n\n    bar\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .paragraph([.text("bar")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .paragraph([.text("bar")])])])]))
     }
 
     func testCase79() throws {
         // HTML: <ol>\n<li>\n<p>foo</p>\n<ul>\n<li>bar</li>\n</ul>\n</li>\n</ol>\n
         // Debug: <ol>\n<li>\n<p>foo</p>\n<ul>\n<li>{bar caused p to open}bar{debug: implicitly closing p}</li>\n</ul>\n</li>\n</ol>\n
         XCTAssertEqual(try compile("1.  foo\n\n    - bar\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("foo")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("bar")])])])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("foo")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("bar")])])])])])]))
     }
 
     func testCase80() throws {

@@ -16,7 +16,7 @@ final class ListsTest: XCTestCase {
         // HTML: <ol>\n<li>foo</li>\n<li>bar</li>\n</ol>\n<ol start=\"3\">\n<li>baz</li>\n</ol>\n
         // Debug: <ol>\n<li>{foo caused p to open}foo{debug: implicitly closing p}</li>\n<li>{bar caused p to open}bar{debug: implicitly closing p}</li>\n</ol>\n<ol start=\"3\">\n<li>{baz caused p to open}baz{debug: implicitly closing p}</li>\n</ol>\n
         XCTAssertEqual(try compile("1. foo\n2. bar\n3) baz\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("foo")])]), ListItem(elements: [.paragraph([.text("bar")])])]), .list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("baz")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("foo")])]), ListItem(elements: [.paragraph([.text("bar")])])]), .list(ListInfo(isTight: true, kind: .ordered(start: 3)), items: [ListItem(elements: [.paragraph([.text("baz")])])])]))
     }
 
     func testCase273() throws {
@@ -44,28 +44,28 @@ final class ListsTest: XCTestCase {
         // HTML: <ul>\n<li>\n<p>foo</p>\n</li>\n<li>\n<p>bar</p>\n</li>\n<li>\n<p>baz</p>\n</li>\n</ul>\n
         // Debug: <ul>\n<li>\n<p>foo</p>\n</li>\n<li>\n<p>bar</p>\n</li>\n<li>\n<p>baz</p>\n</li>\n</ul>\n
         XCTAssertEqual(try compile("- foo\n\n- bar\n\n\n- baz\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")])]), ListItem(elements: [.paragraph([.text("bar")])]), ListItem(elements: [.paragraph([.text("baz")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")])]), ListItem(elements: [.paragraph([.text("bar")])]), ListItem(elements: [.paragraph([.text("baz")])])])]))
     }
 
     func testCase277() throws {
         // HTML: <ul>\n<li>foo\n<ul>\n<li>bar\n<ul>\n<li>\n<p>baz</p>\n<p>bim</p>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n
         // Debug: <ul>\n<li>{foo caused p to open}foo\n<ul>\n<li>{bar caused p to open}bar\n<ul>\n<li>\n<p>baz</p>\n<p>bim</p>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n
         XCTAssertEqual(try compile("- foo\n  - bar\n    - baz\n\n\n      bim\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("bar")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("baz")]), .paragraph([.text("bim")])])])])])])])]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("bar")]), .list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("baz")]), .paragraph([.text("bim")])])])])])])])]))
     }
 
     func testCase278() throws {
         // HTML: <ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n<!-- -->\n<ul>\n<li>baz</li>\n<li>bim</li>\n</ul>\n
         // Debug: <ul>\n<li>{foo caused p to open}foo{debug: implicitly closing p}</li>\n<li>{bar caused p to open}bar{debug: implicitly closing p}</li>\n</ul>\n{<!-- --> caused p to open}<!-- -->\n<ul>\n<li>{baz caused p to open}baz{debug: implicitly closing p}</li>\n<li>{bim caused p to open}bim{debug: implicitly closing p}</li>\n</ul>\n
         XCTAssertEqual(try compile("- foo\n- bar\n\n<!-- -->\n\n- baz\n- bim\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")])]), ListItem(elements: [.paragraph([.text("bar")])])]), .paragraph([.text("<!– –>"), .softbreak]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("baz")])]), ListItem(elements: [.paragraph([.text("bim")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")])]), ListItem(elements: [.paragraph([.text("bar")])])]), .paragraph([.text("<!– –>")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("baz")])]), ListItem(elements: [.paragraph([.text("bim")])])])]))
     }
 
     func testCase279() throws {
         // HTML: <ul>\n<li>\n<p>foo</p>\n<p>notcode</p>\n</li>\n<li>\n<p>foo</p>\n</li>\n</ul>\n<!-- -->\n<pre><code>code\n</code></pre>\n
         // Debug: <ul>\n<li>\n<p>foo</p>\n<p>notcode</p>\n</li>\n<li>\n<p>foo</p>\n</li>\n</ul>\n{<!-- --> caused p to open}<!-- -->\n<pre><code>code\n</code></pre>\n{debug: implicitly closing p}
         XCTAssertEqual(try compile("-   foo\n\n    notcode\n\n-   foo\n\n<!-- -->\n\n    code\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .paragraph([.text("notcode")])]), ListItem(elements: [.paragraph([.text("foo")])])]), .paragraph([.text("<!– –>"), .softbreak, .code("code\n"), .softbreak])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .paragraph([.text("notcode")])]), ListItem(elements: [.paragraph([.text("foo")])])]), .paragraph([.text("<!– –>")]), .codeBlock(infoString: "", content: "code\n")]))
     }
 
     func testCase280() throws {
@@ -79,7 +79,7 @@ final class ListsTest: XCTestCase {
         // HTML: <ol>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n</li>\n<li>\n<p>c</p>\n</li>\n</ol>\n
         // Debug: <ol>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n</li>\n<li>\n<p>c</p>\n</li>\n</ol>\n
         XCTAssertEqual(try compile("1. a\n\n  2. b\n\n   3. c\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("a")])]), ListItem(elements: [.paragraph([.text("b")])]), ListItem(elements: [.paragraph([.text("c")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("a")])]), ListItem(elements: [.paragraph([.text("b")])]), ListItem(elements: [.paragraph([.text("c")])])])]))
     }
 
     func testCase282() throws {
@@ -93,35 +93,35 @@ final class ListsTest: XCTestCase {
         // HTML: <ol>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n</li>\n</ol>\n<pre><code>3. c\n</code></pre>\n
         // Debug: <ol>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n</li>\n</ol>\n<pre><code>3. c\n</code></pre>\n
         XCTAssertEqual(try compile("1. a\n\n  2. b\n\n    3. c\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("a")])]), ListItem(elements: [.paragraph([.text("b")])])]), .codeBlock(infoString: "", content: "3. c\n")]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("a")])]), ListItem(elements: [.paragraph([.text("b")])])]), .codeBlock(infoString: "", content: "3. c\n")]))
     }
 
     func testCase284() throws {
         // HTML: <ul>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n</li>\n<li>\n<p>c</p>\n</li>\n</ul>\n
         // Debug: <ul>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n</li>\n<li>\n<p>c</p>\n</li>\n</ul>\n
         XCTAssertEqual(try compile("- a\n- b\n\n- c\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("a")])]), ListItem(elements: [.paragraph([.text("b")])]), ListItem(elements: [.paragraph([.text("c")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("a")])]), ListItem(elements: [.paragraph([.text("b")])]), ListItem(elements: [.paragraph([.text("c")])])])]))
     }
 
     func testCase285() throws {
         // HTML: <ul>\n<li>\n<p>a</p>\n</li>\n<li></li>\n<li>\n<p>c</p>\n</li>\n</ul>\n
         // Debug: <ul>\n<li>\n<p>a</p>\n</li>\n<li></li>\n<li>\n<p>c</p>\n</li>\n</ul>\n
         XCTAssertEqual(try compile("* a\n*\n\n* c\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("a")])]), ListItem(elements: []), ListItem(elements: [.paragraph([.text("c")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("a")])]), ListItem(elements: []), ListItem(elements: [.paragraph([.text("c")])])])]))
     }
 
     func testCase286() throws {
         // HTML: <ul>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n<p>c</p>\n</li>\n<li>\n<p>d</p>\n</li>\n</ul>\n
         // Debug: <ul>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n<p>c</p>\n</li>\n<li>\n<p>d</p>\n</li>\n</ul>\n
         XCTAssertEqual(try compile("- a\n- b\n\n  c\n- d\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("a")])]), ListItem(elements: [.paragraph([.text("b")]), .paragraph([.text("c")])]), ListItem(elements: [.paragraph([.text("d")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("a")])]), ListItem(elements: [.paragraph([.text("b")]), .paragraph([.text("c")])]), ListItem(elements: [.paragraph([.text("d")])])])]))
     }
 
     func testCase287() throws {
         // HTML: <ul>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n</li>\n<li>\n<p>d</p>\n</li>\n</ul>\n
         // Debug: <ul>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n</li>\n<li>\n<p>d</p>\n</li>\n</ul>\n
         XCTAssertEqual(try compile("- a\n- b\n\n  [ref]: /url\n- d\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("a")])]), ListItem(elements: [.paragraph([.text("b")])]), ListItem(elements: [.paragraph([.text("d")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("a")])]), ListItem(elements: [.paragraph([.text("b")])]), ListItem(elements: [.paragraph([.text("d")])])])]))
     }
 
     func testCase288() throws {
@@ -135,7 +135,7 @@ final class ListsTest: XCTestCase {
         // HTML: <ul>\n<li>a\n<ul>\n<li>\n<p>b</p>\n<p>c</p>\n</li>\n</ul>\n</li>\n<li>d</li>\n</ul>\n
         // Debug: <ul>\n<li>{a caused p to open}a\n<ul>\n<li>\n<p>b</p>\n<p>c</p>\n</li>\n</ul>\n</li>\n<li>{d caused p to open}d{debug: implicitly closing p}</li>\n</ul>\n
         XCTAssertEqual(try compile("- a\n  - b\n\n    c\n- d\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("a")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("b")]), .paragraph([.text("c")])])])]), ListItem(elements: [.paragraph([.text("d")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("a")]), .list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("b")]), .paragraph([.text("c")])])])]), ListItem(elements: [.paragraph([.text("d")])])])]))
     }
 
     func testCase290() throws {
@@ -177,14 +177,14 @@ final class ListsTest: XCTestCase {
         // HTML: <ul>\n<li>\n<p>foo</p>\n<ul>\n<li>bar</li>\n</ul>\n<p>baz</p>\n</li>\n</ul>\n
         // Debug: <ul>\n<li>\n<p>foo</p>\n<ul>\n<li>{bar caused p to open}bar{debug: implicitly closing p}</li>\n</ul>\n<p>baz</p>\n</li>\n</ul>\n
         XCTAssertEqual(try compile("* foo\n  * bar\n\n  baz\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("bar")])])]), .paragraph([.text("baz")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("foo")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("bar")])])]), .paragraph([.text("baz")])])])]))
     }
 
     func testCase296() throws {
         // HTML: <ul>\n<li>\n<p>a</p>\n<ul>\n<li>b</li>\n<li>c</li>\n</ul>\n</li>\n<li>\n<p>d</p>\n<ul>\n<li>e</li>\n<li>f</li>\n</ul>\n</li>\n</ul>\n
         // Debug: <ul>\n<li>\n<p>a</p>\n<ul>\n<li>{b caused p to open}b{debug: implicitly closing p}</li>\n<li>{c caused p to open}c{debug: implicitly closing p}</li>\n</ul>\n</li>\n<li>\n<p>d</p>\n<ul>\n<li>{e caused p to open}e{debug: implicitly closing p}</li>\n<li>{f caused p to open}f{debug: implicitly closing p}</li>\n</ul>\n</li>\n</ul>\n
         XCTAssertEqual(try compile("- a\n  - b\n  - c\n\n- d\n  - e\n  - f\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("a")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("b")])]), ListItem(elements: [.paragraph([.text("c")])])])]), ListItem(elements: [.paragraph([.text("d")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("e")])]), ListItem(elements: [.paragraph([.text("f")])])])])])]))
+                       Document(elements: [.list(ListInfo(isTight: false, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("a")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("b")])]), ListItem(elements: [.paragraph([.text("c")])])])]), ListItem(elements: [.paragraph([.text("d")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("e")])]), ListItem(elements: [.paragraph([.text("f")])])])])])]))
     }
 
     
