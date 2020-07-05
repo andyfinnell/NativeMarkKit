@@ -1,5 +1,10 @@
 import Foundation
 
+enum LinkDestination {
+    case noMatch //
+    case match(String)
+}
+
 struct LinkDestinationParser {
     func parse(_ input: TextCursor) -> TextResult<String?> {
         if input == "<" {

@@ -10,9 +10,6 @@ struct InlineLinkParser {
         let spaces1Result = SpacesAndNewlineParser().parse(openParen.remaining)
         
         let destinationResult = LinkDestinationParser().parse(spaces1Result.remaining)
-        guard let destination = destinationResult.value else {
-            return input.noMatch(nil)
-        }
 
         let titleResult = parseOptionalTitle(destinationResult.remaining)
 
@@ -23,8 +20,9 @@ struct InlineLinkParser {
             return input.noMatch(nil)
         }
 
+        let url = destinationResult.value ?? ""
         return TextResult(remaining: closeParen.remaining,
-                          value: Link(title: titleResult.value, url: destination),
+                          value: Link(title: titleResult.value, url: url),
                           valueLocation: openParen.valueLocation)
     }
 }

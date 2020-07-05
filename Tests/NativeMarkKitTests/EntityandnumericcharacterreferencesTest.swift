@@ -51,7 +51,7 @@ final class EntityandnumericcharacterreferencesTest: XCTestCase {
         // Input: <a href=\"&ouml;&ouml;.html\">\n
         // HTML: <a href=\"&ouml;&ouml;.html\">\n
          XCTAssertEqual(try compile("<a href=\"&ouml;&ouml;.html\">\n"),
-                        Document(elements: [.paragraph([.link(Link(title: "", url: "öö.html"), text: [.softbreak])])]))
+                        Document(elements: [.paragraph([.text("<a href=”öö.html\">")])]))
     }
 
     func testCase318() throws {
