@@ -98,14 +98,21 @@ private extension String {
         } else if string.hasPrefix("&#x") || string.hasPrefix("&#X") {
             let hexString = string.trimmed(caseInsensitivePrefix: "&#x").trimmed(suffix: ";")
             let number = Int(hexString, radix: 16) ?? 0
-            return String(Character(UnicodeScalar(number) ?? UnicodeScalar(32)))
+            return Self.string(from: number)
         } else if string.hasPrefix("&#") {
             let decimalString = string.trimmed(caseInsensitivePrefix: "&#").trimmed(suffix: ";")
             let number = Int(decimalString, radix: 10) ?? 0
-            return String(Character(UnicodeScalar(number) ?? UnicodeScalar(32)))
+            return Self.string(from: number)
         } else {
             return HtmlEntities.entities[string] ?? string
         }
+    }
+    
+    static func string(from codePoint: Int) -> String {
+        guard codePoint != 0 else {
+            return ""
+        }
+        return UnicodeScalar(codePoint).map { String(Character($0)) } ?? ""
     }
     
     func trimmed(caseInsensitivePrefix prefix: String) -> String {

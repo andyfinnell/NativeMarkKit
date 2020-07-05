@@ -877,21 +877,21 @@ final class EmphasisandstrongemphasisTest: XCTestCase {
         // Input: *<img src=\"foo\" title=\"*\"/>\n
         // HTML: <p>*<img src=\"foo\" title=\"*\"/></p>\n
          XCTAssertEqual(try compile("*<img src=\"foo\" title=\"*\"/>\n"),
-                        Document(elements: [.paragraph([.text("*"), .image(Link(title: "*", url: "foo"), alt: "")])]))
+                        Document(elements: [.paragraph([.text("*<img src=”foo\" title=”*”/>")])]))
     }
 
     func testCase475() throws {
         // Input: **<a href=\"**\">\n
         // HTML: <p>**<a href=\"**\"></p>\n
          XCTAssertEqual(try compile("**<a href=\"**\">\n"),
-                        Document(elements: [.paragraph([.text("**"), .link(Link(title: "", url: "**"), text: [])])]))
+                        Document(elements: [.paragraph([.text("**<a href=”**\">")])]))
     }
 
     func testCase476() throws {
         // Input: __<a href=\"__\">\n
         // HTML: <p>__<a href=\"__\"></p>\n
          XCTAssertEqual(try compile("__<a href=\"__\">\n"),
-                        Document(elements: [.paragraph([.text("__"), .link(Link(title: "", url: "__"), text: [])])]))
+                        Document(elements: [.paragraph([.text("__<a href=”__\">")])]))
     }
 
     func testCase477() throws {

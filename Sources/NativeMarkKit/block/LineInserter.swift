@@ -15,7 +15,7 @@ struct LineInserter {
                 return container
             } else if !line.isBlank {
                 let paragraph = Block(kind: .paragraph, parser: ParagraphBlockParser())
-                paragraph.addText(line)
+                paragraph.addText(line.nonIndentedStart)
                 return container.addChild(paragraph)
             } else {
                 return container

@@ -16,7 +16,7 @@ final class EntityandnumericcharacterreferencesTest: XCTestCase {
         // HTML: <p># Ӓ Ϡ �</p>\n
         // Debug: <p># Ӓ Ϡ �</p>\n
         XCTAssertEqual(try compile("&#35; &#1234; &#992; &#0;\n"),
-                       Document(elements: [.paragraph([.text("# Ӓ Ϡ �")])]))
+                       Document(elements: [.paragraph([.text("# Ӓ Ϡ ")])]))
     }
 
     func testCase313() throws {

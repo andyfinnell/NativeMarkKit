@@ -93,7 +93,7 @@ final class ListitemsTest: XCTestCase {
         // HTML: <ol start=\"123456789\">\n<li>ok</li>\n</ol>\n
         // Debug: <ol start=\"123456789\">\n<li>{ok caused p to open}ok{debug: implicitly closing p}</li>\n</ol>\n
         XCTAssertEqual(try compile("123456789. ok\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("ok")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 123456789)), items: [ListItem(elements: [.paragraph([.text("ok")])])])]))
     }
 
     func testCase236() throws {

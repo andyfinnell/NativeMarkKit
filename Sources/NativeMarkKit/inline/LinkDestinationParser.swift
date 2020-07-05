@@ -56,6 +56,10 @@ private extension LinkDestinationParser {
         }
         
         let urlString = start.substring(upto: current).unescaped()
+        guard urlString.isNotEmpty else {
+            return input.noMatch(nil)
+        }
+        
         return TextResult(remaining: current,
                           value: urlString,
                           valueLocation: input)
