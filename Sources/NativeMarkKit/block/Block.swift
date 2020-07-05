@@ -67,15 +67,19 @@ final class Block {
             .reversed()
     }
     
+    private var didEndWithBlankLine = false
+    
     var isLastLineBlank: Bool {
-        ((textLines.last?.isBlank ?? false) && parser.canHaveLastLineBlank(self))
+        if parser.doesPreventChildrenFromHavingLastLineBlank {
+            return false
+        }
+        return didEndWithBlankLine
             || (children.last?.isLastLineBlank ?? false)
     }
     
     var isLastChild: Bool {
         parent?.children.last === self
     }
-    
 }
 
 extension Block {
@@ -85,15 +89,25 @@ extension Block {
         parser.attemptContinuation(self, with: line)
     }
 
-    func close() {
+    func close(with line: Line? = nil) {
         guard isOpen else {
             return
         }
         parser.close(self)
+        didEndWithBlankLine = isThisLineBlankForPurposesOfLastLine(line)
         isOpen = false
     }
     
     func parseLinkDefinitions() -> Bool {
         parser.parseLinkDefinitions(self)
+    }
+}
+
+private extension Block {
+    func isThisLineBlankForPurposesOfLastLine(_ line: Line?) -> Bool {
+        guard let line = line else {
+            return false
+        }
+        return parser.isThisLineBlankForPurposesOfLastLine(line, block: self)
     }
 }

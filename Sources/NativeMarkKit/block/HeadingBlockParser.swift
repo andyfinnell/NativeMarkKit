@@ -15,10 +15,12 @@ struct HeadingBlockParser: BlockParser {
         // nop
     }
     
-    func canHaveLastLineBlank(_ block: Block) -> Bool {
-        true
+    func isThisLineBlankForPurposesOfLastLine(_ line: Line, block: Block) -> Bool {
+        line.isBlank
     }
     
+    let doesPreventChildrenFromHavingLastLineBlank = false
+
     func parseLinkDefinitions(_ block: Block) -> Bool {
         // nop
         false

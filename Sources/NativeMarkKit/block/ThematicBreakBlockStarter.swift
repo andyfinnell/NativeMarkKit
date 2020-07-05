@@ -13,6 +13,6 @@ struct ThematicBreakBlockStarter: BlockStarter {
         let heading = Block(kind: .thematicBreak, parser: ThematicBreakBlockParser())
         let newContainer = container.addChild(heading)
         
-        return LineResult(remainingLine: .blank, value: .leaf(newContainer))
+        return LineResult(remainingLine: line.end, value: .leaf(newContainer))
     }
 }

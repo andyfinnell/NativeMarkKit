@@ -12,12 +12,12 @@ final class BlockCloser {
         blocks.isEmpty || haveBlocksBeenClosed
     }
     
-    func close() {
+    func close(with line: Line? = nil) {
         guard !haveBlocksBeenClosed else {
             return
         }
         for block in blocks.reversed() {
-            block.close()
+            block.close(with: line)
         }
         
         haveBlocksBeenClosed = true

@@ -23,7 +23,7 @@ struct ATXHeadingBlockStarter: BlockStarter {
         heading.addText(content)
         let newContainer = container.addChild(heading)
         
-        return LineResult(remainingLine: .blank, value: .leaf(newContainer))
+        return LineResult(remainingLine: line.end, value: .leaf(newContainer))
     }
 }
 

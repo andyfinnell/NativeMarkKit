@@ -26,7 +26,7 @@ struct SetextHeadingBlockStarter: BlockStarter {
         _ = container.parent?.addChild(heading)
         container.removeFromParent()
         
-        return LineResult(remainingLine: .blank, value: .leaf(heading))
+        return LineResult(remainingLine: line.end, value: .leaf(heading))
     }
 }
 

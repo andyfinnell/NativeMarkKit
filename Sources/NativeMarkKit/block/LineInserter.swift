@@ -7,7 +7,7 @@ struct LineInserter {
             
             return tip
         } else {
-            closer.close() // this moves us up to container
+            closer.close(with: line) // this moves us up to container
             
             if container.acceptsLines {
                 container.addText(line)

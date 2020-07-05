@@ -9,7 +9,8 @@ protocol BlockParser {
 
     func close(_ block: Block)
     
-    func canHaveLastLineBlank(_ block: Block) -> Bool
+    func isThisLineBlankForPurposesOfLastLine(_ line: Line, block: Block) -> Bool
+    var doesPreventChildrenFromHavingLastLineBlank: Bool { get }
     
     func parseLinkDefinitions(_ block: Block) -> Bool
 }

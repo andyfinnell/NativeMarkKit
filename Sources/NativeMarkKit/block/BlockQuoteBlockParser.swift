@@ -23,10 +23,12 @@ struct BlockQuoteBlockParser: BlockParser {
         // nop
     }
     
-    func canHaveLastLineBlank(_ block: Block) -> Bool {
+    func isThisLineBlankForPurposesOfLastLine(_ line: Line, block: Block) -> Bool {
         false
     }
     
+    let doesPreventChildrenFromHavingLastLineBlank = true
+
     func parseLinkDefinitions(_ block: Block) -> Bool {
         // nop
         false

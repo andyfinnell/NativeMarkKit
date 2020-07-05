@@ -20,7 +20,7 @@ struct FencedCodeBlockParser: BlockParser {
         if isEndingFence(line.nonIndentedStart) {
             block.close()
             
-            return LineResult(remainingLine: .blank, value: true)
+            return LineResult(remainingLine: line.end, value: true)
         } else {
             let remainingLine = line.trimIndent(fenceOffset)
             return LineResult(remainingLine: remainingLine, value: true)
@@ -35,10 +35,12 @@ struct FencedCodeBlockParser: BlockParser {
         block.kind = .codeBlock(infoString: infoString)
     }
     
-    func canHaveLastLineBlank(_ block: Block) -> Bool {
+    func isThisLineBlankForPurposesOfLastLine(_ line: Line, block: Block) -> Bool {
         false
     }
     
+    let doesPreventChildrenFromHavingLastLineBlank = true
+
     func parseLinkDefinitions(_ block: Block) -> Bool {
         // nop
         false

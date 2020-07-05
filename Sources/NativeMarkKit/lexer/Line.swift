@@ -4,6 +4,11 @@ struct Line {
     let text: String
     let startColumn: LineColumn
     
+    init(text: String) {
+        self.text = text
+        self.startColumn = LineColumn(0)
+    }
+    
     init(text: String, startColumn: LineColumn) {
         self.text = text
         self.startColumn = startColumn
@@ -79,17 +84,41 @@ extension Line {
         }
         return subrange(current..<text.endIndex, startColumn: column)
     }
-    
+        
     var isBlank: Bool {
+        Self.isBlank(text)
+    }
+    
+    var end: Line {
+        Line(text: "",
+             startColumn: endColumn())
+    }
+    
+    static let blank = Line(text: "")
+}
+
+private extension Line {
+    static func isBlank(_ text: String) -> Bool {
         let blankCharacters = Set<Character>([" ", "\t", "\n"])
         return text.isEmpty || text.allSatisfy { blankCharacters.contains($0) }
     }
     
-    static let blank = Line(text: "", startColumn: LineColumn(0))
-}
-
-private extension Line {
     func subrange(_ range: Range<String.Index>, startColumn: LineColumn) -> Line {
-        Line(text: String(text[range]), startColumn: startColumn)
+        Line(text: String(text[range]),
+             startColumn: startColumn)
+    }
+    
+    func endColumn() -> LineColumn {
+        var current = text.startIndex
+        var column = startColumn
+        while current < text.endIndex {
+            if text[current] == "\t" {
+                column = column.tab()
+            } else {
+                column = column.space()
+            }
+            current = text.index(after: current)
+        }
+        return column
     }
 }
