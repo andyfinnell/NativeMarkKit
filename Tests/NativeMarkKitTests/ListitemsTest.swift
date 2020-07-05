@@ -107,14 +107,14 @@ final class ListitemsTest: XCTestCase {
         // HTML: <ol start=\"0\">\n<li>ok</li>\n</ol>\n
         // Debug: <ol start=\"0\">\n<li>{ok caused p to open}ok{debug: implicitly closing p}</li>\n</ol>\n
         XCTAssertEqual(try compile("0. ok\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("ok")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 0)), items: [ListItem(elements: [.paragraph([.text("ok")])])])]))
     }
 
     func testCase238() throws {
         // HTML: <ol start=\"3\">\n<li>ok</li>\n</ol>\n
         // Debug: <ol start=\"3\">\n<li>{ok caused p to open}ok{debug: implicitly closing p}</li>\n</ol>\n
         XCTAssertEqual(try compile("003. ok\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("ok")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 3)), items: [ListItem(elements: [.paragraph([.text("ok")])])])]))
     }
 
     func testCase239() throws {
@@ -135,7 +135,7 @@ final class ListitemsTest: XCTestCase {
         // HTML: <ol start=\"10\">\n<li>\n<p>foo</p>\n<pre><code>bar\n</code></pre>\n</li>\n</ol>\n
         // Debug: <ol start=\"10\">\n<li>\n<p>foo</p>\n<pre><code>bar\n</code></pre>\n</li>\n</ol>\n
         XCTAssertEqual(try compile("  10.  foo\n\n           bar\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("foo")]), .codeBlock(infoString: "", content: "bar\n")])])]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 10)), items: [ListItem(elements: [.paragraph([.text("foo")]), .codeBlock(infoString: "", content: "bar\n")])])]))
     }
 
     func testCase242() throws {
@@ -310,14 +310,14 @@ final class ListitemsTest: XCTestCase {
         // HTML: <ol start=\"10\">\n<li>foo\n<ul>\n<li>bar</li>\n</ul>\n</li>\n</ol>\n
         // Debug: <ol start=\"10\">\n<li>{foo caused p to open}foo\n<ul>\n<li>{bar caused p to open}bar{debug: implicitly closing p}</li>\n</ul>\n</li>\n</ol>\n
         XCTAssertEqual(try compile("10) foo\n    - bar\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("foo")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("bar")])])])])])]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 10)), items: [ListItem(elements: [.paragraph([.text("foo")]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("bar")])])])])])]))
     }
 
     func testCase267() throws {
         // HTML: <ol start=\"10\">\n<li>foo</li>\n</ol>\n<ul>\n<li>bar</li>\n</ul>\n
         // Debug: <ol start=\"10\">\n<li>{foo caused p to open}foo{debug: implicitly closing p}</li>\n</ol>\n<ul>\n<li>{bar caused p to open}bar{debug: implicitly closing p}</li>\n</ul>\n
         XCTAssertEqual(try compile("10) foo\n   - bar\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("foo")])])]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("bar")])])])]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 10)), items: [ListItem(elements: [.paragraph([.text("foo")])])]), .list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.paragraph([.text("bar")])])])]))
     }
 
     func testCase268() throws {
@@ -331,7 +331,7 @@ final class ListitemsTest: XCTestCase {
         // HTML: <ol>\n<li>\n<ul>\n<li>\n<ol start=\"2\">\n<li>foo</li>\n</ol>\n</li>\n</ul>\n</li>\n</ol>\n
         // Debug: <ol>\n<li>\n<ul>\n<li>\n<ol start=\"2\">\n<li>{foo caused p to open}foo{debug: implicitly closing p}</li>\n</ol>\n</li>\n</ul>\n</li>\n</ol>\n
         XCTAssertEqual(try compile("1. - 2. foo\n"),
-                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.paragraph([.text("foo")])])])])])])])]))
+                       Document(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 1)), items: [ListItem(elements: [.list(ListInfo(isTight: true, kind: .bulleted), items: [ListItem(elements: [.list(ListInfo(isTight: true, kind: .ordered(start: 2)), items: [ListItem(elements: [.paragraph([.text("foo")])])])])])])])]))
     }
 
     func testCase270() throws {
