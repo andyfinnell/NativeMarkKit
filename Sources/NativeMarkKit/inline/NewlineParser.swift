@@ -12,11 +12,12 @@ struct NewlineParser {
         
         let linebreak: InlineText
         let updatedPrevious: InlineText?
-        if case let .text(previousText) = previous, previousText.hasSuffix("  ") {
+        if case let .text(previousText) = previous, previousText.hasSuffix(" ") {
+            let isHardbreak = previousText.hasSuffix("  ")
             let updatedText = previousText.replacingOccurrences(of: Self.finalSpacesRegex, with: "")
             updatedPrevious = .text(updatedText)
             
-            linebreak = .linebreak
+            linebreak = isHardbreak ? .linebreak : .softbreak
         } else {
             updatedPrevious = previous
             linebreak = .softbreak

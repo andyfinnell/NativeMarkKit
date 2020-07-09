@@ -506,7 +506,7 @@ final class LinksTest: XCTestCase {
         // HTML: <p><a href=\"/url\" title=\"title\">foo</a>\n[]</p>\n
         // Debug: <p><a href=\"/url\" title=\"title\">foo</a>\n[]</p>\n
         XCTAssertEqual(try compile("[foo] \n[]\n\n[foo]: /url \"title\"\n"),
-                       Document(elements: [.paragraph([.link(Link(title: "title", url: "/url"), text: [.text("foo")]), .text(" "), .softbreak, .text("[]")])]))
+                       Document(elements: [.paragraph([.link(Link(title: "title", url: "/url"), text: [.text("foo")]), .softbreak, .text("[]")])]))
     }
 
     func testCase553() throws {
