@@ -4,7 +4,7 @@ struct Line {
     private let source: String
     let column: LineColumn
     private let index: String.Index
-    let activeText: Substring
+    private let activeText: Substring
     
     init(text: String) {
         self.source = text
@@ -22,6 +22,22 @@ struct Line {
 }
 
 extension Line {
+    var text: String {
+        guard index < source.endIndex else {
+            return ""
+        }
+        
+        if source[index] == "\t" {
+            // we might be splitting a tab
+            let charactersLeftInTab = column.tab() - column
+            let spaces = String(repeating: " ", count: charactersLeftInTab.value)
+            let startIndex = source.index(after: index)
+            return spaces + String(source[startIndex..<source.endIndex])
+        } else {
+            return String(activeText)
+        }
+    }
+    
     func hasPrefix(_ string: String) -> Bool {
         activeText.hasPrefix(string)
     }
@@ -94,18 +110,12 @@ extension Line {
     }
     
     func trimIndent(_ maxIndent: LineColumnCount = 4) -> Line {
-        var current = index
-        var column = self.column
-        // TODO: this might split a tab, which would throw the column count
-        while current < source.endIndex, source[current].isSpaceOrTab && (column - self.column) < maxIndent {
-            if source[current] == " " {
-                column = column.space()
-            } else if source[current] == "\t" {
-                column = column.tab()
-            }
-            current = source.index(after: current)
+        var current = self
+        while current.index < source.endIndex,
+            source[current.index].isSpaceOrTab && (current.column - self.column) < maxIndent {
+            current = current.advanceOneColumn()
         }
-        return Line(source: source, column: column, index: current)
+        return current
     }
         
     var isBlank: Bool {
@@ -139,5 +149,27 @@ private extension Line {
             current = source.index(after: current)
         }
         return column
+    }
+    
+    func advanceOneColumn() -> Line {
+        guard index < source.endIndex else {
+            return self
+        }
+        
+        let nextColumn: LineColumn
+        let nextIndex: String.Index
+        if source[index] == "\t" {
+            let advanceBy = LineColumnCount(1)
+            let charactersToTab = column.tab() - column
+            let partiallyConsumedTab = charactersToTab > advanceBy
+            
+            nextColumn = column.space()
+            nextIndex = partiallyConsumedTab ? index : source.index(after: index)
+        } else {
+            nextColumn = column.space()
+            nextIndex = source.index(after: index)
+        }
+        
+        return Line(source: source, column: nextColumn, index: nextIndex)
     }
 }

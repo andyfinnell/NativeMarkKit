@@ -44,7 +44,7 @@ private extension ItemBlockStarter {
     func isMarkerMatchValid(_ match: NSTextCheckingResult, on line: Line, in container: Block) -> Bool {
         let remainingLine = line.skip(match)
         // next character after match needs to space or tab or end-of-line
-        let isTabOrSpaceOrEol = remainingLine.activeText.first?.isSpaceOrTab ?? true
+        let isTabOrSpaceOrEol = remainingLine.text.first?.isSpaceOrTab ?? true
         if !isTabOrSpaceOrEol {
             return false
         }

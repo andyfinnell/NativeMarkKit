@@ -1,7 +1,7 @@
 import Foundation
 
 struct LineColumnCount: Hashable {
-    private let value: Int
+    let value: Int
     
     init(_ value: Int) {
         self.value = value

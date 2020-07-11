@@ -14,7 +14,7 @@ struct ATXHeadingBlockStarter: BlockStarter {
         let startText = realLine.matchedText(startMatch).trimmingCharacters(in: .whitespacesAndNewlines)
         let blockKind = kind(fromCount: startText.count)
         
-        let content = String(realLine.activeText)
+        let content = realLine.text
             .remove(Self.startRegex)
             .remove(Self.ending1Regex)
             .remove(Self.ending2Regex)

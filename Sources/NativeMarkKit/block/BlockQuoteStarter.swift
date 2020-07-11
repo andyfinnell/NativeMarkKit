@@ -1,7 +1,7 @@
 import Foundation
 
 struct BlockQuoteStarter: BlockStarter {
-    private static let startRegex = try! NSRegularExpression(pattern: "^>[ \\t]?", options: [])
+    private static let startRegex = try! NSRegularExpression(pattern: "^>", options: [])
 
     func parseStart(_ line: Line, in container: Block, tip: Block, using closer: BlockCloser) -> LineResult<BlockStartMatch> {
         let realLine = line.nonIndentedStart
@@ -9,7 +9,7 @@ struct BlockQuoteStarter: BlockStarter {
             return LineResult(remainingLine: line, value: .none)
         }
                 
-        let remainingLine = realLine.skip(startMatch)
+        let remainingLine = realLine.skip(startMatch).trimIndent(1)
         
         closer.close()
         let blockQuote = Block(kind: .blockQuote, parser: BlockQuoteBlockParser())

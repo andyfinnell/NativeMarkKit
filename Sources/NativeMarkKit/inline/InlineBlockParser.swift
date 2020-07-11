@@ -3,7 +3,7 @@ import Foundation
 struct InlineBlockParser {
     func parse(_ block: Block, using linkDefs: [LinkLabel: LinkDefinition]) -> [InlineText] {
         let delimiterStack = DelimiterStack()
-        let buffer = block.textLines.map { $0.activeText }.joined(separator: "\n").trimmingCharacters(in: .whitespaces)
+        let buffer = block.textLines.map { $0.text }.joined(separator: "\n").trimmingCharacters(in: .whitespaces)
         var current = parseInline(TextCursor(text: buffer), into: delimiterStack, using: linkDefs)
 
         while current.value {
