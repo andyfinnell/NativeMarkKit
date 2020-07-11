@@ -15,7 +15,7 @@ struct BlockQuoteBlockParser: BlockParser {
             return LineResult(remainingLine: line, value: false)
         }
         
-        let remainingLine = realLine.replace(match, with: "")
+        let remainingLine = realLine.skip(match)
         return LineResult(remainingLine: remainingLine, value: true)
     }
 

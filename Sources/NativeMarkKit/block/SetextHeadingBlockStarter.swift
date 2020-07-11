@@ -15,7 +15,7 @@ struct SetextHeadingBlockStarter: BlockStarter {
             return LineResult(remainingLine: line, value: .none)
         }
         
-        let startText = realLine.text.matchedText(startMatch).trimmingCharacters(in: .whitespacesAndNewlines)
+        let startText = realLine.matchedText(startMatch).trimmingCharacters(in: .whitespacesAndNewlines)
         let blockKind = kind(from: startText)
                 
         closer.close()

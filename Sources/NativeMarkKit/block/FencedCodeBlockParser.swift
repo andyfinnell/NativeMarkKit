@@ -28,7 +28,7 @@ struct FencedCodeBlockParser: BlockParser {
     }
 
     func close(_ block: Block) {
-        let infoString = block.removeFirstLine().text
+        let infoString = String(block.removeFirstLine().activeText)
             .unescaped()
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .firstWord()
@@ -52,7 +52,7 @@ private extension FencedCodeBlockParser {
         guard let endingMatch = line.firstMatch(Self.endingRegex) else {
             return false
         }
-        return line.text.matchedText(endingMatch).count >= fence.count
+        return line.matchedText(endingMatch).count >= fence.count
             && line.hasPrefix(fence)
     }
 }

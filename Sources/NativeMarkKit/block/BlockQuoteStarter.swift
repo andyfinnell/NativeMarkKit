@@ -9,7 +9,7 @@ struct BlockQuoteStarter: BlockStarter {
             return LineResult(remainingLine: line, value: .none)
         }
                 
-        let remainingLine = realLine.replace(startMatch, with: "")
+        let remainingLine = realLine.skip(startMatch)
         
         closer.close()
         let blockQuote = Block(kind: .blockQuote, parser: BlockQuoteBlockParser())

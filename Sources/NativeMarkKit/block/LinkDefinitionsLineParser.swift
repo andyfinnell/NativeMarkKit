@@ -2,7 +2,7 @@ import Foundation
 
 struct LinkDefinitionsLineParser {
     func parse(_ lines: [Line]) -> ([LinkDefinition], [Line]) {
-        let buffer = lines.map { $0.text }.joined(separator: "\n")
+        let buffer = lines.map { $0.activeText }.joined(separator: "\n")
         let input = TextCursor(text: buffer)
         let parser = LinkDefinitionParser()
         var definitions = [LinkDefinition]()

@@ -9,12 +9,12 @@ struct AutolinkParser {
         if email.value.isNotEmpty {
             let mailtoText = email.value.trimmed(by: 1)
             let mailto = "mailto:\(mailtoText)"
-            return email.map { _ in .link(Link(title: "", url: mailto), text: [.text(mailtoText)]) }
+            return email.map { _ in .link(Link(title: "", url: mailto), text: [.text(String(mailtoText))]) }
         }
         
         let autolink = input.parse(Self.autolinkRegex)
         if autolink.value.isNotEmpty {
-            let autolinkText = autolink.value.trimmed(by: 1)
+            let autolinkText = String(autolink.value.trimmed(by: 1))
             return autolink.map { _ in .link(Link(title: "", url: autolinkText), text: [.text(autolinkText)]) }
         }
         

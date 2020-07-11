@@ -11,16 +11,17 @@ struct ATXHeadingBlockStarter: BlockStarter {
             return LineResult(remainingLine: line, value: .none)
         }
         
-        let startText = realLine.text.matchedText(startMatch).trimmingCharacters(in: .whitespacesAndNewlines)
+        let startText = realLine.matchedText(startMatch).trimmingCharacters(in: .whitespacesAndNewlines)
         let blockKind = kind(fromCount: startText.count)
         
-        let content = realLine.replace(startMatch, with: "")
-            .replace(Self.ending1Regex, with: "")
-            .replace(Self.ending2Regex, with: "")
+        let content = String(realLine.activeText)
+            .remove(Self.startRegex)
+            .remove(Self.ending1Regex)
+            .remove(Self.ending2Regex)
         
         closer.close()
         let heading = Block(kind: blockKind, parser: HeadingBlockParser())
-        heading.addText(content)
+        heading.addText(Line(text: content))
         let newContainer = container.addChild(heading)
         
         return LineResult(remainingLine: line.end, value: .leaf(newContainer))

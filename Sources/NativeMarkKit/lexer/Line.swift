@@ -1,55 +1,78 @@
 import Foundation
 
 struct Line {
-    let text: String
-    let startColumn: LineColumn
+    private let source: String
+    let column: LineColumn
+    private let index: String.Index
+    let activeText: Substring
     
     init(text: String) {
-        self.text = text
-        self.startColumn = LineColumn(0)
+        self.source = text
+        self.column = LineColumn(0)
+        self.index = text.startIndex
+        self.activeText = text[text.startIndex..<text.endIndex]
     }
     
-    init(text: String, startColumn: LineColumn) {
-        self.text = text
-        self.startColumn = startColumn
+    init(source: String, column: LineColumn, index: String.Index) {
+        self.source = source
+        self.column = column
+        self.index = index
+        self.activeText = source[index..<source.endIndex]
     }
 }
 
 extension Line {
     func hasPrefix(_ string: String) -> Bool {
-        text.hasPrefix(string)
+        activeText.hasPrefix(string)
     }
     
     func firstMatch(_ regex: NSRegularExpression) -> NSTextCheckingResult? {
-        text.firstMatch(of: regex)
+        regex.firstMatch(in: source,
+                         options: [],
+                         range: NSRange(self.index..<source.endIndex, in: source))
     }
     
-    func replace(_ match: NSTextCheckingResult, with replacementText: String) -> Line {
-        guard let replaceRange = Range(match.range, in: text) else {
+    func matchedText(_ match: NSTextCheckingResult) -> Substring {
+        guard let textRange = Range(match.range, in: source) else {
+            return ""
+        }
+        return source[textRange]
+    }
+    
+    func matchedText(_ match: NSTextCheckingResult, at index: Int) -> Substring {
+        guard let textRange = Range(match.range(at: index), in: source) else {
+            return ""
+        }
+        return source[textRange]
+    }
+
+    func skip(_ match: NSTextCheckingResult) -> Line {
+        guard let replaceRange = Range(match.range, in: source),
+            replaceRange.lowerBound == index else {
             return self
         }
-        
-        var subtext = text
-        subtext.replaceSubrange(replaceRange, with: replacementText)
-        return Line(text: subtext, startColumn: startColumn)
+
+        return Line(source: source,
+                    column: column(of: replaceRange.upperBound),
+                    index: replaceRange.upperBound)
     }
     
-    func replace(_ regex: NSRegularExpression, with replacementText: String) -> Line {
+    func skip(_ regex: NSRegularExpression) -> Line {
         guard let match = firstMatch(regex) else {
             return self
         }
-        return replace(match, with: replacementText)
+        return skip(match)
     }
-    
+        
     var nonIndentedStart: Line {
-        var current = text.startIndex
-        var column = startColumn
-        while current < text.endIndex,
-            text[current] == " " && column < LineColumn(3) {
+        var current = index
+        var column = self.column
+        while current < source.endIndex,
+            source[current] == " " && (column - self.column) < LineColumnCount(3) {
             column = column.space()
-            current = text.index(after: current)
+            current = source.index(after: current)
         }
-        return subrange(current..<text.endIndex, startColumn: column)
+        return Line(source: source, column: column, index: current)
     }
 
     var hasIndent: Bool {
@@ -57,67 +80,63 @@ extension Line {
     }
     
     var indent: LineColumnCount {
-        var current = text.startIndex
-        var column = startColumn
-        while current < text.endIndex, text[current].isSpaceOrTab {
-            if text[current] == " " {
+        var current = index
+        var column = self.column
+        while current < source.endIndex, source[current].isSpaceOrTab {
+            if source[current] == " " {
                 column = column.space()
-            } else if text[current] == "\t" {
+            } else if source[current] == "\t" {
                 column = column.tab()
             }
-            current = text.index(after: current)
+            current = source.index(after: current)
         }
-        return column - startColumn
+        return column - self.column
     }
     
     func trimIndent(_ maxIndent: LineColumnCount = 4) -> Line {
-        var current = text.startIndex
-        var column = startColumn
+        var current = index
+        var column = self.column
         // TODO: this might split a tab, which would throw the column count
-        while current < text.endIndex, text[current].isSpaceOrTab && (column - startColumn) < maxIndent {
-            if text[current] == " " {
+        while current < source.endIndex, source[current].isSpaceOrTab && (column - self.column) < maxIndent {
+            if source[current] == " " {
                 column = column.space()
-            } else if text[current] == "\t" {
+            } else if source[current] == "\t" {
                 column = column.tab()
             }
-            current = text.index(after: current)
+            current = source.index(after: current)
         }
-        return subrange(current..<text.endIndex, startColumn: column)
+        return Line(source: source, column: column, index: current)
     }
         
     var isBlank: Bool {
-        Self.isBlank(text)
+        Self.isBlank(activeText)
     }
     
     var end: Line {
-        Line(text: "",
-             startColumn: endColumn())
+        Line(source: source,
+             column: column(of: source.endIndex),
+             index: source.endIndex)
     }
     
     static let blank = Line(text: "")
 }
 
 private extension Line {
-    static func isBlank(_ text: String) -> Bool {
+    static func isBlank<S: StringProtocol>(_ text: S) -> Bool {
         let blankCharacters = Set<Character>([" ", "\t", "\n"])
         return text.isEmpty || text.allSatisfy { blankCharacters.contains($0) }
     }
-    
-    func subrange(_ range: Range<String.Index>, startColumn: LineColumn) -> Line {
-        Line(text: String(text[range]),
-             startColumn: startColumn)
-    }
-    
-    func endColumn() -> LineColumn {
-        var current = text.startIndex
-        var column = startColumn
-        while current < text.endIndex {
-            if text[current] == "\t" {
+            
+    func column(of endIndex: String.Index) -> LineColumn {
+        var current = index
+        var column = self.column
+        while current < endIndex {
+            if source[current] == "\t" {
                 column = column.tab()
             } else {
                 column = column.space()
             }
-            current = text.index(after: current)
+            current = source.index(after: current)
         }
         return column
     }

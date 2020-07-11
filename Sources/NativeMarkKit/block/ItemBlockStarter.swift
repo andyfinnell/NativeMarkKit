@@ -42,9 +42,9 @@ private extension ItemBlockStarter {
     }
     
     func isMarkerMatchValid(_ match: NSTextCheckingResult, on line: Line, in container: Block) -> Bool {
-        let remainingLine = line.replace(match, with: "")
+        let remainingLine = line.skip(match)
         // next character after match needs to space or tab or end-of-line
-        let isTabOrSpaceOrEol = remainingLine.text.first?.isSpaceOrTab ?? true
+        let isTabOrSpaceOrEol = remainingLine.activeText.first?.isSpaceOrTab ?? true
         if !isTabOrSpaceOrEol {
             return false
         }
@@ -58,19 +58,19 @@ private extension ItemBlockStarter {
     }
     
     func parsePostMarkerPadding(_ match: NSTextCheckingResult, on line: Line) -> LineResult<LineColumnCount> {
-        let remainingLine = line.replace(match, with: "")
+        let remainingLine = line.skip(match)
 
         let indentedLine = remainingLine.trimIndent(LineColumnCount(5))
         let isBlankItem = indentedLine.isBlank
-        let spacesAfterMarker = indentedLine.startColumn - remainingLine.startColumn
+        let spacesAfterMarker = indentedLine.column - remainingLine.column
         if spacesAfterMarker >= LineColumnCount(5) || spacesAfterMarker < LineColumnCount(1) || isBlankItem {
             // Assume just one space
-            let padding = LineColumnCount(line.text.matchedText(match).count + 1)
+            let padding = LineColumnCount(line.matchedText(match).count + 1)
             let finalLine = remainingLine.trimIndent(LineColumnCount(1))
             
             return LineResult(remainingLine: finalLine, value: padding)
         } else {
-            let padding = LineColumnCount(line.text.matchedText(match).count) + spacesAfterMarker
+            let padding = LineColumnCount(line.matchedText(match).count) + spacesAfterMarker
             return LineResult(remainingLine: indentedLine, value: padding)
         }
     }
@@ -84,22 +84,22 @@ private extension ItemBlockStarter {
         
         if let match = realLine.firstMatch(Self.startBulletedRegex),
             isMarkerMatchValid(match, on: realLine, in: container) {
-            let bulletChar = realLine.text.matchedText(match)
+            let bulletChar = realLine.matchedText(match)
             let paddingResult = parsePostMarkerPadding(match, on: realLine)
             let itemMarker = ItemMarker(markerIndent: markerIndent,
                                         padding: paddingResult.value,
-                                        kind: .bulleted(bulletChar))
+                                        kind: .bulleted(String(bulletChar)))
             return LineResult(remainingLine: paddingResult.remainingLine,
                               value: itemMarker)
         } else if let match = realLine.firstMatch(Self.startOrderedRegex),
-                let startNumber = Int(realLine.text.matchedText(match, at: 1)),
+                let startNumber = Int(realLine.matchedText(match, at: 1)),
                 (container.kind != .paragraph || startNumber == 1)
                 && isMarkerMatchValid(match, on: realLine, in: container) {
-            let delimiter = realLine.text.matchedText(match, at: 2)
+            let delimiter = realLine.matchedText(match, at: 2)
             let paddingResult = parsePostMarkerPadding(match, on: realLine)
             let itemMarker = ItemMarker(markerIndent: markerIndent,
                                         padding: paddingResult.value,
-                                        kind: .ordered(start: startNumber, delimiter: delimiter))
+                                        kind: .ordered(start: startNumber, delimiter: String(delimiter)))
             return LineResult(remainingLine: paddingResult.remainingLine,
                               value: itemMarker)
         } else {

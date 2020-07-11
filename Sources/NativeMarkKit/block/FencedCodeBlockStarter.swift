@@ -9,11 +9,11 @@ struct FencedCodeBlockStarter: BlockStarter {
             return LineResult(remainingLine: line, value: .none)
         }
 
-        let remainingLine = realLine.replace(startMatch, with: "")
-        let fence = realLine.text.matchedText(startMatch)
+        let remainingLine = realLine.skip(startMatch)
+        let fence = realLine.matchedText(startMatch)
         
-        let parser = FencedCodeBlockParser(fenceOffset: realLine.startColumn - line.startColumn,
-                                           fence: fence)
+        let parser = FencedCodeBlockParser(fenceOffset: realLine.column - line.column,
+                                           fence: String(fence))
         closer.close()
         let codeBlock = Block(kind: .codeBlock(infoString: ""), parser: parser)
         let newContainer = container.addChild(codeBlock)

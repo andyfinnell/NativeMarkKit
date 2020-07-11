@@ -7,31 +7,7 @@ extension String {
     var isNotEmpty: Bool {
         !isEmpty
     }
-    
-    func matchedText(_ match: NSTextCheckingResult) -> String {
-        guard let textRange = Range(match.range, in: self) else {
-            return ""
-        }
-        return String(self[textRange])
-    }
-    
-    func matchedText(_ match: NSTextCheckingResult, at index: Int) -> String {
-        guard let textRange = Range(match.range(at: index), in: self) else {
-            return ""
-        }
-        return String(self[textRange])
-    }
-
-    func nonmatchedText(_ match: NSTextCheckingResult) -> String {
-        guard let replaceRange = Range(match.range, in: self) else {
-            return self
-        }
-        
-        var subtext = self
-        subtext.replaceSubrange(replaceRange, with: "")
-        return subtext
-    }
-    
+            
     func firstMatch(of regex: NSRegularExpression) -> NSTextCheckingResult? {
         regex.firstMatch(in: self,
                          options: [],
@@ -44,6 +20,23 @@ extension String {
         return String(self[newStart..<newEnd])
     }
     
+    func remove(_ regex: NSRegularExpression) -> String {
+        guard let match = firstMatch(of: regex) else {
+            return self
+        }
+        return remove(match)
+    }
+    
+    func remove(_ match: NSTextCheckingResult) -> String {
+        guard let replaceRange = Range(match.range, in: self) else {
+            return self
+        }
+        
+        var subtext = self
+        subtext.removeSubrange(replaceRange)
+        return subtext
+    }
+
     func replacingOccurrences(of regex: NSRegularExpression, with replacementString: String) -> String {
         regex.stringByReplacingMatches(in: self,
                                        options: [],
@@ -131,5 +124,12 @@ private extension String {
         
         let newEnd = index(endIndex, offsetBy: -suffix.count, limitedBy: startIndex) ?? endIndex
         return String(self[startIndex..<newEnd])
+    }
+    
+    func matchedText(_ match: NSTextCheckingResult) -> String {
+        guard let textRange = Range(match.range, in: self) else {
+            return ""
+        }
+        return String(self[textRange])
     }
 }
