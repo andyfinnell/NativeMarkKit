@@ -107,7 +107,7 @@ final class EntityandnumericcharacterreferencesTest: XCTestCase {
         // HTML: <p>foo\n\nbar</p>\n
         // Debug: <p>foo\n\nbar</p>\n
         XCTAssertEqual(try compile("foo&#10;&#10;bar\n"),
-                       Document(elements: [.paragraph([.text("foo"), .softbreak, .softbreak, .text("bar")])]))
+                       Document(elements: [.paragraph([.text("foo\n\nbar")])]))
     }
 
     func testCase326() throws {
@@ -121,7 +121,7 @@ final class EntityandnumericcharacterreferencesTest: XCTestCase {
         // HTML: <p>[a](url &quot;tit&quot;)</p>\n
         // Debug: <p>[a](url &quot;tit&quot;)</p>\n
         XCTAssertEqual(try compile("[a](url &quot;tit&quot;)\n"),
-                       Document(elements: [.paragraph([.text("[a](url “tit”)")])]))
+                       Document(elements: [.paragraph([.text("[a](url \"tit\")")])]))
     }
 
     
