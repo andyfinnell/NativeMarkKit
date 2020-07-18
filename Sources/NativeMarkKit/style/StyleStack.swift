@@ -4,14 +4,12 @@ import Foundation
 import AppKit
 #elseif canImport(UIKit)
 import UIKit
-#elseif canImport(WatchKit)
-import WatchKit
 #else
 #error("Unsupported platform")
 #endif
 
 protocol ExpressibleAsAttributes {
-    func attributes() -> [NSAttributedString.Key: Any]
+    func updateAttributes(_ attributes: inout [NSAttributedString.Key: Any])
 }
 
 protocol ExpressibleAsParagraphStyle {
@@ -45,19 +43,20 @@ final class StyleStack {
     func attributes() -> [NSAttributedString.Key: Any] {
         let paragraphStyle = NSMutableParagraphStyle()
         scopes.updateParagraphStyle(paragraphStyle)
-        var attributes = scopes.attributes()
+        var attributes = [NSAttributedString.Key: Any]()
+        scopes.updateAttributes(&attributes)
         attributes[.paragraphStyle] = paragraphStyle
         return attributes
     }
 }
 
 extension StyleStack.Scope: ExpressibleAsAttributes {
-    func attributes() -> [NSAttributedString.Key: Any] {
+    func updateAttributes(_ attributes: inout [NSAttributedString.Key: Any]) {
         switch self {
         case let .blockStyles(styles):
-            return styles.attributes()
+            styles.updateAttributes(&attributes)
         case let .inlineStyles(styles):
-            return styles.attributes()
+            styles.updateAttributes(&attributes)
         }
     }
 }
@@ -74,9 +73,9 @@ extension StyleStack.Scope: ExpressibleAsParagraphStyle {
 }
 
 extension Sequence where Element: ExpressibleAsAttributes {
-    func attributes() -> [NSAttributedString.Key: Any] {
-        reduce(into: [NSAttributedString.Key: Any]()) { result, style in
-            result.merge(style.attributes(), uniquingKeysWith: { _, new in new })
+    func updateAttributes(_ attributes: inout [NSAttributedString.Key: Any]) {
+        for style in self {
+            style.updateAttributes(&attributes)
         }
     }
 }

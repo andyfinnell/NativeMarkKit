@@ -3,30 +3,40 @@ import Foundation
 import AppKit
 #elseif canImport(UIKit)
 import UIKit
-#elseif canImport(WatchKit)
-import WatchKit
 #else
 #error("Unsupported platform")
 #endif
 
-struct Strikethrough {
-    let style: NSUnderlineStyle
-    let color: NativeColor?
+public struct Strikethrough {
+    public let style: NSUnderlineStyle
+    public let color: NativeColor?
+    
+    public init(style: NSUnderlineStyle, color: NativeColor?) {
+        self.style = style
+        self.color = color
+    }
 }
 
-struct Underline {
-    let style: NSUnderlineStyle
-    let color: NativeColor?
+public struct Underline {
+    public let style: NSUnderlineStyle
+    public let color: NativeColor?
+    
+    public init(style: NSUnderlineStyle, color: NativeColor?) {
+        self.style = style
+        self.color = color
+    }
 }
 
-enum InlineStyle {
+public enum InlineStyle {
     case textColor(NativeColor)
     case textStyle(TextStyle)
     case backgroundColor(NativeColor)
     case kerning(Float)
     case strikethrough(Strikethrough)
-    case superscript(Int)
     case underline(Underline)
+    case fontSize(CGFloat)
+    case fontWeight(NativeFontWeight)
+    case fontTraits(FontTraits)
 }
 
 extension InlineStyle: ExpressibleAsParagraphStyle {
@@ -36,30 +46,35 @@ extension InlineStyle: ExpressibleAsParagraphStyle {
 }
 
 extension InlineStyle: ExpressibleAsAttributes {
-    func attributes() -> [NSAttributedString.Key: Any] {
+    func updateAttributes(_ attributes: inout [NSAttributedString.Key: Any]) {
         switch self {
         case let .textColor(color):
-            return [.foregroundColor: color]
+            attributes[.foregroundColor] = color
         case let .textStyle(style):
-            return [.font: makeFont(for: style)]
+            attributes[.font] = style.makeFont()
         case let .backgroundColor(backgroundColor):
-            return [.backgroundColor: backgroundColor]
+            attributes[.backgroundColor] = backgroundColor
         case let .kerning(kerning):
-            return [.kern: NSNumber(value: kerning)]
+            attributes[.kern] = NSNumber(value: kerning)
         case let .strikethrough(strikethrough):
-            let color = strikethrough.color.map { [NSAttributedString.Key.strikethroughColor: $0] } ?? [:]
-            return [.strikethroughStyle: NSNumber(value: strikethrough.style.rawValue)]
-                .merging(color, uniquingKeysWith: { current, _ in current })
-        case let .superscript(superscript):
-            #if os(tvOS) || os(watchOS) || os(iOS)
-            return [:]
-            #else
-            return [.superscript: NSNumber(value: superscript)]
-            #endif
+            if let color = strikethrough.color {
+                attributes[.strikethroughColor] = color
+            }
+            attributes[.strikethroughStyle] = NSNumber(value: strikethrough.style.rawValue)
         case let .underline(underline):
-            let color = underline.color.map { [NSAttributedString.Key.underlineColor: $0] } ?? [:]
-            return [.underlineStyle: NSNumber(value: underline.style.rawValue)]
-                .merging(color, uniquingKeysWith: { current, _ in current })
+            if let color = underline.color {
+                attributes[.underlineColor] = color
+            }
+            attributes[.underlineStyle] = NSNumber(value: underline.style.rawValue)
+        case let .fontSize(fontSize):
+            let currentFont = attributes[.font] as? NativeFont
+            attributes[.font] = currentFont.withSize(fontSize)
+        case let .fontWeight(weight):
+            let currentFont = attributes[.font] as? NativeFont
+            attributes[.font] = currentFont.withWeight(weight)
+        case let .fontTraits(traits):
+            let currentFont = attributes[.font] as? NativeFont
+            attributes[.font] = currentFont.withTraits(traits)
         }
     }
 }

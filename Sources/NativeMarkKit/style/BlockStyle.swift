@@ -3,13 +3,11 @@ import Foundation
 import AppKit
 #elseif canImport(UIKit)
 import UIKit
-#elseif canImport(WatchKit)
-import WatchKit
 #else
 #error("Unsupported platform")
 #endif
 
-enum BlockStyle {
+public enum BlockStyle {
     case alignment(NSTextAlignment)
     case firstLineHeadIndent(CGFloat)
     case headIndent(CGFloat)
@@ -22,7 +20,7 @@ enum BlockStyle {
     case inlineStyle(InlineStyle)
 }
 
-extension BlockStyle {
+public extension BlockStyle {
     static func textColor(_ value: NativeColor) -> BlockStyle {
         .inlineStyle(.textColor(value))
     }
@@ -42,11 +40,7 @@ extension BlockStyle {
     static func strikethrough(_ value: Strikethrough) -> BlockStyle {
         .inlineStyle(.strikethrough(value))
     }
-    
-    static func superscript(_ value: Int) -> BlockStyle {
-        .inlineStyle(.superscript(value))
-    }
-    
+        
     static func underline(_ value: Underline) -> BlockStyle {
         .inlineStyle(.underline(value))
     }
@@ -80,11 +74,10 @@ extension BlockStyle: ExpressibleAsParagraphStyle {
 }
 
 extension BlockStyle: ExpressibleAsAttributes {
-    func attributes() -> [NSAttributedString.Key: Any] {
-        if case let .inlineStyle(style) = self {
-            return style.attributes()
-        } else {
-            return [:]
+    func updateAttributes(_ attributes: inout [NSAttributedString.Key: Any]) {
+        guard case let .inlineStyle(style) = self else {
+            return
         }
+        style.updateAttributes(&attributes)
     }
 }

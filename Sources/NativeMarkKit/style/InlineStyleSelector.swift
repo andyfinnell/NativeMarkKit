@@ -1,6 +1,6 @@
 import Foundation
 
-enum InlineStyleSelector: Hashable {
+public enum InlineStyleSelector: Hashable {
     case code
     case link
     case image

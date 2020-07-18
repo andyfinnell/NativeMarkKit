@@ -1,6 +1,6 @@
 import Foundation
 
-enum BlockStyleSelector: Hashable {
+public enum BlockStyleSelector: Hashable {
     case document
     case paragraph
     case thematicBreak

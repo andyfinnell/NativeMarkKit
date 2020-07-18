@@ -3,8 +3,6 @@ import Foundation
 import AppKit
 #elseif canImport(UIKit)
 import UIKit
-#elseif canImport(WatchKit)
-import WatchKit
 #else
 #error("Unsupported platform")
 #endif
