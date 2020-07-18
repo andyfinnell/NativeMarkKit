@@ -83,7 +83,7 @@ private extension FontTraits {
     func updateTraits(_ traits: inout [UIFontDescriptor.TraitKey: Any]) {
         let currentRawValue = traits[.symbolic] as? UInt32 ?? 0
         let current = UIFontDescriptor.SymbolicTraits(rawValue: currentRawValue)
-        traits[.symbolic] = current.union(symbolicTraits)
+        traits[.symbolic] = current.union(symbolicTraits).rawValue
     }
 }
 

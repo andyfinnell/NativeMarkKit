@@ -3,6 +3,12 @@ import Foundation
 import AppKit
 #elseif canImport(UIKit)
 import UIKit
+
+extension NSTextContainer {
+    convenience init(containerSize: CGSize) {
+        self.init(size: containerSize)
+    }
+}
 #else
 #error("Unsupported platform")
 #endif
