@@ -84,6 +84,8 @@ final class URLAcccessibilityElement: NSAccessibilityElement {
         setAccessibilityLabel(url.label)
         setAccessibilityURL(url.url)
         setAccessibilityParent(parent)
+        let screenFrame = parent.window?.convertToScreen(parent.convert(url.frame, to: nil)) ?? url.frame
+        setAccessibilityFrame(screenFrame)
         setAccessibilityFrameInParentSpace(url.frame)
     }
     
