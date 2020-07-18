@@ -5,6 +5,8 @@ import AppKit
 public final class NativeMarkLabel: NSView {
     private let abstractView: AbstractView
     
+    public override var isFlipped: Bool { true }
+
     public var onOpenLink: ((URL) -> Void)? {
         get { abstractView.onOpenLink }
         set { abstractView.onOpenLink = newValue }
