@@ -70,7 +70,19 @@ private extension RenderTestCase {
     }
     
     func testCaseDataUrl() throws  -> URL {
-        try fixturesUrl().appendingPathComponent(name).appendingPathExtension("png")
+        try fixturesUrl().appendingPathComponent("\(name).\(platformName)").appendingPathExtension("png")
+    }
+    
+    var platformName: String {
+        #if os(macOS)
+        return "macOS"
+        #elseif os(iOS)
+        return "iOS"
+        #elseif os(tvOS)
+        return "tvOS"
+        #else
+        #error("Unsupported platform")
+        #endif
     }
     
     func loadRecordedImage() throws -> NativeImage {
@@ -100,15 +112,16 @@ private extension RenderTestCase {
             throw RenderTestCaseError.createContextFailure
         }
         
-        UIGraphicsPushContext(context)
+        context.push()
         
         context.translateBy(x: 0, y: CGFloat(totalHeight))
         context.scaleBy(x: 1, y: -1)
 
         original.draw(at: .zero)
-        new.draw(at: .zero, blendMode: .difference, alpha: 1)
+                
+        new.drawDifference(at: .zero)
         
-        UIGraphicsPopContext()
+        context.pop()
         
         if isSimilarEnough(mutableData) {
             return .pass
