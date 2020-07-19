@@ -1,12 +1,33 @@
 import Foundation
 #if canImport(AppKit)
 import AppKit
+
+extension CGRect {
+    func fill() {
+        NSBezierPath(rect: self).fill()
+    }
+    
+    func clear() {
+        NSGraphicsContext.current?.cgContext.clear(self)
+    }
+}
+
 #elseif canImport(UIKit)
 import UIKit
 
 extension NSTextContainer {
     convenience init(containerSize: CGSize) {
         self.init(size: containerSize)
+    }
+}
+
+extension CGRect {
+    func fill() {
+        UIBezierPath(rect: self).fill()
+    }
+    
+    func clear() {
+        UIGraphicsGetCurrentContext()?.clear(self)
     }
 }
 #else
@@ -61,6 +82,7 @@ final class AbstractView {
     }
     
     func draw() {
+        drawBackground()
         let glyphRange = layoutManager.glyphRange(for: container)
         layoutManager.drawGlyphs(forGlyphRange: glyphRange, at: .zero)
     }
@@ -110,6 +132,17 @@ final class AbstractView {
 }
 
 private extension AbstractView {
+    func drawBackground() {
+        var attributes = [NSAttributedString.Key: Any]()
+        styleSheet.styles(for: .document).updateAttributes(&attributes)
+        if let backgroundColor = attributes[.backgroundColor] as? NativeColor {
+            backgroundColor.set()
+            bounds.fill()
+        } else {
+            bounds.clear()
+        }
+    }
+    
     func measure(maxWidth: CGFloat) -> CGSize {
         setContainerSize(CGSize(width: maxWidth, height: .greatestFiniteMagnitude))
         

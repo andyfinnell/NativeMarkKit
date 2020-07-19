@@ -24,7 +24,6 @@ public final class NativeMarkLabel: UIControl {
         abstractView = AbstractView(nativeMark: nativeMark, styleSheet: styleSheet)
         super.init(frame: .zero)
         updateAccessibility()
-        backgroundColor = .white
     }
     
     required init?(coder: NSCoder) {

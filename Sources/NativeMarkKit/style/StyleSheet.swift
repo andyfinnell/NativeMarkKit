@@ -24,7 +24,11 @@ public final class StyleSheet {
 public extension StyleSheet {
     static let `default` = StyleSheet(
         [
-            .document: [.textStyle(.body)],
+            .document: [
+                .textStyle(.body),
+                .backgroundColor(.white),
+                .textColor(.black)
+            ],
             .heading(level: 1): [.textStyle(.headline)],
             .heading(level: 2): [.textStyle(.subheadline)],
             .heading(level: 3): [.textStyle(.title1)],

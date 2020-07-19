@@ -28,7 +28,7 @@ public struct Underline {
 }
 
 public enum InlineStyle {
-    case textColor(NativeColor)
+    case textColor(NativeColor) // TODO: what about dark mode?
     case textStyle(TextStyle)
     case backgroundColor(NativeColor)
     case kerning(Float)
