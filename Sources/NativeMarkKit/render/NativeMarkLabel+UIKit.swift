@@ -79,7 +79,7 @@ private extension NativeMarkLabel {
             element.accessibilityTraits = [.link]
             let screen = window?.screen ?? UIScreen.main
             element.accessibilityFrame = convert(url.frame, to: screen.fixedCoordinateSpace)
-            if #available(iOS 10.0, *) {
+            if #available(iOS 10.0, tvOS 10.0, *) {
                 element.accessibilityFrameInContainerSpace = url.frame
             }
             return element

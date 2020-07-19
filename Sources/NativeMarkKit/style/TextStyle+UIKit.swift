@@ -127,7 +127,7 @@ private extension FontDescriptor {
                 .fontDescriptor
                 .fontAttributes
         case .systemMonospace:
-            if #available(iOS 13.0, *) {
+            if #available(iOS 13.0, tvOS 13.0, *) {
                 return UIFont.monospacedSystemFont(ofSize: size, weight: weight)
                     .fontDescriptor
                     .fontAttributes
