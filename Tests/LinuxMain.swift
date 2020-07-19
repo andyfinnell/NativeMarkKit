@@ -1,5 +1,3 @@
-#if !os(watchOS)
-
 import XCTest
 
 import NativeMarkKitTests
@@ -7,5 +5,3 @@ import NativeMarkKitTests
 var tests = [XCTestCaseEntry]()
 tests += NativeMarkKitTests.allTests()
 XCTMain(tests)
-
-#endif

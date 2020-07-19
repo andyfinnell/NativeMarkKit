@@ -1,4 +1,5 @@
 import Foundation
+@testable import NativeMarkKit
 
 func compile(_ markdownText: String) throws -> Document {
     let lines = Lexer().scan(markdownText)
