@@ -59,7 +59,9 @@ private extension RenderTestCase {
         let view = AbstractView(nativeMark: nativeMark, styleSheet: styleSheet)
         _ = view.intrinsicSize() // it'll assume it has infinite width
         view.bounds = CGRect(x: 0, y: 0, width: width, height: .greatestFiniteMagnitude)
-
+        let sizeWithRealHeight = view.intrinsicSize()
+        view.bounds = CGRect(x: 0, y: 0, width: width, height: sizeWithRealHeight.height)
+        
         return view.makeImage()
     }
 

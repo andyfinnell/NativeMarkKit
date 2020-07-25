@@ -13,7 +13,7 @@ protocol ExpressibleAsAttributes {
 }
 
 protocol ExpressibleAsParagraphStyle {
-    func updateParagraphStyle(_ paragraphStyle: NSMutableParagraphStyle)
+    func updateParagraphStyle(_ paragraphStyle: NSMutableParagraphStyle, with defaultFont: NativeFont)
 }
 
 final class StyleStack {
@@ -41,12 +41,20 @@ final class StyleStack {
     }
     
     func attributes() -> [NSAttributedString.Key: Any] {
-        let paragraphStyle = NSMutableParagraphStyle()
-        scopes.updateParagraphStyle(paragraphStyle)
         var attributes = [NSAttributedString.Key: Any]()
         scopes.updateAttributes(&attributes)
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        scopes.updateParagraphStyle(paragraphStyle, with: defaultFont(for: attributes))
+
         attributes[.paragraphStyle] = paragraphStyle
         return attributes
+    }
+}
+
+private extension StyleStack {
+    func defaultFont(for attributes: [NSAttributedString.Key: Any]) -> NativeFont {
+        (attributes[.font] as? NativeFont) ?? TextStyle.body.makeFont()
     }
 }
 
@@ -62,12 +70,12 @@ extension StyleStack.Scope: ExpressibleAsAttributes {
 }
 
 extension StyleStack.Scope: ExpressibleAsParagraphStyle {
-    func updateParagraphStyle(_ paragraphStyle: NSMutableParagraphStyle) {
+    func updateParagraphStyle(_ paragraphStyle: NSMutableParagraphStyle, with defaultFont: NativeFont) {
         switch self {
         case let .blockStyles(styles):
-            return styles.updateParagraphStyle(paragraphStyle)
+            return styles.updateParagraphStyle(paragraphStyle, with: defaultFont)
         case let .inlineStyles(styles):
-            return styles.updateParagraphStyle(paragraphStyle)
+            return styles.updateParagraphStyle(paragraphStyle, with: defaultFont)
         }
     }
 }
@@ -81,9 +89,9 @@ extension Sequence where Element: ExpressibleAsAttributes {
 }
 
 extension Sequence where Element: ExpressibleAsParagraphStyle {
-    func updateParagraphStyle(_ paragraphStyle: NSMutableParagraphStyle) {
+    func updateParagraphStyle(_ paragraphStyle: NSMutableParagraphStyle, with defaultFont: NativeFont) {
         for style in self {
-            style.updateParagraphStyle(paragraphStyle)
+            style.updateParagraphStyle(paragraphStyle, with: defaultFont)
         }
     }
 }

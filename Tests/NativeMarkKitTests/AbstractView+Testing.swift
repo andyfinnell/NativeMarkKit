@@ -7,7 +7,7 @@ typealias NativeImage = UIImage
 
 extension AbstractView {
     func makeImage() -> NativeImage {
-        UIGraphicsBeginImageContext(self.intrinsicSize())
+        UIGraphicsBeginImageContext(bounds.size)
         draw()
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
@@ -22,7 +22,7 @@ typealias NativeImage = NSImage
 
 extension AbstractView {
     func makeImage() -> NativeImage {
-        let image = NSImage(size: self.intrinsicSize())
+        let image = NSImage(size: bounds.size)
         image.lockFocusFlipped(true)
         draw()
         image.unlockFocus()

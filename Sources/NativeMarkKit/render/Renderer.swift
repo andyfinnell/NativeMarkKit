@@ -9,78 +9,85 @@ import UIKit
 
 struct Renderer {
     func render(_ document: Document, with stylesheet: StyleSheet) -> NSAttributedString {
+        let result = NSMutableAttributedString()
         let styleStack = StyleStack(stylesheet: stylesheet)
         styleStack.push(.document)
         defer {
             styleStack.pop()
         }
-        return render(document.elements, with: styleStack)
+        render(document.elements, with: styleStack, into: result)
+        
+        if result.string.hasSuffix("\n") {
+            result.deleteCharacters(in: NSRange(location: result.length - 1, length: 1))
+        }
+        return result
     }
 }
 
 private extension Renderer {
-    func render(_ elements: [Element], with styleStack: StyleStack) -> NSAttributedString {
-        elements.reduce(into: NSMutableAttributedString()) { sum, element in
-            sum.append(render(element, with: styleStack))
+    func render(_ elements: [Element], with styleStack: StyleStack, into result: NSMutableAttributedString) {
+        for element in elements {
+            render(element, with: styleStack, into: result)
         }
     }
     
-    func render(_ element: Element, with styleStack: StyleStack) -> NSAttributedString {
+    func render(_ element: Element, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         switch element {
         case let .paragraph(text):
-            return renderParagraph(text, with: styleStack)
+            renderParagraph(text, with: styleStack, into: result)
         case .thematicBreak:
-            return renderThematicBreak(with: styleStack)
+            renderThematicBreak(with: styleStack, into: result)
         case let .heading(level: level, text: text):
-            return renderHeading(level: level, text: text, with: styleStack)
+            renderHeading(level: level, text: text, with: styleStack, into: result)
         case let .blockQuote(elements):
-            return renderBlockQuote(elements, with: styleStack)
+            renderBlockQuote(elements, with: styleStack, into: result)
         case let .codeBlock(infoString: infoString, content: text):
-            return renderCodeBlock(info: infoString, text: text, with: styleStack)
+            renderCodeBlock(info: infoString, text: text, with: styleStack, into: result)
         case let .list(info, items: items):
-            return renderList(info, items: items, with: styleStack)
+            renderList(info, items: items, with: styleStack, into: result)
         }
     }
     
-    func renderParagraph(_ text: [InlineText], with styleStack: StyleStack) -> NSAttributedString {
+    func renderParagraph(_ text: [InlineText], with styleStack: StyleStack, into result: NSMutableAttributedString) {
         styleStack.push(.paragraph)
         defer {
             styleStack.pop()
         }
         
-        return render(text, with: styleStack)
+        render(text, with: styleStack, into: result)
+        result.append(NSAttributedString(string: "\n", attributes: styleStack.attributes()))
     }
     
-    func renderThematicBreak(with styleStack: StyleStack) -> NSAttributedString {
+    func renderThematicBreak(with styleStack: StyleStack, into result: NSMutableAttributedString) {
         styleStack.push(.thematicBreak)
         defer {
             styleStack.pop()
         }
         
         // TODO: use an image for thematic break?
-        return NSAttributedString(string: "---", attributes: styleStack.attributes())
+        result.append(NSAttributedString(string: "---", attributes: styleStack.attributes()))
     }
     
-    func renderHeading(level: Int, text: [InlineText], with styleStack: StyleStack) -> NSAttributedString {
+    func renderHeading(level: Int, text: [InlineText], with styleStack: StyleStack, into result: NSMutableAttributedString) {
         styleStack.push(.heading(level: level))
         defer {
             styleStack.pop()
         }
 
-        return render(text, with: styleStack)
+        render(text, with: styleStack, into: result)
     }
         
-    func renderBlockQuote(_ elements: [Element], with styleStack: StyleStack) -> NSAttributedString {
+    func renderBlockQuote(_ elements: [Element], with styleStack: StyleStack, into result: NSMutableAttributedString) {
         // TODO: how to render this? indent and change text color?
         styleStack.push(.blockQuote)
         defer {
             styleStack.pop()
         }
         
-        return render(elements, with: styleStack)
+        render(elements, with: styleStack, into: result)
     }
 
-    func renderCodeBlock(info: String, text: String, with styleStack: StyleStack) -> NSAttributedString {
+    func renderCodeBlock(info: String, text: String, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         // TODO: how to render this? change font? background color?
         // TODO: delegate out so let a more sophisticated renderer do syntax highlighting
         styleStack.push(.codeBlock)
@@ -88,24 +95,22 @@ private extension Renderer {
             styleStack.pop()
         }
 
-        return NSAttributedString(string: text, attributes: styleStack.attributes())
+        result.append(NSAttributedString(string: text, attributes: styleStack.attributes()))
     }
     
-    func renderList(_ info: ListInfo, items: [ListItem], with styleStack: StyleStack) -> NSAttributedString {
+    func renderList(_ info: ListInfo, items: [ListItem], with styleStack: StyleStack, into result: NSMutableAttributedString) {
         styleStack.push(.list(isTight: info.isTight))
         defer {
             styleStack.pop()
         }
         
         // TODO: are there attributes specific to lists?
-        
-        return items.enumerated().reduce(into: NSMutableAttributedString()) { sum, iAndItem in
-            let (index, item) = iAndItem
-            sum.append(render(item, info: info, index: index, with: styleStack))
+        for (index, item) in items.enumerated() {
+            render(item, info: info, index: index, with: styleStack, into: result)
         }
     }
     
-    func renderListItemMarker(_ index: Int, info: ListInfo, with styleStack: StyleStack) -> NSAttributedString {
+    func renderListItemMarker(_ index: Int, info: ListInfo, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         let rawText: String
         switch info.kind {
         case .bulleted:
@@ -113,68 +118,70 @@ private extension Renderer {
         case let .ordered(start: start):
             rawText = String(describing: start + index)
         }
-        return NSAttributedString(string: rawText + " ", attributes: styleStack.attributes())
+        result.append(NSAttributedString(string: rawText + " ", attributes: styleStack.attributes()))
     }
     
-    func render(_ item: ListItem, info: ListInfo, index: Int, with styleStack: StyleStack) -> NSAttributedString {
-        let marker = renderListItemMarker(index, info: info, with: styleStack)
+    func render(_ item: ListItem, info: ListInfo, index: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
+        renderListItemMarker(index, info: info, with: styleStack, into: result)
                 
         styleStack.push(.item)
         defer {
             styleStack.pop()
         }
 
-        let result = NSMutableAttributedString()
-        result.append(marker)
-        return item.elements.reduce(into: result) { sum, element in
-            sum.append(render(element, with: styleStack))
+        for element in item.elements {
+            render(element, with: styleStack, into: result)
         }
     }
     
-    func render(_ text: [InlineText], with styleStack: StyleStack) -> NSAttributedString {
-        text.reduce(into: NSMutableAttributedString()) { sum, element in
-            sum.append(render(element, with: styleStack))
+    func render(_ text: [InlineText], with styleStack: StyleStack, into result: NSMutableAttributedString) {
+        for element in text {
+            render(element, with: styleStack, into: result)
         }
     }
 
-    func render(_ text: InlineText, with styleStack: StyleStack) -> NSAttributedString {
+    func render(_ text: InlineText, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         switch text {
         case let .code(text):
-            return renderCode(text, with: styleStack)
+            renderCode(text, with: styleStack, into: result)
         case let .text(text):
-            return renderText(text, with: styleStack)
+            renderText(text, with: styleStack, into: result)
         case .linebreak:
-            return renderLinebreak(with: styleStack)
+            renderLinebreak(with: styleStack, into: result)
         case let .link(link, text: content):
-            return renderLink(link, text: content, with: styleStack)
+            renderLink(link, text: content, with: styleStack, into: result)
         case let .image(link, alt: altText):
-            return renderImage(link, altText: altText, with: styleStack)
+            renderImage(link, altText: altText, with: styleStack, into: result)
         case let .emphasis(text):
-            return renderEmphasis(text, with: styleStack)
+            renderEmphasis(text, with: styleStack, into: result)
         case let .strong(text):
-            return renderStrong(text, with: styleStack)
+            renderStrong(text, with: styleStack, into: result)
         case .softbreak:
-            return NSAttributedString()
+            renderSoftbreak(with: styleStack, into: result)
         }
     }
     
-    func renderCode(_ text: String, with styleStack: StyleStack) -> NSAttributedString {
+    func renderCode(_ text: String, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         styleStack.push(.code)
         defer {
             styleStack.pop()
         }
-        return NSAttributedString(string: text, attributes: styleStack.attributes())
+        result.append(NSAttributedString(string: text, attributes: styleStack.attributes()))
     }
     
-    func renderText(_ text: String, with styleStack: StyleStack) -> NSAttributedString {
-        return NSAttributedString(string: text, attributes: styleStack.attributes())
+    func renderText(_ text: String, with styleStack: StyleStack, into result: NSMutableAttributedString) {
+        result.append(NSAttributedString(string: text, attributes: styleStack.attributes()))
     }
 
-    func renderLinebreak(with styleStack: StyleStack) -> NSAttributedString {
-        return NSAttributedString(string: "\n", attributes: styleStack.attributes())
+    func renderLinebreak(with styleStack: StyleStack, into result: NSMutableAttributedString) {
+        result.append(NSAttributedString(string: "\n", attributes: styleStack.attributes()))
     }
 
-    func renderLink(_ link: Link?, text: [InlineText], with styleStack: StyleStack) -> NSAttributedString {
+    func renderSoftbreak(with styleStack: StyleStack, into result: NSMutableAttributedString) {
+        result.append(NSAttributedString(string: " ", attributes: styleStack.attributes()))
+    }
+
+    func renderLink(_ link: Link?, text: [InlineText], with styleStack: StyleStack, into result: NSMutableAttributedString) {
         styleStack.push(.link)
         defer {
             styleStack.pop()
@@ -190,12 +197,12 @@ private extension Renderer {
             #endif
         }
 
-        let result = NSMutableAttributedString(attributedString: render(text, with: styleStack))
-        result.addAttributes(attributes, range: NSRange(location: 0, length: result.string.count))
-        return result
+        let startLocation = result.length
+        render(text, with: styleStack, into: result)
+        result.addAttributes(attributes, range: NSRange(location: startLocation, length: result.length - startLocation))
     }
     
-    func renderImage(_ link: Link?, altText: String, with styleStack: StyleStack) -> NSAttributedString {
+    func renderImage(_ link: Link?, altText: String, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         styleStack.push(.image)
         defer {
             styleStack.pop()
@@ -203,27 +210,27 @@ private extension Renderer {
 
         let attachment = NSTextAttachment()
         // TODO: retreive image. Maybe force a cache to be provided beforehand?
-        
-        let result = NSMutableAttributedString(attributedString:  NSAttributedString(attachment: attachment))
-        result.addAttributes(styleStack.attributes(), range: NSRange(location: 0, length: result.string.count))
-        return result
+        let attachmentString = NSAttributedString(attachment: attachment)
+        let startLocation = result.length
+        result.append(attachmentString)
+        result.addAttributes(styleStack.attributes(), range: NSRange(location: startLocation, length: attachmentString.length))
     }
 
-    func renderEmphasis(_ text: [InlineText], with styleStack: StyleStack) -> NSAttributedString {
+    func renderEmphasis(_ text: [InlineText], with styleStack: StyleStack, into result: NSMutableAttributedString) {
         styleStack.push(.emphasis)
         defer {
             styleStack.pop()
         }
 
-        return render(text, with: styleStack)
+        render(text, with: styleStack, into: result)
     }
 
-    func renderStrong(_ text: [InlineText], with styleStack: StyleStack) -> NSAttributedString {
+    func renderStrong(_ text: [InlineText], with styleStack: StyleStack, into result: NSMutableAttributedString) {
         styleStack.push(.strong)
         defer {
             styleStack.pop()
         }
 
-        return render(text, with: styleStack)
+        render(text, with: styleStack, into: result)
     }
 }

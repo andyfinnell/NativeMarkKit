@@ -40,7 +40,7 @@ public enum InlineStyle {
 }
 
 extension InlineStyle: ExpressibleAsParagraphStyle {
-    func updateParagraphStyle(_ paragraphStyle: NSMutableParagraphStyle) {
+    func updateParagraphStyle(_ paragraphStyle: NSMutableParagraphStyle, with defaultFont: NativeFont) {
         // nop
     }
 }

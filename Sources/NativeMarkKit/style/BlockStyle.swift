@@ -9,13 +9,13 @@ import UIKit
 
 public enum BlockStyle {
     case alignment(NSTextAlignment)
-    case firstLineHeadIndent(CGFloat)
-    case headIndent(CGFloat)
-    case tailIndent(CGFloat)
+    case firstLineHeadIndent(Length)
+    case headIndent(Length)
+    case tailIndent(Length)
     case lineHeightMultiple(CGFloat)
-    case lineSpacing(CGFloat)
-    case paragraphSpacingAfter(CGFloat)
-    case paragraphSpacingBefore(CGFloat)
+    case lineSpacing(Length)
+    case paragraphSpacingAfter(Length)
+    case paragraphSpacingBefore(Length)
     case lineBreak(NSLineBreakMode)
     case inlineStyle(InlineStyle)
 }
@@ -47,24 +47,24 @@ public extension BlockStyle {
 }
 
 extension BlockStyle: ExpressibleAsParagraphStyle {
-    func updateParagraphStyle(_ paragraphStyle: NSMutableParagraphStyle) {
+    func updateParagraphStyle(_ paragraphStyle: NSMutableParagraphStyle, with defaultFont: NativeFont) {
         switch self {
         case let .alignment(alignment):
             paragraphStyle.alignment = alignment
         case let .firstLineHeadIndent(indent):
-            paragraphStyle.firstLineHeadIndent = indent
+            paragraphStyle.firstLineHeadIndent = indent.asRawPoints(for: defaultFont.pointSize)
         case let .headIndent(indent):
-            paragraphStyle.headIndent = indent
+            paragraphStyle.headIndent = indent.asRawPoints(for: defaultFont.pointSize)
         case let .tailIndent(indent):
-            paragraphStyle.tailIndent = indent
+            paragraphStyle.tailIndent = indent.asRawPoints(for: defaultFont.pointSize)
         case let .lineHeightMultiple(multiple):
             paragraphStyle.lineHeightMultiple = multiple
         case let .lineSpacing(spacing):
-            paragraphStyle.lineSpacing = spacing
+            paragraphStyle.lineSpacing = spacing.asRawPoints(for: defaultFont.pointSize)
         case let .paragraphSpacingAfter(spacing):
-            paragraphStyle.paragraphSpacing = spacing
+            paragraphStyle.paragraphSpacing = spacing.asRawPoints(for: defaultFont.pointSize)
         case let .paragraphSpacingBefore(spacing):
-            paragraphStyle.paragraphSpacingBefore = spacing
+            paragraphStyle.paragraphSpacingBefore = spacing.asRawPoints(for: defaultFont.pointSize)
         case let .lineBreak(lineBreak):
             paragraphStyle.lineBreakMode = lineBreak
         case .inlineStyle:
