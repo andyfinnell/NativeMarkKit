@@ -33,7 +33,7 @@ public extension BlockStyle {
         .inlineStyle(.backgroundColor(value))
     }
     
-    static func kerning(_ value: Float) -> BlockStyle {
+    static func kerning(_ value: Length) -> BlockStyle {
         .inlineStyle(.kerning(value))
     }
     

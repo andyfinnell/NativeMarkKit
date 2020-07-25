@@ -45,5 +45,6 @@ public enum TextStyle {
     case title1
     case title2
     case title3
+    case code
     case custom(FontDescriptor)
 }

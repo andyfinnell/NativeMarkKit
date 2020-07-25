@@ -28,6 +28,12 @@ extension TextStyle {
             return NSFont.systemFont(ofSize: 17)
         case .title3:
             return NSFont.systemFont(ofSize: 14)
+        case .code:
+            if #available(OSX 10.15, *) {
+                return NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)
+            } else {
+                return FontDescriptor(name: .systemMonospace, size: 12, weight: .regular, traits: .monospace).makeFont()
+            }
         case let .custom(descriptor):
             return descriptor.makeFont()
         }
@@ -41,12 +47,12 @@ extension Optional where Wrapped == NSFont {
     
     func withWeight(_ weight: NSFont.Weight) -> NSFont {
         flatMap { $0.withWeight(weight) }
-            ?? FontDescriptor(name: .system, size: 17, weight: weight, traits: .unspecified).makeFont()
+            ?? FontDescriptor(name: .system, size: 12, weight: weight, traits: .unspecified).makeFont()
     }
     
     func withTraits(_ traits: FontTraits) -> NSFont {
         flatMap { $0.withTraits(traits) }
-            ?? FontDescriptor(name: .system, size: 17, weight: .regular, traits: traits).makeFont()
+            ?? FontDescriptor(name: .system, size: 12, weight: .regular, traits: traits).makeFont()
     }
 }
 

@@ -36,6 +36,12 @@ extension TextStyle {
             return UIFont.preferredFont(forTextStyle: .title2)
         case .title3:
             return UIFont.preferredFont(forTextStyle: .title3)
+        case .code:
+            if #available(iOS 13.0, tvOS 13.0, *) {
+                return UIFont.monospacedSystemFont(ofSize: 17, weight: .regular)
+            } else {
+                return FontDescriptor(name: .systemMonospace, size: 17, weight: .regular, traits: .monospace).makeFont()
+            }
         case let .custom(descriptor):
             return descriptor.makeFont()
         }

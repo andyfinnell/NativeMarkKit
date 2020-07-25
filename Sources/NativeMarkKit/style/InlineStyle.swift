@@ -31,7 +31,7 @@ public enum InlineStyle {
     case textColor(NativeColor) // TODO: what about dark mode?
     case textStyle(TextStyle)
     case backgroundColor(NativeColor)
-    case kerning(Float)
+    case kerning(Length)
     case strikethrough(Strikethrough)
     case underline(Underline)
     case fontSize(CGFloat)
@@ -55,7 +55,8 @@ extension InlineStyle: ExpressibleAsAttributes {
         case let .backgroundColor(backgroundColor):
             attributes[.backgroundColor] = backgroundColor
         case let .kerning(kerning):
-            attributes[.kern] = NSNumber(value: kerning)
+            let defaultFont = (attributes[.font] as? NativeFont) ?? TextStyle.body.makeFont()
+            attributes[.kern] = kerning.asRawPoints(for: defaultFont.pointSize)
         case let .strikethrough(strikethrough):
             if let color = strikethrough.color {
                 attributes[.strikethroughColor] = color

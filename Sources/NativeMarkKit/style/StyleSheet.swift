@@ -65,6 +65,9 @@ public extension StyleSheet {
             ],
             .strong: [
                 .fontWeight(.bold)
+            ],
+            .code: [
+                .textStyle(.code)
             ]
         ]
     )

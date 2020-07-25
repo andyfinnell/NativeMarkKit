@@ -20,11 +20,12 @@ struct Renderer {
         if result.string.hasSuffix("\n") {
             result.deleteCharacters(in: NSRange(location: result.length - 1, length: 1))
         }
+                
         return result
     }
 }
 
-private extension Renderer {
+private extension Renderer {    
     func render(_ elements: [Element], with styleStack: StyleStack, into result: NSMutableAttributedString) {
         for element in elements {
             render(element, with: styleStack, into: result)

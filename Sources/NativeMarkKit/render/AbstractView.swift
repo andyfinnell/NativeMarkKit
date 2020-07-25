@@ -84,6 +84,7 @@ final class AbstractView {
     func draw() {
         drawBackground()
         let glyphRange = layoutManager.glyphRange(for: container)
+        layoutManager.drawBackground(forGlyphRange: glyphRange, at: .zero)
         layoutManager.drawGlyphs(forGlyphRange: glyphRange, at: .zero)
     }
     

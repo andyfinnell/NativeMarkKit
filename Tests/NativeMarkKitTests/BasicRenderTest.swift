@@ -167,4 +167,26 @@ to have the desired effect.
         XCTAssert(testCase.isPassing(for: self, record: true))
     }
 
+    func testBasicInlineStyles() {
+        let styleSheet = StyleSheet.default.duplicate().mutate([:], [
+            .emphasis: [
+                .strikethrough(Strikethrough(style: .single, color: nil))
+            ],
+            .strong: [
+                .underline(Underline(style: .single, color: .blue)),
+                .kerning(0.2.em)
+            ],
+            .code: [
+                .backgroundColor(.lightGray),
+                .textColor(.purple)
+            ]
+        ])
+
+        let testCase = RenderTestCase(name: "BasicInlineStyles",
+                                      nativeMark: "**Hello**, _world_ from `NativeMarkKit`",
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+
+    }
 }
