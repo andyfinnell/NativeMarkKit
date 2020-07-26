@@ -40,7 +40,7 @@ struct AccessibileURL {
     let frame: CGRect
 }
 
-final class AbstractView {
+final class AbstractView: NSObject {
     private let storage: NSTextStorage
     private let layoutManager = NSLayoutManager()
     private let container = NSTextContainer(containerSize: .zero)
@@ -66,9 +66,12 @@ final class AbstractView {
         let attributedString = (try? NSAttributedString(nativeMark: nativeMark, styleSheet: styleSheet))
             ?? NSAttributedString(string: nativeMark)
         self.storage = NSTextStorage(attributedString: attributedString)
+        super.init()
+        
         container.lineFragmentPadding = 0
         layoutManager.addTextContainer(container)
         storage.addLayoutManager(layoutManager)
+        layoutManager.delegate = self
     }
     
     func intrinsicSize() -> CGSize {
@@ -132,7 +135,85 @@ final class AbstractView {
     }
 }
 
+extension AbstractView: NSLayoutManagerDelegate {
+    func layoutManager(_ layoutManager: NSLayoutManager, shouldSetLineFragmentRect lineFragmentRect: UnsafeMutablePointer<CGRect>, lineFragmentUsedRect: UnsafeMutablePointer<CGRect>, baselineOffset: UnsafeMutablePointer<CGFloat>, in textContainer: NSTextContainer, forGlyphRange glyphRange: NSRange) -> Bool {
+        let characterRange = layoutManager.characterRange(forGlyphRange: glyphRange, actualGlyphRange: nil)
+        if let stringRange = Range(characterRange, in: storage.string) {
+            let substr = storage.string[stringRange]
+            let fragmentRect = lineFragmentRect.pointee
+            print("laying out [\(characterRange)] '\(substr)' at \(fragmentRect)")
+        }
+        
+        if let overrideLocation = overrideLineFragmentStartingLocation(for: glyphRange) {
+            let proposedRect = lineFragmentRect.pointee
+            let overrideRect = CGRect(x: overrideLocation,
+                                      y: proposedRect.origin.y,
+                                      width: proposedRect.maxX - overrideLocation,
+                                      height: proposedRect.height)
+            
+            lineFragmentRect.assign(repeating: overrideRect, count: 1)
+            lineFragmentUsedRect.assign(repeating: overrideRect, count: 1)
+            layoutManager.setDrawsOutsideLineFragment(true, forGlyphAt: glyphRange.upperBound - 1)
+            return true
+        }
+        
+        return false
+    }
+    
+    func layoutManager(_ layoutManager: NSLayoutManager, shouldBreakLineByWordBeforeCharacterAt charIndex: Int) -> Bool {
+        if let stringRange = Range(NSRange(location: charIndex, length: 1), in: storage.string) {
+            let substr = storage.string[stringRange]
+            print("breaking at \(substr) index [\(charIndex)]")
+        }
+
+        return true
+    }
+
+}
+
 private extension AbstractView {
+    func overrideLineFragmentStartingLocation(for glyphRange: NSRange) -> CGFloat? {
+        let characterRange = layoutManager.characterRange(forGlyphRange: glyphRange, actualGlyphRange: nil)
+        guard let stringRange = Range(characterRange, in: storage.string) else {
+            return nil
+        }
+        
+        let tabLocations = findParagraphTabStopIndices(stringRange.lowerBound).map { horizontalLocation(for: $0) }
+        guard let firstLocation = tabLocations.first else {
+            return nil
+        }
+        return tabLocations.reduce(firstLocation) { max($0, $1) }
+    }
+    
+    func findParagraphTabStopIndices(_ characterIndex: String.Index) -> [String.Index] {
+        let string = storage.string
+        guard characterIndex > string.startIndex else {
+            return []
+        }
+        var index = string.index(before: characterIndex)
+        var indicesAfterTab = [String.Index]()
+        
+        while string[index] != "\n" {
+            if string[index] == "\t" {
+                indicesAfterTab.append(string.index(after: index))
+            }
+            if index > string.startIndex {
+                index = string.index(before: index)
+            } else {
+                break
+            }
+        }
+        return indicesAfterTab
+    }
+    
+    func horizontalLocation(for index: String.Index) -> CGFloat {
+        let nsRange = NSRange(index...index, in: storage.string)
+        let glyphIndex = layoutManager.glyphIndexForCharacter(at: nsRange.location)
+        let lineFragmentRect = layoutManager.lineFragmentRect(forGlyphAt: glyphIndex, effectiveRange: nil)
+        let locationInsideLineFragmentRect = layoutManager.location(forGlyphAt: glyphIndex)
+        return lineFragmentRect.minX + locationInsideLineFragmentRect.x
+    }
+    
     func drawBackground() {
         var attributes = [NSAttributedString.Key: Any]()
         styleSheet.styles(for: .document).updateAttributes(&attributes)

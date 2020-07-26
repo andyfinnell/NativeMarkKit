@@ -15,7 +15,7 @@ struct Renderer {
         defer {
             styleStack.pop()
         }
-        render(document.elements, with: styleStack, into: result)
+        render(document.elements, indent: 0, with: styleStack, into: result)
         
         if result.string.hasSuffix("\n") {
             result.deleteCharacters(in: NSRange(location: result.length - 1, length: 1))
@@ -26,35 +26,36 @@ struct Renderer {
 }
 
 private extension Renderer {    
-    func render(_ elements: [Element], with styleStack: StyleStack, into result: NSMutableAttributedString) {
+    func render(_ elements: [Element], indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         for element in elements {
-            render(element, with: styleStack, into: result)
+            render(element, indent: indent, with: styleStack, into: result)
         }
     }
     
-    func render(_ element: Element, with styleStack: StyleStack, into result: NSMutableAttributedString) {
+    func render(_ element: Element, indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         switch element {
         case let .paragraph(text):
-            renderParagraph(text, with: styleStack, into: result)
+            renderParagraph(text, indent: indent, with: styleStack, into: result)
         case .thematicBreak:
             renderThematicBreak(with: styleStack, into: result)
         case let .heading(level: level, text: text):
-            renderHeading(level: level, text: text, with: styleStack, into: result)
+            renderHeading(level: level, text: text, indent: indent, with: styleStack, into: result)
         case let .blockQuote(elements):
-            renderBlockQuote(elements, with: styleStack, into: result)
+            renderBlockQuote(elements, indent: indent, with: styleStack, into: result)
         case let .codeBlock(infoString: infoString, content: text):
-            renderCodeBlock(info: infoString, text: text, with: styleStack, into: result)
+            renderCodeBlock(info: infoString, text: text, indent: indent, with: styleStack, into: result)
         case let .list(info, items: items):
-            renderList(info, items: items, with: styleStack, into: result)
+            renderList(info, items: items, indent: indent, with: styleStack, into: result)
         }
     }
     
-    func renderParagraph(_ text: [InlineText], with styleStack: StyleStack, into result: NSMutableAttributedString) {
+    func renderParagraph(_ text: [InlineText], indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         styleStack.push(.paragraph)
         defer {
             styleStack.pop()
         }
         
+        renderTab(indent, with: styleStack, into: result)
         render(text, with: styleStack, into: result)
         result.append(NSAttributedString(string: "\n", attributes: styleStack.attributes()))
     }
@@ -69,27 +70,28 @@ private extension Renderer {
         result.append(NSAttributedString(string: "---\n", attributes: styleStack.attributes()))
     }
     
-    func renderHeading(level: Int, text: [InlineText], with styleStack: StyleStack, into result: NSMutableAttributedString) {
+    func renderHeading(level: Int, text: [InlineText], indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         styleStack.push(.heading(level: level))
         defer {
             styleStack.pop()
         }
 
+        renderTab(indent, with: styleStack, into: result)
         render(text, with: styleStack, into: result)
         result.append(NSAttributedString(string: "\n", attributes: styleStack.attributes()))
     }
         
-    func renderBlockQuote(_ elements: [Element], with styleStack: StyleStack, into result: NSMutableAttributedString) {
+    func renderBlockQuote(_ elements: [Element], indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         // TODO: how to render this? indent and change text color?
         styleStack.push(.blockQuote)
         defer {
             styleStack.pop()
         }
         
-        render(elements, with: styleStack, into: result)
+        render(elements, indent: indent + 1, with: styleStack, into: result)
     }
 
-    func renderCodeBlock(info: String, text: String, with styleStack: StyleStack, into result: NSMutableAttributedString) {
+    func renderCodeBlock(info: String, text: String, indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         // TODO: how to render this? change font? background color?
         // TODO: delegate out so let a more sophisticated renderer do syntax highlighting
         styleStack.push(.codeBlock)
@@ -97,22 +99,22 @@ private extension Renderer {
             styleStack.pop()
         }
 
+        renderTab(indent, with: styleStack, into: result)
         result.append(NSAttributedString(string: text, attributes: styleStack.attributes()))
     }
     
-    func renderList(_ info: ListInfo, items: [ListItem], with styleStack: StyleStack, into result: NSMutableAttributedString) {
+    func renderList(_ info: ListInfo, items: [ListItem], indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         styleStack.push(.list(isTight: info.isTight))
         defer {
             styleStack.pop()
         }
         
-        // TODO: are there attributes specific to lists?
         for (index, item) in items.enumerated() {
-            render(item, info: info, index: index, with: styleStack, into: result)
+            render(item, info: info, index: index, indent: indent, with: styleStack, into: result)
         }
     }
     
-    func renderListItemMarker(_ index: Int, info: ListInfo, with styleStack: StyleStack, into result: NSMutableAttributedString) {
+    func renderListItemMarker(_ index: Int, info: ListInfo, indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         let rawText: String
         switch info.kind {
         case .bulleted:
@@ -120,11 +122,12 @@ private extension Renderer {
         case let .ordered(start: start):
             rawText = String(describing: start + index)
         }
+        renderTab(indent, with: styleStack, into: result)
         result.append(NSAttributedString(string: rawText + " ", attributes: styleStack.attributes()))
     }
     
-    func render(_ item: ListItem, info: ListInfo, index: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        renderListItemMarker(index, info: info, with: styleStack, into: result)
+    func render(_ item: ListItem, info: ListInfo, index: Int, indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
+        renderListItemMarker(index, info: info, indent: indent, with: styleStack, into: result)
                 
         styleStack.push(.item)
         defer {
@@ -132,7 +135,7 @@ private extension Renderer {
         }
 
         for element in item.elements {
-            render(element, with: styleStack, into: result)
+            render(element, indent: indent + 1, with: styleStack, into: result)
         }
     }
     
@@ -234,5 +237,14 @@ private extension Renderer {
         }
 
         render(text, with: styleStack, into: result)
+    }
+    
+    func renderTab(_ indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
+        let tabs = NSAttributedString(string: tab(indent), attributes: styleStack.attributes())
+        result.append(tabs)
+    }
+    
+    func tab(_ indent: Int) -> String {
+        String(repeating: "\t", count: indent)
     }
 }

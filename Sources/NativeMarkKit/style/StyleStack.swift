@@ -44,8 +44,11 @@ final class StyleStack {
         var attributes = [NSAttributedString.Key: Any]()
         scopes.updateAttributes(&attributes)
         
+        let font = defaultFont(for: attributes)
         let paragraphStyle = NSMutableParagraphStyle()
-        scopes.updateParagraphStyle(paragraphStyle, with: defaultFont(for: attributes))
+        paragraphStyle.tabStops = []
+        paragraphStyle.defaultTabInterval = 2.em.asRawPoints(for: font.pointSize)
+        scopes.updateParagraphStyle(paragraphStyle, with: font)
 
         attributes[.paragraphStyle] = paragraphStyle
         return attributes

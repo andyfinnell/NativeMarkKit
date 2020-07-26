@@ -83,6 +83,8 @@ public extension StyleSheet {
             ],
             .blockQuote: [
                 .textColor(.darkGray)
+            ],
+            .list(isTight: true): [
             ]
         ],
         [
