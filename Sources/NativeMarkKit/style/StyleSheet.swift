@@ -47,16 +47,42 @@ public extension StyleSheet {
                 .backgroundColor(.white),
                 .textColor(.black)
             ],
-            .heading(level: 1): [.textStyle(.headline)],
-            .heading(level: 2): [.textStyle(.subheadline)],
-            .heading(level: 3): [.textStyle(.title1)],
-            .heading(level: 4): [.textStyle(.title2)],
-            .heading(level: 5): [.textStyle(.title3)],
-            .heading(level: 6): [.textStyle(.title3)],
+            .heading(level: 1): [
+                .textStyle(.largeTitle),
+                .lineHeightMultiple(1.5)
+            ],
+            .heading(level: 2): [
+                .textStyle(.title1),
+                .lineHeightMultiple(1.5)
+            ],
+            .heading(level: 3): [
+                .textStyle(.title2),
+                .lineHeightMultiple(1.5)
+            ],
+            .heading(level: 4): [
+                .textStyle(.title3),
+                .lineHeightMultiple(1.5)
+            ],
+            .heading(level: 5): [
+                .textStyle(.title3),
+                .lineHeightMultiple(1.5)
+            ],
+            .heading(level: 6): [
+                .textStyle(.title3),
+                .lineHeightMultiple(1.5)
+            ],
             .paragraph: [
                 .firstLineHeadIndent(0.pt),
                 .paragraphSpacingBefore(0.5.em),
                 .paragraphSpacingAfter(0.5.em),
+            ],
+            .codeBlock: [
+                .textStyle(.code),
+                .headIndent(1.em),
+                .backgroundColor(.lightGray)
+            ],
+            .blockQuote: [
+                .textColor(.darkGray)
             ]
         ],
         [
@@ -67,7 +93,8 @@ public extension StyleSheet {
                 .fontWeight(.bold)
             ],
             .code: [
-                .textStyle(.code)
+                .textStyle(.code),
+                .backgroundColor(.lightGray)
             ]
         ]
     )

@@ -187,6 +187,45 @@ to have the desired effect.
                                       styleSheet: styleSheet,
                                       width: 320)
         XCTAssert(testCase.isPassing(for: self))
+    }
+    
+    
+    func testHeadersAndParagraphs() {
+        let nativeMark = """
+# My Document
+
+This is the _beginning_ of the document. It's
+a paragraph, because reasons. It's not yet the
+**end** of the document, but maybe only of the
+paragraph.
+
+## Subheading 1
+
+The heading above this is smaller for reasons. Those reasons
+should not be confused with these other reasons that I don't
+know about.
+
+I should probably have at least one section with more than
+one paragraph. That might be a better test case that just
+a single paragraph section. Words, words, words.
+
+### Headings get smaller with time
+
+And now for something completely different.
+
+#### Out of ideas
+
+I need more paragraphs of text to work with.
+This isn't as easy as I thought it would be.
+I need more coffee.
+
+"""
+        
+        let testCase = RenderTestCase(name: "HeadingsAndParagraphs",
+                                      nativeMark: nativeMark,
+                                      styleSheet: .default,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
 
     }
 }

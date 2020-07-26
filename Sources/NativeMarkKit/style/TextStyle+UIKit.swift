@@ -22,7 +22,8 @@ extension TextStyle {
             return UIFont.preferredFont(forTextStyle: .subheadline)
         case .largeTitle:
             #if os(tvOS)
-            return UIFont.systemFont(ofSize: 34)
+            let baseFont = UIFont.systemFont(ofSize: 72)
+            return baseFont.withWeight(.medium) ?? baseFont
             #else
             if #available(iOS 11.0, watchOS 5.0, *) {
                 return UIFont.preferredFont(forTextStyle: .largeTitle)

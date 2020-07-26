@@ -66,7 +66,7 @@ private extension Renderer {
         }
         
         // TODO: use an image for thematic break?
-        result.append(NSAttributedString(string: "---", attributes: styleStack.attributes()))
+        result.append(NSAttributedString(string: "---\n", attributes: styleStack.attributes()))
     }
     
     func renderHeading(level: Int, text: [InlineText], with styleStack: StyleStack, into result: NSMutableAttributedString) {
@@ -76,6 +76,7 @@ private extension Renderer {
         }
 
         render(text, with: styleStack, into: result)
+        result.append(NSAttributedString(string: "\n", attributes: styleStack.attributes()))
     }
         
     func renderBlockQuote(_ elements: [Element], with styleStack: StyleStack, into result: NSMutableAttributedString) {
