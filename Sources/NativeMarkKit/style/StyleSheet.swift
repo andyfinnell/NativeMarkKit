@@ -1,8 +1,5 @@
 import Foundation
 
-// TODO: create a default style sheet
-// TODO: create an easy way for library users to override styles in default style sheet
-
 public final class StyleSheet {
     private var blockStyles: [BlockStyleSelector: [BlockStyle]]
     private var inlineStyles: [InlineStyleSelector: [InlineStyle]]
@@ -85,6 +82,14 @@ public extension StyleSheet {
                 .textColor(.darkGray)
             ],
             .list(isTight: true): [
+                .firstLineHeadIndent(0.5.em),
+                .orderedListMarker(.lowercaseRoman, separator: "."),
+                .unorderedListMarker(.check)
+            ],
+            .list(isTight: false): [
+                .firstLineHeadIndent(0.5.em),
+                .orderedListMarker(.lowercaseRoman, separator: "."),
+                .unorderedListMarker(.check)
             ]
         ],
         [

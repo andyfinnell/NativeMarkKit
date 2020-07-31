@@ -17,6 +17,8 @@ public enum BlockStyle {
     case paragraphSpacingAfter(Length)
     case paragraphSpacingBefore(Length)
     case lineBreak(NSLineBreakMode)
+    case orderedListMarker(OrderedListMarkerFormat, separator: String)
+    case unorderedListMarker(UnorderedListMarkerFormat)
     case inlineStyle(InlineStyle)
 }
 
@@ -67,7 +69,7 @@ extension BlockStyle: ExpressibleAsParagraphStyle {
             paragraphStyle.paragraphSpacingBefore = spacing.asRawPoints(for: defaultFont.pointSize)
         case let .lineBreak(lineBreak):
             paragraphStyle.lineBreakMode = lineBreak
-        case .inlineStyle:
+        case .inlineStyle, .orderedListMarker, .unorderedListMarker:
             break // handled elsewhere
         }
     }
@@ -75,9 +77,15 @@ extension BlockStyle: ExpressibleAsParagraphStyle {
 
 extension BlockStyle: ExpressibleAsAttributes {
     func updateAttributes(_ attributes: inout [NSAttributedString.Key: Any]) {
-        guard case let .inlineStyle(style) = self else {
-            return
+        switch self {
+        case let .inlineStyle(style):
+            style.updateAttributes(&attributes)
+        case let .orderedListMarker(format, separator: separator):
+            attributes[.orderedListMarkerFormat] = OrderedListMarkerFormatValue(format: format, separator: separator)
+        case let .unorderedListMarker(format):
+            attributes[.unorderedListMarkerFormat] = UnorderedListMarkerFormatValue(format: format)
+        default:
+            break
         }
-        style.updateAttributes(&attributes)
     }
 }

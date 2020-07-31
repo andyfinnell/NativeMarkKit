@@ -16,7 +16,6 @@ public typealias NativeFontWeight = UIFont.Weight
 
 #else
 
-// TODO: can we add support for watchOS?
 #error("Unsupported platform")
 
 #endif

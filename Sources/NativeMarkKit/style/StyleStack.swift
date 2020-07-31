@@ -17,9 +17,10 @@ protocol ExpressibleAsParagraphStyle {
 }
 
 final class StyleStack {
-    fileprivate enum Scope {
-        case blockStyles([BlockStyle])
-        case inlineStyles([InlineStyle])
+    fileprivate struct Scope {
+        let blockStyles: [BlockStyle]
+        let inlineStyles: [InlineStyle]
+        let rawAttributes: [NSAttributedString.Key: Any]
     }
     private var scopes = [Scope]()
     private let stylesheet: StyleSheet
@@ -28,12 +29,18 @@ final class StyleStack {
         self.stylesheet = stylesheet
     }
     
-    func push(_ blockSelector: BlockStyleSelector) {
-        scopes.append(.blockStyles(stylesheet.styles(for: blockSelector)))
+    func push(_ blockSelector: BlockStyleSelector, rawAttributes: [NSAttributedString.Key: Any] = [:]) {
+        let scope = Scope(blockStyles: stylesheet.styles(for: blockSelector),
+                          inlineStyles: [],
+                          rawAttributes: rawAttributes)
+        scopes.append(scope)
     }
     
-    func push(_ inlineSelector: InlineStyleSelector) {
-        scopes.append(.inlineStyles(stylesheet.styles(for: inlineSelector)))
+    func push(_ inlineSelector: InlineStyleSelector, rawAttributes: [NSAttributedString.Key: Any] = [:]) {
+        let scope = Scope(blockStyles: [],
+                          inlineStyles: stylesheet.styles(for: inlineSelector),
+                          rawAttributes: rawAttributes)
+        scopes.append(scope)
     }
     
     func pop() {
@@ -63,23 +70,16 @@ private extension StyleStack {
 
 extension StyleStack.Scope: ExpressibleAsAttributes {
     func updateAttributes(_ attributes: inout [NSAttributedString.Key: Any]) {
-        switch self {
-        case let .blockStyles(styles):
-            styles.updateAttributes(&attributes)
-        case let .inlineStyles(styles):
-            styles.updateAttributes(&attributes)
-        }
+        blockStyles.updateAttributes(&attributes)
+        inlineStyles.updateAttributes(&attributes)
+        attributes.merge(rawAttributes, uniquingKeysWith: { _, new in new })
     }
 }
 
 extension StyleStack.Scope: ExpressibleAsParagraphStyle {
     func updateParagraphStyle(_ paragraphStyle: NSMutableParagraphStyle, with defaultFont: NativeFont) {
-        switch self {
-        case let .blockStyles(styles):
-            return styles.updateParagraphStyle(paragraphStyle, with: defaultFont)
-        case let .inlineStyles(styles):
-            return styles.updateParagraphStyle(paragraphStyle, with: defaultFont)
-        }
+        blockStyles.updateParagraphStyle(paragraphStyle, with: defaultFont)
+        inlineStyles.updateParagraphStyle(paragraphStyle, with: defaultFont)
     }
 }
 

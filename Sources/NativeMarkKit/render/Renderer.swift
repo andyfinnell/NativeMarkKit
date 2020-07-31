@@ -7,8 +7,14 @@ import UIKit
 #error("Unsupported platform")
 #endif
 
-struct Renderer {
+class Renderer {
+    private var tabCount = 0
+    
+    init() {}
+    
     func render(_ document: Document, with stylesheet: StyleSheet) -> NSAttributedString {
+        tabCount = 0
+        
         let result = NSMutableAttributedString()
         let styleStack = StyleStack(stylesheet: stylesheet)
         styleStack.push(.document)
@@ -57,7 +63,7 @@ private extension Renderer {
         
         renderTab(indent, with: styleStack, into: result)
         render(text, with: styleStack, into: result)
-        result.append(NSAttributedString(string: "\n", attributes: styleStack.attributes()))
+        renderNewline(with: styleStack, into: result)
     }
     
     func renderThematicBreak(with styleStack: StyleStack, into result: NSMutableAttributedString) {
@@ -67,7 +73,8 @@ private extension Renderer {
         }
         
         // TODO: use an image for thematic break?
-        result.append(NSAttributedString(string: "---\n", attributes: styleStack.attributes()))
+        result.append(NSAttributedString(string: "---", attributes: styleStack.attributes()))
+        renderNewline(with: styleStack, into: result)
     }
     
     func renderHeading(level: Int, text: [InlineText], indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
@@ -78,7 +85,7 @@ private extension Renderer {
 
         renderTab(indent, with: styleStack, into: result)
         render(text, with: styleStack, into: result)
-        result.append(NSAttributedString(string: "\n", attributes: styleStack.attributes()))
+        renderNewline(with: styleStack, into: result)
     }
         
     func renderBlockQuote(_ elements: [Element], indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
@@ -115,25 +122,32 @@ private extension Renderer {
     }
     
     func renderListItemMarker(_ index: Int, info: ListInfo, indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        let rawText: String
+        renderTab(indent, with: styleStack, into: result)
         switch info.kind {
         case .bulleted:
-            rawText = "•" // TODO: allow this to be an image
+            let format = styleStack.attributes()[.unorderedListMarkerFormat] as? UnorderedListMarkerFormatValue ?? UnorderedListMarkerFormatValue(format: .bullet)
+            let baseString = format.render()
+            let startLocation = result.length
+            result.append(baseString)
+            result.addAttributes(styleStack.attributes(),
+                                 range: NSRange(location: startLocation, length: result.length - startLocation))
         case let .ordered(start: start):
-            rawText = String(describing: start + index)
+            let format = styleStack.attributes()[.orderedListMarkerFormat] as? OrderedListMarkerFormatValue ?? OrderedListMarkerFormatValue(format: .arabicNumeral, separator: ".")
+            let rawText = format.render(start + index)
+            result.append(NSAttributedString(string: rawText, attributes: styleStack.attributes()))
         }
-        renderTab(indent, with: styleStack, into: result)
-        result.append(NSAttributedString(string: rawText + " ", attributes: styleStack.attributes()))
     }
     
     func render(_ item: ListItem, info: ListInfo, index: Int, indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         renderListItemMarker(index, info: info, indent: indent, with: styleStack, into: result)
                 
-        styleStack.push(.item)
+        styleStack.push(.item, rawAttributes: [.leadingMarginIndent: indent + 1])
         defer {
             styleStack.pop()
         }
-
+        
+        result.append(NSAttributedString(string: "\t", attributes: styleStack.attributes()))
+        
         for element in item.elements {
             render(element, indent: indent + 1, with: styleStack, into: result)
         }
@@ -179,7 +193,7 @@ private extension Renderer {
     }
 
     func renderLinebreak(with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        result.append(NSAttributedString(string: "\n", attributes: styleStack.attributes()))
+        renderNewline(with: styleStack, into: result)
     }
 
     func renderSoftbreak(with styleStack: StyleStack, into result: NSMutableAttributedString) {
@@ -240,11 +254,21 @@ private extension Renderer {
     }
     
     func renderTab(_ indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        let tabs = NSAttributedString(string: tab(indent), attributes: styleStack.attributes())
-        result.append(tabs)
+        //let tabs = NSAttributedString(string: tab(indent), attributes: styleStack.attributes())
+        //result.append(tabs)
+    }
+    
+    func renderNewline(with styleStack: StyleStack, into result: NSMutableAttributedString) {
+        result.append(NSAttributedString(string: "\n", attributes: styleStack.attributes()))
+        tabCount = 0
     }
     
     func tab(_ indent: Int) -> String {
-        String(repeating: "\t", count: indent)
+        let delta = indent - tabCount
+        guard delta > 0 else {
+            return ""
+        }
+        tabCount = indent
+        return String(repeating: "\t", count: delta)
     }
 }
