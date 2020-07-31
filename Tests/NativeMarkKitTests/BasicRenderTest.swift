@@ -164,7 +164,7 @@ to have the desired effect.
                                       nativeMark: nativeMark,
                                       styleSheet: styleSheet,
                                       width: 320)
-        XCTAssert(testCase.isPassing(for: self, record: true))
+        XCTAssert(testCase.isPassing(for: self))
     }
 
     func testBasicInlineStyles() {
