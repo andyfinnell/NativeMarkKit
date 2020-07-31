@@ -254,7 +254,44 @@ what it looks like.
                                       nativeMark: nativeMark,
                                       styleSheet: .default,
                                       width: 320)
-        XCTAssert(testCase.isPassing(for: self, record: true))
+        XCTAssert(testCase.isPassing(for: self))
 
     }
+    
+    func testLooseOrderedList() {
+        let nativeMark = """
+# Ordered lists
+
+Let's see if we can make tight ordered lists
+look correct.
+
+1. First things, first
+
+1. Then the second
+
+1. Third should be here, and I need one that will wrap lines so I can see how that looks.
+Can I make this wrap even more? The world may never know. I'm not sure how to make
+tab stops work cross lines.
+
+    - One
+
+    - Two
+
+    - The third one is always the longest. I don't know why, but there you have it
+
+    - Four
+
+1. And done.
+
+Add a paragraph after the list just to see
+what it looks like.
+"""
+        
+        let testCase = RenderTestCase(name: "LooseOrderedList",
+                                      nativeMark: nativeMark,
+                                      styleSheet: .default,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
 }

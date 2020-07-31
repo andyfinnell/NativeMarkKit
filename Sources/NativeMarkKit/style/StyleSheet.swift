@@ -89,7 +89,9 @@ public extension StyleSheet {
             .list(isTight: false): [
                 .firstLineHeadIndent(0.5.em),
                 .orderedListMarker(.lowercaseRoman, separator: "."),
-                .unorderedListMarker(.check)
+                .unorderedListMarker(.check),
+                .paragraphSpacingBefore(0.5.em),
+                .paragraphSpacingAfter(0.5.em),
             ]
         ],
         [
