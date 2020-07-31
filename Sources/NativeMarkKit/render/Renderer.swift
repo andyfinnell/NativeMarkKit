@@ -8,13 +8,9 @@ import UIKit
 #endif
 
 class Renderer {
-    private var tabCount = 0
-    
     init() {}
     
-    func render(_ document: Document, with stylesheet: StyleSheet) -> NSAttributedString {
-        tabCount = 0
-        
+    func render(_ document: Document, with stylesheet: StyleSheet) -> NSAttributedString {        
         let result = NSMutableAttributedString()
         let styleStack = StyleStack(stylesheet: stylesheet)
         styleStack.push(.document)
@@ -61,7 +57,6 @@ private extension Renderer {
             styleStack.pop()
         }
         
-        renderTab(indent, with: styleStack, into: result)
         render(text, with: styleStack, into: result)
         renderNewline(with: styleStack, into: result)
     }
@@ -83,7 +78,6 @@ private extension Renderer {
             styleStack.pop()
         }
 
-        renderTab(indent, with: styleStack, into: result)
         render(text, with: styleStack, into: result)
         renderNewline(with: styleStack, into: result)
     }
@@ -106,7 +100,6 @@ private extension Renderer {
             styleStack.pop()
         }
 
-        renderTab(indent, with: styleStack, into: result)
         result.append(NSAttributedString(string: text, attributes: styleStack.attributes()))
     }
     
@@ -122,7 +115,6 @@ private extension Renderer {
     }
     
     func renderListItemMarker(_ index: Int, info: ListInfo, indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        renderTab(indent, with: styleStack, into: result)
         switch info.kind {
         case .bulleted:
             let format = styleStack.attributes()[.unorderedListMarkerFormat] as? UnorderedListMarkerFormatValue ?? UnorderedListMarkerFormatValue(format: .bullet)
@@ -252,23 +244,8 @@ private extension Renderer {
 
         render(text, with: styleStack, into: result)
     }
-    
-    func renderTab(_ indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        //let tabs = NSAttributedString(string: tab(indent), attributes: styleStack.attributes())
-        //result.append(tabs)
-    }
-    
+        
     func renderNewline(with styleStack: StyleStack, into result: NSMutableAttributedString) {
         result.append(NSAttributedString(string: "\n", attributes: styleStack.attributes()))
-        tabCount = 0
-    }
-    
-    func tab(_ indent: Int) -> String {
-        let delta = indent - tabCount
-        guard delta > 0 else {
-            return ""
-        }
-        tabCount = indent
-        return String(repeating: "\t", count: delta)
     }
 }
