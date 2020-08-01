@@ -75,9 +75,6 @@ public extension StyleSheet {
             ],
             .codeBlock: [
                 .textStyle(.code),
-                .firstLineHeadIndent(1.em),
-                .headIndent(1.em),
-                .tailIndent(-1.em),
                 .paragraphSpacingBefore(0.pt),
                 .paragraphSpacingAfter(0.pt),
                 .blockBackground(fillColor: .backgroundGray, strokeColor: .lightGray, strokeWidth: 1, cornerRadius: 3)

@@ -8,7 +8,7 @@ import UIKit
 #endif
 
 protocol TextContainerDelegate: AnyObject {
-    func textContainerLeadingMarginAt(_ characterIndex: Int) -> CGFloat?
+    func textContainerMarginsAt(_ characterIndex: Int) -> (leading: CGFloat, trailing: CGFloat)
 }
 
 final class TextContainer: NSTextContainer {
@@ -17,13 +17,14 @@ final class TextContainer: NSTextContainer {
     override func lineFragmentRect(forProposedRect proposedRect: CGRect, at characterIndex: Int, writingDirection baseWritingDirection: NSWritingDirection, remaining remainingRect: UnsafeMutablePointer<CGRect>?) -> CGRect {
         var returnValue = super.lineFragmentRect(forProposedRect: proposedRect, at: characterIndex, writingDirection: baseWritingDirection, remaining: remainingRect)
         
-        if let leadingMargin = delegate?.textContainerLeadingMarginAt(characterIndex) {
+        if let (leadingMargin, trailingMargin) = delegate?.textContainerMarginsAt(characterIndex) {
             returnValue = CGRect(x: returnValue.minX + leadingMargin,
                                  y: returnValue.minY,
-                                 width: returnValue.width - leadingMargin,
+                                 width: returnValue.width - leadingMargin - trailingMargin,
                                  height: returnValue.height)
+
         }
-                
+                        
         return returnValue
     }
 

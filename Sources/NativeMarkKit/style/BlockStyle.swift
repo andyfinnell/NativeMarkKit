@@ -20,7 +20,7 @@ public enum BlockStyle {
     case orderedListMarker(OrderedListMarkerFormat, separator: String)
     case unorderedListMarker(UnorderedListMarkerFormat)
     case thematicBreak(thickness: CGFloat, color: NativeColor)
-    case blockBackground(fillColor: NativeColor = .backgroundGray, strokeColor: NativeColor = .veryLightGray, strokeWidth: CGFloat = 1, cornerRadius: CGFloat = 3, topMargin: Length = 1.em, bottomMargin: Length = 1.em)
+    case blockBackground(fillColor: NativeColor = .backgroundGray, strokeColor: NativeColor = .veryLightGray, strokeWidth: CGFloat = 1, cornerRadius: CGFloat = 3, topMargin: Length = 1.em, bottomMargin: Length = 1.em, leftMargin: Length = 1.em, rightMargin: Length = 1.em)
     case inlineStyle(InlineStyle)
 }
 
@@ -94,13 +94,15 @@ extension BlockStyle: ExpressibleAsAttributes {
         case let .thematicBreak(thickness: thickness, color: color):
             attributes[.thematicBreakThickness] = thickness
             attributes[.thematicBreakColor] = color
-        case let .blockBackground(fillColor: fillColor, strokeColor: strokeColor, strokeWidth: strokeWidth, cornerRadius: cornerRadius, topMargin: topMargin, bottomMargin: bottomMargin):
+        case let .blockBackground(fillColor: fillColor, strokeColor: strokeColor, strokeWidth: strokeWidth, cornerRadius: cornerRadius, topMargin: topMargin, bottomMargin: bottomMargin, leftMargin: leftMargin, rightMargin: rightMargin):
             let value = BlockBackgroundValue(fillColor: fillColor,
                                              strokeColor: strokeColor,
                                              strokeWidth: strokeWidth,
                                              cornerRadius: cornerRadius,
                                              topMargin: topMargin,
-                                             bottomMargin: bottomMargin)
+                                             bottomMargin: bottomMargin,
+                                             leftMargin: leftMargin,
+                                             rightMargin: rightMargin)
             attributes[.blockBackground] = value
         default:
             break

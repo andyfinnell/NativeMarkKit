@@ -171,6 +171,12 @@ extension AbstractView: NSLayoutManagerDelegate {
 }
 
 private extension AbstractView {
+    func leadingMarginForTab(at characterIndex: Int) -> CGFloat? {
+        let desiredIndent = storage.attribute(.leadingMarginIndent, at: characterIndex, effectiveRange: nil) as? Int
+        return desiredIndent.flatMap { findPreviousTab(characterIndex, forIndent: $0) }
+            .flatMap { horizontalLocation(for: $0) }
+    }
+    
     func findPreviousTab(_ characterIndex: Int, forIndent indent: Int) -> Int? {
         var index = characterIndex - 1
         
@@ -198,7 +204,17 @@ private extension AbstractView {
         let locationInsideLineFragmentRect = layoutManager.location(forGlyphAt: glyphIndex)
         return lineFragmentRect.minX + locationInsideLineFragmentRect.x
     }
+    
+    func marginsForBlockBackground(at characterIndex: Int) -> (leading: CGFloat, trailing: CGFloat) {
+        guard let blockBackground = storage.attribute(.blockBackground, at: characterIndex, effectiveRange: nil) as? BlockBackgroundValue else {
+            return (leading: 0, trailing: 0)
+        }
         
+        let defaultFont = storage.attribute(.font, at: characterIndex, effectiveRange: nil) as? NativeFont ?? TextStyle.body.makeFont()
+        return (leading: blockBackground.leftMargin.asRawPoints(for: defaultFont.pointSize),
+                trailing: blockBackground.rightMargin.asRawPoints(for: defaultFont.pointSize))
+    }
+    
     func drawBackground() {
         var attributes = [NSAttributedString.Key: Any]()
         styleSheet.styles(for: .document).updateAttributes(&attributes)
@@ -270,9 +286,12 @@ private extension AbstractView {
 }
 
 extension AbstractView: TextContainerDelegate {
-    func textContainerLeadingMarginAt(_ characterIndex: Int) -> CGFloat? {
-        let desiredIndent = storage.attribute(.leadingMarginIndent, at: characterIndex, effectiveRange: nil) as? Int
-        return desiredIndent.flatMap { findPreviousTab(characterIndex, forIndent: $0) }
-            .flatMap { horizontalLocation(for: $0) }
+    func textContainerMarginsAt(_ characterIndex: Int) -> (leading: CGFloat, trailing: CGFloat) {
+        let tabLeadingMargin = leadingMarginForTab(at: characterIndex) ?? 0
+        let blockMargins = marginsForBlockBackground(at: characterIndex)
+        
+        return (leading: tabLeadingMargin + blockMargins.leading,
+                trailing: blockMargins.trailing)
     }
+
 }
