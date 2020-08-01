@@ -311,4 +311,30 @@ After the break.
         XCTAssert(testCase.isPassing(for: self))
     }
 
+    func testBlockQuotes() {
+        let nativeMark = """
+And now for something completely different.
+
+> This is the place for the best quotes I can think of.
+> Which is apparently nothing.
+>
+> \\- me, just now
+>
+> List of things
+>
+> 1. One thing
+> 1. Two thing
+> 1. Red thing
+> 1. Blue thing
+
+And done.
+"""
+        
+        let testCase = RenderTestCase(name: "BlockQuotes",
+                                      nativeMark: nativeMark,
+                                      styleSheet: .default,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+
+    }
 }

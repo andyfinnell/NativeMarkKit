@@ -1,6 +1,6 @@
 import Foundation
 
-public enum UnorderedListMarkerFormat {
+public enum UnorderedListMarkerFormat: Equatable {
     case bullet
     case box
     case check

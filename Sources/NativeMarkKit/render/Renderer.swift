@@ -88,12 +88,13 @@ private extension Renderer {
     }
         
     func renderBlockQuote(_ elements: [Element], indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        // TODO: how to render this? indent and change text color?
-        styleStack.push(.blockQuote)
+        styleStack.push(.blockQuote, rawAttributes: [.leadingMarginIndent: indent + 1])
         defer {
             styleStack.pop()
         }
         
+        result.append(NSAttributedString(string: "\t", attributes: styleStack.attributes()))
+
         render(elements, indent: indent + 1, with: styleStack, into: result)
     }
 

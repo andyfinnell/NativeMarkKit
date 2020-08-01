@@ -7,26 +7,6 @@ import UIKit
 #error("Unsupported platform")
 #endif
 
-public struct Strikethrough {
-    public let style: NSUnderlineStyle
-    public let color: NativeColor?
-    
-    public init(style: NSUnderlineStyle, color: NativeColor?) {
-        self.style = style
-        self.color = color
-    }
-}
-
-public struct Underline {
-    public let style: NSUnderlineStyle
-    public let color: NativeColor?
-    
-    public init(style: NSUnderlineStyle, color: NativeColor?) {
-        self.style = style
-        self.color = color
-    }
-}
-
 public enum InlineStyle {
     case textColor(NativeColor) // TODO: what about dark mode?
     case textStyle(TextStyle)
@@ -37,6 +17,7 @@ public enum InlineStyle {
     case fontSize(CGFloat)
     case fontWeight(NativeFontWeight)
     case fontTraits(FontTraits)
+    case backgroundBorder(width: CGFloat = 1, color: NativeColor = .lightGray, sides: BorderSides = .all)
 }
 
 extension InlineStyle: ExpressibleAsParagraphStyle {
@@ -76,6 +57,9 @@ extension InlineStyle: ExpressibleAsAttributes {
         case let .fontTraits(traits):
             let currentFont = attributes[.font] as? NativeFont
             attributes[.font] = currentFont.withTraits(traits)
+        case let .backgroundBorder(width: width, color: color, sides: sides):
+            let backgroundBorder = BackgroundBorderValue(width: width, color: color, sides: sides)
+            attributes[.backgroundBorder] = backgroundBorder
         }
     }
 }

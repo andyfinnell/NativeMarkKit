@@ -47,6 +47,10 @@ public extension BlockStyle {
     static func underline(_ value: Underline) -> BlockStyle {
         .inlineStyle(.underline(value))
     }
+    
+    static func backgroundBorder(width: CGFloat = 1, color: NativeColor = .lightGray, sides: BorderSides = .all) -> BlockStyle {
+        .inlineStyle(.backgroundBorder(width: width, color: color, sides: sides))
+    }
 }
 
 extension BlockStyle: ExpressibleAsParagraphStyle {

@@ -79,12 +79,18 @@ public extension StyleSheet {
                 .backgroundColor(.lightGray)
             ],
             .blockQuote: [
-                .textColor(.darkGray)
+                .textColor(.veryDarkGray),
+                .paragraphSpacingBefore(0.5.em),
+                .paragraphSpacingAfter(0.5.em),
+                .tailIndent(-1.em),
+                .backgroundBorder(width: 8, color: .lightGray, sides: .left)
             ],
             .list(isTight: true): [
                 .firstLineHeadIndent(0.5.em),
                 .orderedListMarker(.lowercaseRoman, separator: "."),
-                .unorderedListMarker(.check)
+                .unorderedListMarker(.check),
+                .paragraphSpacingBefore(0.0.em),
+                .paragraphSpacingAfter(0.0.em),
             ],
             .list(isTight: false): [
                 .firstLineHeadIndent(0.5.em),

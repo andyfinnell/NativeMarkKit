@@ -19,7 +19,7 @@ struct AccessibileURL {
 
 final class AbstractView: NSObject {
     private let storage: NSTextStorage
-    private let layoutManager = NSLayoutManager()
+    private let layoutManager = LayoutManager()
     private let container = TextContainer(containerSize: .zero)
     private var hasSetIntrinsicWidth = false
     private let styleSheet: StyleSheet
@@ -128,6 +128,13 @@ extension AbstractView: NSLayoutManagerDelegate {
             return true
         }
         
+        #if DEBUG
+        if let stringRange = Range(characterRange, in: storage.string) {
+            let string = storage.string[stringRange]
+            print("laying out [\(characterRange)](\(string)) at \(lineFragmentRect.pointee)")
+        }
+        #endif
+        
         return false
     }
 }
@@ -140,7 +147,7 @@ private extension AbstractView {
             index -= 1
         }
         
-        guard index >= 0 else {
+        guard index >= 0 && (index + 1) < characterIndex else {
             return nil
         }
 
