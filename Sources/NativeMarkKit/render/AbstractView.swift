@@ -1,17 +1,6 @@
 import Foundation
 #if canImport(AppKit)
 import AppKit
-
-extension CGRect {
-    func fill() {
-        NSBezierPath(rect: self).fill()
-    }
-    
-    func clear() {
-        NSGraphicsContext.current?.cgContext.clear(self)
-    }
-}
-
 #elseif canImport(UIKit)
 import UIKit
 
@@ -20,18 +9,6 @@ extension NSTextContainer {
         self.init(size: containerSize)
     }
 }
-
-extension CGRect {
-    func fill() {
-        UIBezierPath(rect: self).fill()
-    }
-    
-    func clear() {
-        UIGraphicsGetCurrentContext()?.clear(self)
-    }
-}
-#else
-#error("Unsupported platform")
 #endif
 
 struct AccessibileURL {
@@ -72,6 +49,8 @@ final class AbstractView: NSObject {
         container.delegate = self
         layoutManager.addTextContainer(container)
         storage.addLayoutManager(layoutManager)
+        
+        layoutManager.delegate = self
     }
     
     func intrinsicSize() -> CGSize {
@@ -132,6 +111,24 @@ final class AbstractView: NSObject {
         }
         
         return accessibleUrls
+    }
+}
+
+extension AbstractView: NSLayoutManagerDelegate {
+    func layoutManager(_ layoutManager: NSLayoutManager, shouldSetLineFragmentRect lineFragmentRect: UnsafeMutablePointer<CGRect>, lineFragmentUsedRect: UnsafeMutablePointer<CGRect>, baselineOffset: UnsafeMutablePointer<CGFloat>, in textContainer: NSTextContainer, forGlyphRange glyphRange: NSRange) -> Bool {
+        let characterRange = layoutManager.characterRange(forGlyphRange: glyphRange, actualGlyphRange: nil)
+        
+        if let thematicBreak = storage.attribute(.attachment, at: characterRange.location, effectiveRange: nil) as? ThematicBreakAttachment {
+            let originalRect = lineFragmentRect.pointee
+            let updatedRect = CGRect(x: originalRect.minX,
+                                     y: originalRect.minY,
+                                     width: originalRect.width,
+                                     height: thematicBreak.thickness)
+            lineFragmentRect.assign(repeating: updatedRect, count: 1)
+            return true
+        }
+        
+        return false
     }
 }
 

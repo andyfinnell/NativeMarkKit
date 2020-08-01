@@ -19,6 +19,7 @@ public enum BlockStyle {
     case lineBreak(NSLineBreakMode)
     case orderedListMarker(OrderedListMarkerFormat, separator: String)
     case unorderedListMarker(UnorderedListMarkerFormat)
+    case thematicBreak(thickness: CGFloat, color: NativeColor)
     case inlineStyle(InlineStyle)
 }
 
@@ -69,7 +70,7 @@ extension BlockStyle: ExpressibleAsParagraphStyle {
             paragraphStyle.paragraphSpacingBefore = spacing.asRawPoints(for: defaultFont.pointSize)
         case let .lineBreak(lineBreak):
             paragraphStyle.lineBreakMode = lineBreak
-        case .inlineStyle, .orderedListMarker, .unorderedListMarker:
+        case .inlineStyle, .orderedListMarker, .unorderedListMarker, .thematicBreak:
             break // handled elsewhere
         }
     }
@@ -84,6 +85,9 @@ extension BlockStyle: ExpressibleAsAttributes {
             attributes[.orderedListMarkerFormat] = OrderedListMarkerFormatValue(format: format, separator: separator)
         case let .unorderedListMarker(format):
             attributes[.unorderedListMarkerFormat] = UnorderedListMarkerFormatValue(format: format)
+        case let .thematicBreak(thickness: thickness, color: color):
+            attributes[.thematicBreakThickness] = thickness
+            attributes[.thematicBreakColor] = color
         default:
             break
         }

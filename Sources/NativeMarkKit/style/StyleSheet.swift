@@ -92,6 +92,9 @@ public extension StyleSheet {
                 .unorderedListMarker(.check),
                 .paragraphSpacingBefore(0.5.em),
                 .paragraphSpacingAfter(0.5.em),
+            ],
+            .thematicBreak: [
+                .thematicBreak(thickness: 1, color: .veryLightGray),
             ]
         ],
         [

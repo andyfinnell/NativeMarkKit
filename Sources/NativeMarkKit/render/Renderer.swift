@@ -67,8 +67,13 @@ private extension Renderer {
             styleStack.pop()
         }
         
-        // TODO: use an image for thematic break?
-        result.append(NSAttributedString(string: "---", attributes: styleStack.attributes()))
+        let attributes = styleStack.attributes()
+        let thickness = attributes[.thematicBreakThickness] as? CGFloat ?? 1.0
+        let color = attributes[.thematicBreakColor] as? NativeColor ?? .veryLightGray
+        let attachment = ThematicBreakAttachment(thickness: thickness, color: color)
+        let startLocation = result.length
+        result.append(NSAttributedString(attachment: attachment))
+        result.addAttributes(attributes, range: NSRange(location: startLocation, length: result.length - startLocation))
         renderNewline(with: styleStack, into: result)
     }
     

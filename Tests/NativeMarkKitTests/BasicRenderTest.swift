@@ -294,4 +294,21 @@ what it looks like.
         XCTAssert(testCase.isPassing(for: self))
     }
 
+    
+    func testHorizontalRules() {
+        let nativeMark = """
+I need a break.
+
+---
+
+After the break.
+"""
+
+        let testCase = RenderTestCase(name: "HorizontalRules",
+                                      nativeMark: nativeMark,
+                                      styleSheet: .default,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
 }
