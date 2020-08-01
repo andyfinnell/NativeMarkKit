@@ -335,6 +335,26 @@ And done.
                                       styleSheet: .default,
                                       width: 320)
         XCTAssert(testCase.isPassing(for: self))
+    }
+    
+    func testCodes() {
+        let nativeMark = """
+Let's write some `code` since that's what's next on the list.
 
+```Swift
+let shouldI = shouldDoTheThing()
+
+if shouldI {
+    doTheThing()
+}
+```
+
+This is the end of the document.
+"""
+        let testCase = RenderTestCase(name: "Codes",
+                                      nativeMark: nativeMark,
+                                      styleSheet: .default,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self, record: true))
     }
 }

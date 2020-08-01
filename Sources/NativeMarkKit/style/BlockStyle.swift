@@ -20,6 +20,7 @@ public enum BlockStyle {
     case orderedListMarker(OrderedListMarkerFormat, separator: String)
     case unorderedListMarker(UnorderedListMarkerFormat)
     case thematicBreak(thickness: CGFloat, color: NativeColor)
+    case blockBackground(fillColor: NativeColor = .backgroundGray, strokeColor: NativeColor = .veryLightGray, strokeWidth: CGFloat = 1, cornerRadius: CGFloat = 3, topMargin: Length = 1.em, bottomMargin: Length = 1.em)
     case inlineStyle(InlineStyle)
 }
 
@@ -74,7 +75,8 @@ extension BlockStyle: ExpressibleAsParagraphStyle {
             paragraphStyle.paragraphSpacingBefore = spacing.asRawPoints(for: defaultFont.pointSize)
         case let .lineBreak(lineBreak):
             paragraphStyle.lineBreakMode = lineBreak
-        case .inlineStyle, .orderedListMarker, .unorderedListMarker, .thematicBreak:
+        case .inlineStyle, .orderedListMarker, .unorderedListMarker, .thematicBreak,
+             .blockBackground:
             break // handled elsewhere
         }
     }
@@ -92,6 +94,14 @@ extension BlockStyle: ExpressibleAsAttributes {
         case let .thematicBreak(thickness: thickness, color: color):
             attributes[.thematicBreakThickness] = thickness
             attributes[.thematicBreakColor] = color
+        case let .blockBackground(fillColor: fillColor, strokeColor: strokeColor, strokeWidth: strokeWidth, cornerRadius: cornerRadius, topMargin: topMargin, bottomMargin: bottomMargin):
+            let value = BlockBackgroundValue(fillColor: fillColor,
+                                             strokeColor: strokeColor,
+                                             strokeWidth: strokeWidth,
+                                             cornerRadius: cornerRadius,
+                                             topMargin: topMargin,
+                                             bottomMargin: bottomMargin)
+            attributes[.blockBackground] = value
         default:
             break
         }

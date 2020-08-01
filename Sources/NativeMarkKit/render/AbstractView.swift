@@ -128,6 +128,37 @@ extension AbstractView: NSLayoutManagerDelegate {
             return true
         }
         
+        var effectiveRange = characterRange
+        if let blockBackground = storage.attribute(.blockBackground, at: characterRange.location, effectiveRange: &effectiveRange) as? BlockBackgroundValue {
+            let isAtStart = characterRange.location == effectiveRange.location
+            let isAtEnd = characterRange.upperBound == effectiveRange.upperBound
+            let defaultFont = storage.attribute(.font, at: characterRange.location, effectiveRange: nil) as? NativeFont ?? TextStyle.body.makeFont()
+
+            let topMargin = isAtStart ? blockBackground.topMargin.asRawPoints(for: defaultFont.pointSize) : 0
+            let bottomMargin = isAtEnd ? blockBackground.bottomMargin.asRawPoints(for: defaultFont.pointSize) : 0
+            
+            let originalLineFragmentRect = lineFragmentRect.pointee
+            let updatedLineFragmentRect = CGRect(x: originalLineFragmentRect.minX,
+                                                 y: originalLineFragmentRect.minY,
+                                                 width: originalLineFragmentRect.width,
+                                                 height: originalLineFragmentRect.height + topMargin + bottomMargin)
+            lineFragmentRect.assign(repeating: updatedLineFragmentRect, count: 1)
+
+            let originalUsedRect = lineFragmentUsedRect.pointee
+            let updatedUsedRect = CGRect(x: originalUsedRect.minX,
+                                         y: updatedLineFragmentRect.minY + topMargin,
+                                         width: originalUsedRect.width,
+                                         height: originalUsedRect.height)
+            lineFragmentUsedRect.assign(repeating: updatedUsedRect, count: 1)
+            
+            let originalBaseline = baselineOffset.pointee
+            baselineOffset.assign(repeating: originalBaseline + topMargin, count: 1)
+            
+            if isAtStart || isAtEnd {
+                return true
+            } // else fall through
+        }
+        
         #if DEBUG
         if let stringRange = Range(characterRange, in: storage.string) {
             let string = storage.string[stringRange]
