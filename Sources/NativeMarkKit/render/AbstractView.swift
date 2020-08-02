@@ -117,17 +117,7 @@ final class AbstractView: NSObject {
 extension AbstractView: NSLayoutManagerDelegate {
     func layoutManager(_ layoutManager: NSLayoutManager, shouldSetLineFragmentRect lineFragmentRect: UnsafeMutablePointer<CGRect>, lineFragmentUsedRect: UnsafeMutablePointer<CGRect>, baselineOffset: UnsafeMutablePointer<CGFloat>, in textContainer: NSTextContainer, forGlyphRange glyphRange: NSRange) -> Bool {
         let characterRange = layoutManager.characterRange(forGlyphRange: glyphRange, actualGlyphRange: nil)
-        
-        if let thematicBreak = storage.attribute(.attachment, at: characterRange.location, effectiveRange: nil) as? ThematicBreakAttachment {
-            let originalRect = lineFragmentRect.pointee
-            let updatedRect = CGRect(x: originalRect.minX,
-                                     y: originalRect.minY,
-                                     width: originalRect.width,
-                                     height: thematicBreak.thickness)
-            lineFragmentRect.assign(repeating: updatedRect, count: 1)
-            return true
-        }
-        
+                
         var effectiveRange = characterRange
         if let blockBackground = storage.attribute(.blockBackground, at: characterRange.location, effectiveRange: &effectiveRange) as? BackgroundValue {
             let isAtStart = characterRange.location == effectiveRange.location

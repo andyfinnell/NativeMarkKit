@@ -24,7 +24,6 @@ final class ThematicBreakAttachment: NativeTextAttachment {
     
     override func lineFragment(for textContainer: NSTextContainer?, proposedLineFragment lineFrag: CGRect) -> CGRect {
         let maxWidth = textContainer?.size.width ?? lineFrag.width
-        // TODO: should the x and y be relative?
-        return CGRect(x: lineFrag.minX, y: lineFrag.minY, width: min(maxWidth, lineFrag.width), height: thickness)
+        return CGRect(x: 0, y: 0, width: min(maxWidth, lineFrag.width), height: thickness)
     }
 }
