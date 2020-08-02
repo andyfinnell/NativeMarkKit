@@ -125,9 +125,7 @@ private extension LayoutManager {
         let location = self.location(forGlyphAt: glyphIndex)
         let defaultFont = self.textStorage?.attribute(.font, at: characterIndex, effectiveRange: nil) as? NativeFont ?? TextStyle.body.makeFont()
 
-        // TODO: fix up the warning here
-        let postscriptName = defaultFont.fontDescriptor.postscriptName ?? defaultFont.fontName
-        guard let cgFont = CGFont(postscriptName as CFString) else {
+        guard let cgFont = defaultFont.cgFont else {
             return .zero
         }
         
