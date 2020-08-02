@@ -113,7 +113,7 @@ public extension StyleSheet {
             ],
             .code: [
                 .textStyle(.code),
-                .backgroundColor(.backgroundGray)
+                .inlineBackground()
             ]
         ]
     )

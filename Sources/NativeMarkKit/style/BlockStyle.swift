@@ -95,7 +95,7 @@ extension BlockStyle: ExpressibleAsAttributes {
             attributes[.thematicBreakThickness] = thickness
             attributes[.thematicBreakColor] = color
         case let .blockBackground(fillColor: fillColor, strokeColor: strokeColor, strokeWidth: strokeWidth, cornerRadius: cornerRadius, topMargin: topMargin, bottomMargin: bottomMargin, leftMargin: leftMargin, rightMargin: rightMargin):
-            let value = BlockBackgroundValue(fillColor: fillColor,
+            let value = BackgroundValue(fillColor: fillColor,
                                              strokeColor: strokeColor,
                                              strokeWidth: strokeWidth,
                                              cornerRadius: cornerRadius,

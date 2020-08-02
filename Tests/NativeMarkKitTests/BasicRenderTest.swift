@@ -349,12 +349,13 @@ if shouldI {
 }
 ```
 
-This is the end of the document.
+This is the end of the document. Let's add some code that
+has ascenders and descenders: `Legumes`.
 """
         let testCase = RenderTestCase(name: "Codes",
                                       nativeMark: nativeMark,
                                       styleSheet: .default,
                                       width: 320)
-        XCTAssert(testCase.isPassing(for: self, record: true))
+        XCTAssert(testCase.isPassing(for: self))
     }
 }

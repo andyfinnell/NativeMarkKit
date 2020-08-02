@@ -129,7 +129,7 @@ extension AbstractView: NSLayoutManagerDelegate {
         }
         
         var effectiveRange = characterRange
-        if let blockBackground = storage.attribute(.blockBackground, at: characterRange.location, effectiveRange: &effectiveRange) as? BlockBackgroundValue {
+        if let blockBackground = storage.attribute(.blockBackground, at: characterRange.location, effectiveRange: &effectiveRange) as? BackgroundValue {
             let isAtStart = characterRange.location == effectiveRange.location
             let isAtEnd = characterRange.upperBound == effectiveRange.upperBound
             let defaultFont = storage.attribute(.font, at: characterRange.location, effectiveRange: nil) as? NativeFont ?? TextStyle.body.makeFont()
@@ -206,7 +206,7 @@ private extension AbstractView {
     }
     
     func marginsForBlockBackground(at characterIndex: Int) -> (leading: CGFloat, trailing: CGFloat) {
-        guard let blockBackground = storage.attribute(.blockBackground, at: characterIndex, effectiveRange: nil) as? BlockBackgroundValue else {
+        guard let blockBackground = storage.attribute(.blockBackground, at: characterIndex, effectiveRange: nil) as? BackgroundValue else {
             return (leading: 0, trailing: 0)
         }
         

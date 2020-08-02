@@ -8,6 +8,9 @@ public typealias NativeFont = NSFont
 public typealias NativeFontWeight = NSFont.Weight
 public typealias NativeImage = NSImage
 public typealias NativeBezierPath = NSBezierPath
+public typealias NativeFloat = CGFloat
+public typealias NativePoint = CGPoint
+public typealias NativeRect = CGRect
 
 extension NSBezierPath {
     convenience init(roundedRect: CGRect, cornerRadius: CGFloat) {
@@ -23,6 +26,9 @@ public typealias NativeFont = UIFont
 public typealias NativeFontWeight = UIFont.Weight
 public typealias NativeImage = UIImage
 public typealias NativeBezierPath = UIBezierPath
+public typealias NativeFloat = CGFloat
+public typealias NativePoint = CGPoint
+public typealias NativeRect = CGRect
 
 #else
 

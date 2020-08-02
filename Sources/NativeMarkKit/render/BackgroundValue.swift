@@ -5,7 +5,7 @@ import AppKit
 import UIKit
 #endif
 
-final class BlockBackgroundValue: NSObject {
+final class BackgroundValue: NSObject {
     let fillColor: NativeColor
     let strokeColor: NativeColor
     let strokeWidth: CGFloat
@@ -35,10 +35,10 @@ final class BlockBackgroundValue: NSObject {
         let leftMarginInPts = leftMargin.asRawPoints(for: defaultFont.pointSize)
         let rightMarginInPts = rightMargin.asRawPoints(for: defaultFont.pointSize)
         
-        let frame = CGRect(x: rect.minX - leftMarginInPts,
-                           y: rect.minY - topMarginInPts,
-                           width: rect.width + leftMarginInPts + rightMarginInPts,
-                           height: rect.height + topMarginInPts + bottomMarginInPts)
+        let frame = CGRect(x: round(rect.minX - leftMarginInPts) + strokeWidth / 2.0,
+                           y: round(rect.minY - topMarginInPts) + strokeWidth / 2.0,
+                           width: round(rect.width + leftMarginInPts + rightMarginInPts) - strokeWidth,
+                           height: round(rect.height + topMarginInPts + bottomMarginInPts) - strokeWidth)
         
         let path = NativeBezierPath(roundedRect: frame, cornerRadius: cornerRadius)
         path.lineWidth = strokeWidth
@@ -49,7 +49,7 @@ final class BlockBackgroundValue: NSObject {
     }
     
     override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? BlockBackgroundValue else {
+        guard let rhs = object as? BackgroundValue else {
             return false
         }
         

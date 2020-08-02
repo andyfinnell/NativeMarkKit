@@ -21,11 +21,11 @@ public enum FontTraits {
 
 public struct FontDescriptor {
     public let name: FontName
-    public let size: CGFloat
+    public let size: CGFloat // TODO: should provide sizes that can be scaled relative for the platform
     public let weight: NativeFontWeight
     public let traits: FontTraits
     
-    init(name: FontName, size: CGFloat, weight: NativeFontWeight, traits: FontTraits) {
+    public init(name: FontName, size: CGFloat, weight: NativeFontWeight, traits: FontTraits) {
         self.name = name
         self.size = size
         self.weight = weight

@@ -7,7 +7,7 @@ import UIKit
 #error("Unsupported platform")
 #endif
 
-class Renderer {
+struct Renderer {
     init() {}
     
     func render(_ document: Document, with stylesheet: StyleSheet) -> NSAttributedString {        
@@ -22,12 +22,23 @@ class Renderer {
         if result.string.hasSuffix("\n") {
             result.deleteCharacters(in: NSRange(location: result.length - 1, length: 1))
         }
-                
+        
+        fixInlineBackgroundSpacing(in: result)
+        
         return result
     }
 }
 
-private extension Renderer {    
+private extension Renderer {
+    func fixInlineBackgroundSpacing(in result: NSMutableAttributedString) {
+        result.enumerateAttribute(.inlineBackground, in: NSRange(location: 0, length: result.length), options: .reverse) { value, characterRange, _ in
+            guard let background = value as? BackgroundValue else { return }
+            
+            insertSpacer(background.rightMargin, at: characterRange.upperBound, in: result)
+            insertSpacer(background.leftMargin, at: characterRange.lowerBound, in: result)
+        }
+    }
+    
     func render(_ elements: [Element], indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         for element in elements {
             render(element, indent: indent, with: styleStack, into: result)
@@ -71,9 +82,8 @@ private extension Renderer {
         let thickness = attributes[.thematicBreakThickness] as? CGFloat ?? 1.0
         let color = attributes[.thematicBreakColor] as? NativeColor ?? .veryLightGray
         let attachment = ThematicBreakAttachment(thickness: thickness, color: color)
-        let startLocation = result.length
-        result.append(NSAttributedString(attachment: attachment))
-        result.addAttributes(attributes, range: NSRange(location: startLocation, length: result.length - startLocation))
+        
+        renderTextAttachment(attachment, with: styleStack, into: result)
         renderNewline(with: styleStack, into: result)
     }
     
@@ -99,7 +109,6 @@ private extension Renderer {
     }
 
     func renderCodeBlock(info: String, text: String, indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        // TODO: how to render this? change font? background color?
         // TODO: delegate out so let a more sophisticated renderer do syntax highlighting
         styleStack.push(.codeBlock)
         defer {
@@ -183,6 +192,7 @@ private extension Renderer {
         defer {
             styleStack.pop()
         }
+        
         result.append(NSAttributedString(string: text, attributes: styleStack.attributes()))
     }
     
@@ -253,5 +263,18 @@ private extension Renderer {
         
     func renderNewline(with styleStack: StyleStack, into result: NSMutableAttributedString) {
         result.append(NSAttributedString(string: "\n", attributes: styleStack.attributes()))
+    }
+    
+    func renderTextAttachment(_ textAttachment: NSTextAttachment, with styleStack: StyleStack, into result: NSMutableAttributedString) {
+        let startLocation = result.length
+        result.append(NSAttributedString(attachment: textAttachment))
+        result.addAttributes(styleStack.attributes(), range: NSRange(location: startLocation, length: result.length - startLocation))
+    }
+    
+    func insertSpacer(_ length: Length, at characterIndex: Int, in result: NSMutableAttributedString) {
+        let defaultFont = result.attribute(.font, at: characterIndex, effectiveRange: nil) as? NativeFont ?? TextStyle.body.makeFont()
+        let lengthInPoints = length.asRawPoints(for: defaultFont.pointSize)
+        let attachment = SpacerAttachment(lengthInPoints: lengthInPoints)
+        result.insert(NSAttributedString(attachment: attachment), at: characterIndex)
     }
 }
