@@ -5,7 +5,6 @@ import UIKit
 public final class NativeMarkLabel: UIControl {
     private let abstractView: AbstractView
     
-    // TODO: provide a default that opens up links
     public var onOpenLink: ((URL) -> Void)? {
         get { abstractView.onOpenLink }
         set { abstractView.onOpenLink = newValue }

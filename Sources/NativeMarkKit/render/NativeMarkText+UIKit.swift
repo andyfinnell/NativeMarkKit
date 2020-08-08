@@ -6,11 +6,12 @@ import SwiftUI
 public struct NativeMarkText: UIViewRepresentable {
     public typealias UIViewType = NativeMarkLabel
 
+    // TODO: make sure style sheet is customizable
     let nativeMark: String
     let onOpenLink: ((URL) -> Void)?
     let styleSheet: StyleSheet
     
-    public init(_ nativeMark: String, styleSheet: StyleSheet = .default, onOpenLink: ((URL) -> Void)? = nil) {
+    public init(_ nativeMark: String, styleSheet: StyleSheet = .default, onOpenLink: ((URL) -> Void)? = URLOpener.open) {
         self.nativeMark = nativeMark
         self.onOpenLink = onOpenLink
         self.styleSheet = styleSheet

@@ -7,7 +7,6 @@ public final class NativeMarkLabel: NSView {
     
     public override var isFlipped: Bool { true }
 
-    // TODO: provide a default that opens up links
     public var onOpenLink: ((URL) -> Void)? {
         get { abstractView.onOpenLink }
         set { abstractView.onOpenLink = newValue }

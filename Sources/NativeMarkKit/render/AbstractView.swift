@@ -40,7 +40,7 @@ final class AbstractView: NSObject {
     }
     weak var delegate: AbstractViewDelegate?
     
-    var onOpenLink: ((URL) -> Void)?
+    var onOpenLink: ((URL) -> Void)? = URLOpener.open
     
     init(nativeMark: String, styleSheet: StyleSheet) {
         self.styleSheet = styleSheet
