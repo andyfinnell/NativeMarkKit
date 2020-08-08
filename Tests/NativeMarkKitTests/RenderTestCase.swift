@@ -125,7 +125,7 @@ private extension RenderTestCase {
         
         context.pop()
         
-        if isSimilarEnough(mutableData) {
+        if isSimilarEnough(mutableData, rowBytes: rowBytes, totalWidth: totalWidth, totalHeight: totalHeight) {
             return .pass
         }
         
@@ -147,13 +147,26 @@ private extension RenderTestCase {
         return .fail
     }
     
-    func isSimilarEnough(_ data: NSMutableData) -> Bool {
-        let differenceThreshold = 2 // between 0 and 255
-        for offset in 0..<data.length {
+    func isSimilarEnough(_ data: NSMutableData, rowBytes: Int, totalWidth: Int, totalHeight: Int) -> Bool {
+        for row in 0..<totalHeight {
+            let rowByteOffset = row * rowBytes
+            let isSimilar = isRowSimilarEnough(data, byteOffset: rowByteOffset, totalWidth: totalWidth)
+            if !isSimilar {
+                return false
+            }
+        }
+        
+        return true
+    }
+    
+    func isRowSimilarEnough(_ data: NSMutableData, byteOffset: Int, totalWidth: Int) -> Bool {
+        let differenceThreshold = 17 // between 0 and 255
+        let rowLength = totalWidth * 4
+        for offset in 0..<rowLength {
             if (offset % 4) == 0 {
                 continue // skip alpha channel (which is first)
             }
-            let component = data.bytes.load(fromByteOffset: offset, as: UInt8.self)
+            let component = data.bytes.load(fromByteOffset: byteOffset + offset, as: UInt8.self)
             if component > differenceThreshold {
                 return false
             }

@@ -32,7 +32,11 @@ final class ImageTextAttachment: NativeTextAttachment {
     
     override func draw(in rect: CGRect) {
         if let image = loadImage() {
-            image.draw(in: rect)
+            // On the Mac, the origin is fractional which results in artifacts,
+            //  which in turn breaks the render tests as no run is the same.
+            let origin = CGPoint(x: rect.minX.rounded(), y: rect.minY.rounded())
+            let drawRect = CGRect(origin: origin, size: rect.size)
+            image.draw(in: drawRect)
         } else {
             NativeColor.veryLightGray.set()
             rect.fill()

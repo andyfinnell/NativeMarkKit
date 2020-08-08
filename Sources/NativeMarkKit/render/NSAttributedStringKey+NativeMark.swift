@@ -1,6 +1,6 @@
 import Foundation
 
-extension NSAttributedString.Key {
+public extension NSAttributedString.Key {
     static let leadingMarginIndent = NSAttributedString.Key("nativeMarkKit.leadingMarginIndent")
     static let orderedListMarkerFormat = NSAttributedString.Key("nativeMarkKit.orderedListMarkerFormat")
     static let unorderedListMarkerFormat = NSAttributedString.Key("nativeMarkKit.unorderedListMarkerFormat")
