@@ -5,6 +5,7 @@ import UIKit
 public final class NativeMarkLabel: UIControl {
     private let abstractView: AbstractView
     
+    // TODO: provide a default that opens up links
     public var onOpenLink: ((URL) -> Void)? {
         get { abstractView.onOpenLink }
         set { abstractView.onOpenLink = newValue }
@@ -23,12 +24,14 @@ public final class NativeMarkLabel: UIControl {
     public init(nativeMark: String, styleSheet: StyleSheet) {
         abstractView = AbstractView(nativeMark: nativeMark, styleSheet: styleSheet)
         super.init(frame: .zero)
+        abstractView.delegate = self
         updateAccessibility()
     }
     
     required init?(coder: NSCoder) {
         abstractView = AbstractView(nativeMark: "", styleSheet: .default)
         super.init(frame: .zero)
+        abstractView.delegate = self
         updateAccessibility()
     }
     
@@ -87,4 +90,11 @@ private extension NativeMarkLabel {
     }
 }
 
+extension NativeMarkLabel: AbstractViewDelegate {
+    func abstractViewDidInvalidateRect(_ rect: CGRect) {
+        setNeedsDisplay(rect)
+    }
+}
+
 #endif
+

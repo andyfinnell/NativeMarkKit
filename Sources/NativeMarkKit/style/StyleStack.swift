@@ -23,7 +23,7 @@ final class StyleStack {
         let rawAttributes: [NSAttributedString.Key: Any]
     }
     private var scopes = [Scope]()
-    private let stylesheet: StyleSheet
+    let stylesheet: StyleSheet
     
     init(stylesheet: StyleSheet) {
         self.stylesheet = stylesheet

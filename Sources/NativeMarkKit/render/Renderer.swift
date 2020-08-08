@@ -201,7 +201,7 @@ private extension Renderer {
     }
 
     func renderLinebreak(with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        renderNewline(with: styleStack, into: result)
+        result.append(NSAttributedString(string: "\r", attributes: styleStack.attributes()))
     }
 
     func renderSoftbreak(with styleStack: StyleStack, into result: NSMutableAttributedString) {
@@ -216,7 +216,7 @@ private extension Renderer {
         
         var attributes = [NSAttributedString.Key: Any]()
         if let url = link.flatMap({ NSURL(string: $0.url) }) {
-            attributes[.link] = url
+            attributes[.nativeMarkLink] = url
         }
         if let title = link?.title {
             #if os(macOS)
@@ -230,17 +230,18 @@ private extension Renderer {
     }
     
     func renderImage(_ link: Link?, altText: String, with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        styleStack.push(.image)
+        var attributes = [NSAttributedString.Key: Any]()
+        #if os(macOS)
+        attributes[.toolTip] = altText
+        #endif
+
+        styleStack.push(.image, rawAttributes: attributes)
         defer {
             styleStack.pop()
         }
 
-        let attachment = NSTextAttachment()
-        // TODO: retreive image. Maybe force a cache to be provided beforehand?
-        let attachmentString = NSAttributedString(attachment: attachment)
-        let startLocation = result.length
-        result.append(attachmentString)
-        result.addAttributes(styleStack.attributes(), range: NSRange(location: startLocation, length: attachmentString.length))
+        let attachment = ImageTextAttachment(imageUrl: link?.url, delegate: styleStack.stylesheet)
+        renderTextAttachment(attachment, with: styleStack, into: result)
     }
 
     func renderEmphasis(_ text: [InlineText], with styleStack: StyleStack, into result: NSMutableAttributedString) {

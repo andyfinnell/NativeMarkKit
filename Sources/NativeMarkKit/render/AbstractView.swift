@@ -17,6 +17,10 @@ struct AccessibileURL {
     let frame: CGRect
 }
 
+protocol AbstractViewDelegate: AnyObject {
+    func abstractViewDidInvalidateRect(_ rect: CGRect)
+}
+
 final class AbstractView: NSObject {
     private let storage: NSTextStorage
     private let layoutManager = LayoutManager()
@@ -34,6 +38,7 @@ final class AbstractView: NSObject {
             nativeMarkDidChange()
         }
     }
+    weak var delegate: AbstractViewDelegate?
     
     var onOpenLink: ((URL) -> Void)?
     
@@ -45,6 +50,8 @@ final class AbstractView: NSObject {
         self.storage = NSTextStorage(attributedString: attributedString)
         super.init()
         
+        setDelegateForImageAttachments()
+
         container.lineFragmentPadding = 0
         container.delegate = self
         layoutManager.addTextContainer(container)
@@ -99,7 +106,7 @@ final class AbstractView: NSObject {
     func accessibleUrls() -> [AccessibileURL] {
         var accessibleUrls = [AccessibileURL]()
         
-        storage.enumerateAttribute(.link, in: NSRange(location: 0, length: storage.length), options: []) { attributeValue, attributeRange, _ in
+        storage.enumerateAttribute(.nativeMarkLink, in: NSRange(location: 0, length: storage.length), options: []) { attributeValue, attributeRange, _ in
             guard let url = attributeValue as? NSURL,
                 let labelRange = Range(attributeRange, in: storage.string) else {
                     return
@@ -158,9 +165,25 @@ extension AbstractView: NSLayoutManagerDelegate {
         
         return false
     }
+    
+    func layoutManager(_ layoutManager: NSLayoutManager, shouldUse action: NSLayoutManager.ControlCharacterAction, forControlCharacterAt charIndex: Int) -> NSLayoutManager.ControlCharacterAction {
+        let ch = storage.mutableString.character(at: charIndex)
+        if ch == 13 /* \r */ {
+            return .lineBreak
+        } else {
+            return action
+        }
+    }
 }
 
 private extension AbstractView {
+    func setDelegateForImageAttachments() {
+        storage.enumerateAttribute(.attachment, in: NSRange(location: 0, length: storage.length), options: []) { value, _, _ in
+            guard let imageAttachment = value as? ImageTextAttachment else { return }
+            imageAttachment.layoutDelegate = self
+        }
+    }
+    
     func leadingMarginForTab(at characterIndex: Int) -> CGFloat? {
         let desiredIndent = storage.attribute(.leadingMarginIndent, at: characterIndex, effectiveRange: nil) as? Int
         return desiredIndent.flatMap { findPreviousTab(characterIndex, forIndent: $0) }
@@ -245,7 +268,7 @@ private extension AbstractView {
                                                           in: container,
                                                           fractionOfDistanceBetweenInsertionPoints: nil)
         guard characterIndex >= 0 && characterIndex < storage.length,
-            let url = storage.attribute(.link, at: characterIndex, effectiveRange: nil) as? NSURL else {
+            let url = storage.attribute(.nativeMarkLink, at: characterIndex, effectiveRange: nil) as? NSURL else {
             return nil
         }
         
@@ -269,6 +292,8 @@ private extension AbstractView {
             let attributedString = try NSAttributedString(nativeMark: nativeMark, styleSheet: styleSheet)
             storage.setAttributedString(attributedString)
             hasSetIntrinsicWidth = false
+            
+            setDelegateForImageAttachments()
         } catch {
             // TODO: do something
         }
@@ -284,4 +309,16 @@ extension AbstractView: TextContainerDelegate {
                 trailing: blockMargins.trailing)
     }
 
+}
+
+extension AbstractView: ImageTextAttachmentLayoutDelegate {
+    func imageTextAttachmentDidLoadImage(atCharacterIndex characterIndex: Int) {
+        let characterRange = NSRange(location: characterIndex, length: 1)
+        layoutManager.invalidateLayout(forCharacterRange: characterRange, actualCharacterRange: nil)
+        layoutManager.invalidateDisplay(forCharacterRange: characterRange)
+        
+        let glyphRange = layoutManager.glyphRange(forCharacterRange: characterRange, actualCharacterRange: nil)
+        let bounds = layoutManager.boundingRect(forGlyphRange: glyphRange, in: container)
+        delegate?.abstractViewDidInvalidateRect(bounds)
+    }
 }

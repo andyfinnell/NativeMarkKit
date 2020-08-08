@@ -3,10 +3,12 @@ import Foundation
 public final class StyleSheet {
     private var blockStyles: [BlockStyleSelector: [BlockStyle]]
     private var inlineStyles: [InlineStyleSelector: [InlineStyle]]
+    private var imageLoader: ImageLoader
     
-    public init(_ blockStyles: [BlockStyleSelector: [BlockStyle]], _ inlineStyles: [InlineStyleSelector: [InlineStyle]]) {
+    public init(_ blockStyles: [BlockStyleSelector: [BlockStyle]], _ inlineStyles: [InlineStyleSelector: [InlineStyle]], imageLoader: ImageLoader = DefaultImageLoader()) {
         self.blockStyles = blockStyles
         self.inlineStyles = inlineStyles
+        self.imageLoader = imageLoader
     }
     
     func styles(for blockSelector: BlockStyleSelector) -> [BlockStyle] {
@@ -18,10 +20,10 @@ public final class StyleSheet {
     }
     
     public func duplicate() -> StyleSheet {
-        StyleSheet(blockStyles, inlineStyles)
+        StyleSheet(blockStyles, inlineStyles, imageLoader: imageLoader)
     }
     
-    public func mutate(_ overrideBlockStyles: [BlockStyleSelector: [BlockStyle]] = [:], _ overrideInlineStyles: [InlineStyleSelector: [InlineStyle]] = [:]) -> StyleSheet {
+    public func mutate(_ overrideBlockStyles: [BlockStyleSelector: [BlockStyle]] = [:], _ overrideInlineStyles: [InlineStyleSelector: [InlineStyle]] = [:], imageLoader: ImageLoader? = nil) -> StyleSheet {
         for (blockSelector, blockStylesForSelector) in overrideBlockStyles {
             let existingStyles = blockStyles[blockSelector] ?? []
             blockStyles[blockSelector] = existingStyles + blockStylesForSelector
@@ -30,6 +32,10 @@ public final class StyleSheet {
         for (inlineSelector, inlineStylesForSelector) in overrideInlineStyles {
             let existingStyles = inlineStyles[inlineSelector] ?? []
             inlineStyles[inlineSelector] = existingStyles + inlineStylesForSelector
+        }
+        
+        if let imageLoader = imageLoader {
+            self.imageLoader = imageLoader
         }
         
         return self
@@ -114,7 +120,17 @@ public extension StyleSheet {
             .code: [
                 .textStyle(.code),
                 .inlineBackground()
+            ],
+            .link: [
+                .textColor(.systemBlue),
+                .underline(Underline(style: .single, color: nil))
             ]
         ]
     )
+}
+
+extension StyleSheet: ImageTextAttachmentDelegate {
+    func imageTextAttachmentLoadImage(_ urlString: String, completion: @escaping (NativeImage?) -> Void) {
+        imageLoader.loadImage(urlString, completion: completion)
+    }
 }

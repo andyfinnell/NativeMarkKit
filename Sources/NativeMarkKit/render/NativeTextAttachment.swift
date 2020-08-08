@@ -10,7 +10,8 @@ final class NativeTextAttachmentCell: NSTextAttachmentCell {
     }
 
     override func cellFrame(for textContainer: NSTextContainer, proposedLineFragment lineFrag: NSRect, glyphPosition position: NSPoint, characterIndex charIndex: Int) -> NSRect {
-        nativeTextAttachment?.lineFragment(for: textContainer, proposedLineFragment: lineFrag) ?? .zero
+        nativeTextAttachment?.characterIndex = charIndex
+        return nativeTextAttachment?.lineFragment(for: textContainer, proposedLineFragment: lineFrag) ?? .zero
     }
 }
 
@@ -21,6 +22,8 @@ import UIKit
 #endif
 
 class NativeTextAttachment: NSTextAttachment {
+    var characterIndex: Int?
+    
     init() {
         super.init(data: nil, ofType: nil)
         #if canImport(AppKit)
@@ -41,7 +44,7 @@ class NativeTextAttachment: NSTextAttachment {
         // override point
         return .zero
     }
-    
+        
     // These are used by iOS. They exist for macOS, but aren't called.
     override func image(forBounds imageBounds: CGRect, textContainer: NSTextContainer?, characterIndex charIndex: Int) -> NativeImage? {
         NativeImage.make(size: imageBounds.size) {
@@ -51,6 +54,7 @@ class NativeTextAttachment: NSTextAttachment {
     }
     
     override func attachmentBounds(for textContainer: NSTextContainer?, proposedLineFragment lineFrag: CGRect, glyphPosition position: CGPoint, characterIndex charIndex: Int) -> CGRect {
-        lineFragment(for: textContainer, proposedLineFragment: lineFrag)
+        self.characterIndex = charIndex
+        return lineFragment(for: textContainer, proposedLineFragment: lineFrag)
     }
 }

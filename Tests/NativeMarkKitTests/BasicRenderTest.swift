@@ -358,4 +358,23 @@ has ascenders and descenders: `Legumes`.
                                       width: 320)
         XCTAssert(testCase.isPassing(for: self))
     }
+    
+    func testImagesAndLinks() {
+        let nativeMark = """
+#### Headline
+
+Here's a tiny kitten: ![Tiny kitten](http://placekitten.com/g/20/20). It can be
+found at [placekitten.com](https://placekitten.com/) which is on the internet.\\
+This is a hard break.
+"""
+        let imageLoader = FakeImageLoader()
+        imageLoader.loadImage_stub["http://placekitten.com/g/20/20"] = NativeImage.fixture(size: CGSize(width: 22, height: 22))
+        let styleSheet = StyleSheet.default.duplicate().mutate(imageLoader: imageLoader)
+        let testCase = RenderTestCase(name: "ImagesAndLinks",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+
+    }
 }

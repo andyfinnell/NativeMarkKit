@@ -9,5 +9,6 @@ extension NSAttributedString.Key {
     static let backgroundBorder = NSAttributedString.Key("nativeMarkKit.backgroundBorder")
     static let blockBackground = NSAttributedString.Key("nativeMarkKit.blockBackground")
     static let inlineBackground = NSAttributedString.Key("nativeMarkKit.inlineBackground")
+    static let nativeMarkLink = NSAttributedString.Key("nativeMarkKit.link")
 }
 

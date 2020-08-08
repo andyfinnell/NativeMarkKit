@@ -7,6 +7,7 @@ public final class NativeMarkLabel: NSView {
     
     public override var isFlipped: Bool { true }
 
+    // TODO: provide a default that opens up links
     public var onOpenLink: ((URL) -> Void)? {
         get { abstractView.onOpenLink }
         set { abstractView.onOpenLink = newValue }
@@ -25,12 +26,14 @@ public final class NativeMarkLabel: NSView {
     public init(nativeMark: String, styleSheet: StyleSheet) {
         abstractView = AbstractView(nativeMark: nativeMark, styleSheet: styleSheet)
         super.init(frame: .zero)
+        abstractView.delegate = self
         updateAccessibility()
     }
     
     required init?(coder: NSCoder) {
         abstractView = AbstractView(nativeMark: "", styleSheet: .default)
         super.init(frame: .zero)
+        abstractView.delegate = self
         updateAccessibility()
     }
     
@@ -99,4 +102,9 @@ final class URLAcccessibilityElement: NSAccessibilityElement {
     }
 }
 
+extension NativeMarkLabel: AbstractViewDelegate {
+    func abstractViewDidInvalidateRect(_ rect: CGRect) {
+        setNeedsDisplay(rect)
+    }
+}
 #endif
