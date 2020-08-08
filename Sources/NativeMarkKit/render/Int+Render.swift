@@ -13,7 +13,7 @@ extension Int {
     }
     
     var asEnglishAlphabet: String {
-        let normalizedValue = self % Self.englishAlphabet.count
+        let normalizedValue = (self - 1) % Self.englishAlphabet.count
         return Self.englishAlphabet[normalizedValue]
     }
     

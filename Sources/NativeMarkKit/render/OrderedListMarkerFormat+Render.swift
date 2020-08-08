@@ -11,7 +11,7 @@ extension OrderedListMarkerFormat {
         case .lowercaseRoman:
             return "\(number.asRomanNumerals.lowercased())\(separator)"
         case .octal:
-            return "\(number.asRomanNumerals.lowercased())\(separator)"
+            return "\(number.asOctalString)\(separator)"
         case .arabicNumeral:
             return "\(number)\(separator)"
         case .uppercaseAlpha:

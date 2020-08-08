@@ -258,6 +258,204 @@ what it looks like.
 
     }
     
+    func testLowercaseAlphaOrderedList() {
+        let nativeMark = """
+Let's see if we can make ordered lists
+look correct.
+
+1. First things, first
+1. Then the second
+1. Third should be here, and I need one that will wrap lines so I can see how that looks.
+1. And done.
+"""
+        let styleSheet = StyleSheet.default.duplicate().mutate([
+            .list(isTight: true): [
+                .orderedListMarker(.lowercaseAlpha, separator: ")")
+            ]
+        ])
+        let testCase = RenderTestCase(name: "LowercaseAlphaOrderedList",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
+    func testLowercaseHexadecimalOrderedList() {
+        let nativeMark = """
+Let's see if we can make ordered lists
+look correct.
+
+1. First things, first
+1. Then the second
+1. Third should be here, and I need one that will wrap lines so I can see how that looks.
+1. four
+1. five
+1. six
+1. seven
+1. eight
+1. nine
+1. ten
+1. eleven
+1. twelve
+1. thirteen
+1. fourteen
+1. fifteen
+1. sixteen
+1. seventeen
+"""
+        let styleSheet = StyleSheet.default.duplicate().mutate([
+            .list(isTight: true): [
+                .orderedListMarker(.lowercaseHexadecimal, separator: ")")
+            ]
+        ])
+        let testCase = RenderTestCase(name: "LowercaseHexadecimalOrderedList",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
+    func testLowercaseRomanOrderedList() {
+        let nativeMark = """
+Let's see if we can make ordered lists
+look correct.
+
+1. First things, first
+1. Then the second
+1. Third should be here, and I need one that will wrap lines so I can see how that looks.
+1. four
+1. five
+1. six
+1. seven
+1. eight
+1. nine
+1. ten
+"""
+        let styleSheet = StyleSheet.default.duplicate().mutate([
+            .list(isTight: true): [
+                .orderedListMarker(.lowercaseRoman, separator: ".")
+            ]
+        ])
+        let testCase = RenderTestCase(name: "LowercaseRomanOrderedList",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
+    func testOctalOrderedList() {
+        let nativeMark = """
+Let's see if we can make ordered lists
+look correct.
+
+1. First things, first
+1. Then the second
+1. Third should be here, and I need one that will wrap lines so I can see how that looks.
+1. four
+1. five
+1. six
+1. seven
+1. eight
+1. nine
+1. ten
+"""
+        let styleSheet = StyleSheet.default.duplicate().mutate([
+            .list(isTight: true): [
+                .orderedListMarker(.octal, separator: ".")
+            ]
+        ])
+        let testCase = RenderTestCase(name: "OctalOrderedList",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
+    func testUppercaseAlphaOrderedList() {
+        let nativeMark = """
+Let's see if we can make ordered lists
+look correct.
+
+1. First things, first
+1. Then the second
+1. Third should be here, and I need one that will wrap lines so I can see how that looks.
+1. And done.
+"""
+        let styleSheet = StyleSheet.default.duplicate().mutate([
+            .list(isTight: true): [
+                .orderedListMarker(.uppercaseAlpha, separator: ")")
+            ]
+        ])
+        let testCase = RenderTestCase(name: "UppercaseAlphaOrderedList",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
+    func testUppercaseHexadecimalOrderedList() {
+        let nativeMark = """
+Let's see if we can make ordered lists
+look correct.
+
+1. First things, first
+1. Then the second
+1. Third should be here, and I need one that will wrap lines so I can see how that looks.
+1. four
+1. five
+1. six
+1. seven
+1. eight
+1. nine
+1. ten
+1. eleven
+1. twelve
+1. thirteen
+1. fourteen
+1. fifteen
+1. sixteen
+1. seventeen
+"""
+        let styleSheet = StyleSheet.default.duplicate().mutate([
+            .list(isTight: true): [
+                .orderedListMarker(.uppercaseHexadecimal, separator: ")")
+            ]
+        ])
+        let testCase = RenderTestCase(name: "UppercaseHexadecimalOrderedList",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
+    func testUppercaseRomanOrderedList() {
+        let nativeMark = """
+Let's see if we can make ordered lists
+look correct.
+
+1. First things, first
+1. Then the second
+1. Third should be here, and I need one that will wrap lines so I can see how that looks.
+1. four
+1. five
+1. six
+1. seven
+1. eight
+1. nine
+1. ten
+"""
+        let styleSheet = StyleSheet.default.duplicate().mutate([
+            .list(isTight: true): [
+                .orderedListMarker(.uppercaseRoman, separator: ".")
+            ]
+        ])
+        let testCase = RenderTestCase(name: "UppercaseRomanOrderedList",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
     func testLooseOrderedList() {
         let nativeMark = """
 # Ordered lists
