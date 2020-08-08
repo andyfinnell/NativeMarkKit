@@ -33,6 +33,7 @@ public struct FontDescriptor {
     }
 }
 
+// TODO: should exercise all these styles to make sure they look fine
 public enum TextStyle {
     case body
     case callout

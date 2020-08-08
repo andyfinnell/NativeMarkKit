@@ -1,5 +1,6 @@
 import Foundation
 
+// TODO: need to make sure these all render appropriately
 extension UnorderedListMarkerFormat {
     func render() -> NSAttributedString {
         switch self {

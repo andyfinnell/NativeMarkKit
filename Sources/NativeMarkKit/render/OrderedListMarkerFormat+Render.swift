@@ -1,5 +1,6 @@
 import Foundation
 
+// TODO: need to test all these options
 extension OrderedListMarkerFormat {
     func render(_ number: Int, separator: String) -> String {
         switch self {
