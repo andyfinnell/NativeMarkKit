@@ -21,6 +21,7 @@ protocol AbstractViewDelegate: AnyObject {
     func abstractViewDidInvalidateRect(_ rect: CGRect)
 }
 
+// TODO: should this be NativeMarkString and public? like NSAttributedString
 final class AbstractView: NSObject {
     private let storage: NSTextStorage
     private let layoutManager = LayoutManager()

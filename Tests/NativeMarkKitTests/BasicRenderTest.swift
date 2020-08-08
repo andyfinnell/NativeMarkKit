@@ -735,4 +735,98 @@ This is a hard break.
         XCTAssert(testCase.isPassing(for: self))
 
     }
+    
+    func testTextStyles1() {
+        let nativeMark = """
+# Body
+
+## Callout
+
+### Caption 1
+
+#### Caption 2
+
+##### Code
+
+###### Footnote
+
+Headline.
+"""
+        
+        let styleSheet = StyleSheet.default.duplicate().mutate([
+            .heading(level: 1): [
+                .textStyle(.body)
+            ],
+            .heading(level: 2): [
+                .textStyle(.callout)
+            ],
+            .heading(level: 3): [
+                .textStyle(.caption1)
+            ],
+            .heading(level: 4): [
+                .textStyle(.caption2)
+            ],
+            .heading(level: 5): [
+                .textStyle(.code)
+            ],
+            .heading(level: 6): [
+                .textStyle(.footnote)
+            ],
+            .paragraph: [
+                .textStyle(.headline)
+            ]
+        ])
+        let testCase = RenderTestCase(name: "TextStyles1",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+    
+    func testTextStyles2() {
+        let nativeMark = """
+# Large Title
+
+## Subheadline
+
+### Title 1
+
+#### Title 2
+
+##### Title 3
+
+###### Helvetica headline
+
+This is a paragraph in 12pt Helvetica.
+"""
+        
+        let styleSheet = StyleSheet.default.duplicate().mutate([
+            .heading(level: 1): [
+                .textStyle(.largeTitle)
+            ],
+            .heading(level: 2): [
+                .textStyle(.subheadline)
+            ],
+            .heading(level: 3): [
+                .textStyle(.title1)
+            ],
+            .heading(level: 4): [
+                .textStyle(.title2)
+            ],
+            .heading(level: 5): [
+                .textStyle(.title3)
+            ],
+            .heading(level: 6): [
+                .textStyle(.custom(FontDescriptor(name: .custom("Helvetica"), size: .scaled(to: .headline), weight: .regular, traits: .unspecified)))
+            ],
+            .paragraph: [
+                .textStyle(.custom(FontDescriptor(name: .custom("Helvetica"), size: .fixed(12), weight: .bold, traits: .unspecified)))
+            ]
+        ])
+        let testCase = RenderTestCase(name: "TextStyles2",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
 }
