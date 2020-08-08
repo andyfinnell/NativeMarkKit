@@ -492,7 +492,167 @@ what it looks like.
         XCTAssert(testCase.isPassing(for: self))
     }
 
+    func testBoxUnorderedList() {
+        let nativeMark = """
+Let's see if we can make unordered lists
+look correct.
+
+- One
+- Two
+- Three
+- Four
+"""
+        let styleSheet = StyleSheet.default.duplicate().mutate([
+            .list(isTight: true): [
+                .unorderedListMarker(.box)
+            ]
+        ])
+
+        let testCase = RenderTestCase(name: "BoxUnorderedList",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
+    func testBulletUnorderedList() {
+        let nativeMark = """
+Let's see if we can make unordered lists
+look correct.
+
+* One
+* Two
+* Three
+* Four
+"""
+        let styleSheet = StyleSheet.default.duplicate().mutate([
+            .list(isTight: true): [
+                .unorderedListMarker(.bullet)
+            ]
+        ])
+
+        let testCase = RenderTestCase(name: "BulletedUnorderedList",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
+    func testCheckUnorderedList() {
+        let nativeMark = """
+Let's see if we can make unordered lists
+look correct.
+
+* One
+* Two
+* Three
+* Four
+"""
+        let styleSheet = StyleSheet.default.duplicate().mutate([
+            .list(isTight: true): [
+                .unorderedListMarker(.check)
+            ]
+        ])
+
+        let testCase = RenderTestCase(name: "CheckUnorderedList",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
+    func testCircleUnorderedList() {
+        let nativeMark = """
+Let's see if we can make unordered lists
+look correct.
+
+* One
+* Two
+* Three
+* Four
+"""
+        let styleSheet = StyleSheet.default.duplicate().mutate([
+            .list(isTight: true): [
+                .unorderedListMarker(.circle)
+            ]
+        ])
+
+        let testCase = RenderTestCase(name: "CircleUnorderedList",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
+    func testDiamondUnorderedList() {
+        let nativeMark = """
+Let's see if we can make unordered lists
+look correct.
+
+* One
+* Two
+* Three
+* Four
+"""
+        let styleSheet = StyleSheet.default.duplicate().mutate([
+            .list(isTight: true): [
+                .unorderedListMarker(.diamond)
+            ]
+        ])
+
+        let testCase = RenderTestCase(name: "DiamondUnorderedList",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
     
+    func testHyphenUnorderedList() {
+        let nativeMark = """
+Let's see if we can make unordered lists
+look correct.
+
+* One
+* Two
+* Three
+* Four
+"""
+        let styleSheet = StyleSheet.default.duplicate().mutate([
+            .list(isTight: true): [
+                .unorderedListMarker(.hyphen)
+            ]
+        ])
+
+        let testCase = RenderTestCase(name: "HyphenUnorderedList",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
+    func testSquareUnorderedList() {
+        let nativeMark = """
+Let's see if we can make unordered lists
+look correct.
+
+* One
+* Two
+* Three
+* Four
+"""
+        let styleSheet = StyleSheet.default.duplicate().mutate([
+            .list(isTight: true): [
+                .unorderedListMarker(.square)
+            ]
+        ])
+
+        let testCase = RenderTestCase(name: "SquareUnorderedList",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
     func testHorizontalRules() {
         let nativeMark = """
 I need a break.

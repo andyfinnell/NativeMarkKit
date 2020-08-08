@@ -1,17 +1,16 @@
 import Foundation
 
-// TODO: need to make sure these all render appropriately
 extension UnorderedListMarkerFormat {
     func render() -> NSAttributedString {
         switch self {
         case .box:
             return NSAttributedString(string: "\u{2610}")
         case .bullet:
-            return NSAttributedString(string: "\u{2022}")
+            return NSAttributedString(string: "•")
         case .check:
             return NSAttributedString(string: "\u{2713}")
         case .circle:
-            return NSAttributedString(string: "\u{25EF}")
+            return NSAttributedString(string: "\u{25CF}")
         case let .custom(value):
             return value
         case .diamond:
