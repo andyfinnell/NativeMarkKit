@@ -273,9 +273,14 @@ private extension Renderer {
     }
     
     func insertSpacer(_ length: Length, at characterIndex: Int, in result: NSMutableAttributedString) {
-        let defaultFont = result.attribute(.font, at: characterIndex, effectiveRange: nil) as? NativeFont ?? TextStyle.body.makeFont()
+        let defaultFont = self.defaultFont(at: characterIndex, in: result)
         let lengthInPoints = length.asRawPoints(for: defaultFont.pointSize)
         let attachment = SpacerAttachment(lengthInPoints: lengthInPoints)
         result.insert(NSAttributedString(attachment: attachment), at: characterIndex)
+    }
+    
+    func defaultFont(at characterIndex: Int, in result: NSMutableAttributedString) -> NativeFont {
+        let limitedCharacterIndex = max(min(characterIndex, result.length - 1), 0)
+        return result.attribute(.font, at: limitedCharacterIndex, effectiveRange: nil) as? NativeFont ?? TextStyle.body.makeFont()
     }
 }
