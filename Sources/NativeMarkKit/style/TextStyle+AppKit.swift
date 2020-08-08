@@ -32,12 +32,14 @@ extension TextStyle {
             if #available(OSX 10.15, *) {
                 return NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)
             } else {
-                return FontDescriptor(name: .systemMonospace, size: 12, weight: .regular, traits: .monospace).makeFont()
+                return FontDescriptor(name: .systemMonospace, size: .fixed(12), weight: .regular, traits: .monospace).makeFont()
             }
         case let .custom(descriptor):
             return descriptor.makeFont()
         }
     }
+    
+    var pointSize: CGFloat { makeFont().pointSize }
 }
 
 extension Optional where Wrapped == NSFont {
@@ -47,12 +49,12 @@ extension Optional where Wrapped == NSFont {
     
     func withWeight(_ weight: NSFont.Weight) -> NSFont {
         flatMap { $0.withWeight(weight) }
-            ?? FontDescriptor(name: .system, size: 12, weight: weight, traits: .unspecified).makeFont()
+            ?? FontDescriptor(name: .system, size: .fixed(12), weight: weight, traits: .unspecified).makeFont()
     }
     
     func withTraits(_ traits: FontTraits) -> NSFont {
         flatMap { $0.withTraits(traits) }
-            ?? FontDescriptor(name: .system, size: 12, weight: .regular, traits: traits).makeFont()
+            ?? FontDescriptor(name: .system, size: .fixed(12), weight: .regular, traits: traits).makeFont()
     }
 }
 
@@ -110,7 +112,7 @@ private extension NSFontDescriptor {
 private extension FontDescriptor {
     func makeFont() -> NSFont {
         NSFont(descriptor: descriptor(), textTransform: nil)
-            ?? NSFont.systemFont(ofSize: size)
+            ?? NSFont.systemFont(ofSize: size.pointSize)
     }
     
     func descriptor() -> NSFontDescriptor {
@@ -119,19 +121,19 @@ private extension FontDescriptor {
         traits[.weight] = weight
         self.traits.updateTraits(&traits)
         attributes[.traits] = traits
-        attributes[.size] = size
+        attributes[.size] = size.pointSize
         return NSFontDescriptor(fontAttributes: attributes)
     }
     
     func baseAttributes() -> [NSFontDescriptor.AttributeName: Any] {
         switch name {
         case .system:
-            return NSFont.systemFont(ofSize: size)
+            return NSFont.systemFont(ofSize: size.pointSize)
                 .fontDescriptor
                 .fontAttributes
         case .systemMonospace:
             if #available(OSX 10.15, *) {
-                return NSFont.monospacedSystemFont(ofSize: size, weight: weight)
+                return NSFont.monospacedSystemFont(ofSize: size.pointSize, weight: weight)
                     .fontDescriptor
                     .fontAttributes
             } else {

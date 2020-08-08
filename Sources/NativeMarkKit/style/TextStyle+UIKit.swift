@@ -22,13 +22,17 @@ extension TextStyle {
             return UIFont.preferredFont(forTextStyle: .subheadline)
         case .largeTitle:
             #if os(tvOS)
-            let baseFont = UIFont.systemFont(ofSize: 72)
+            let title1Font = UIFont.preferredFont(forTextStyle: .title1)
+            let size = (title1Font.pointSize * 92.0 / 76.0).rounded()
+            let baseFont = UIFont.systemFont(ofSize: size)
             return baseFont.withWeight(.medium) ?? baseFont
             #else
             if #available(iOS 11.0, watchOS 5.0, *) {
                 return UIFont.preferredFont(forTextStyle: .largeTitle)
             } else {
-                return UIFont.systemFont(ofSize: 34)
+                let title1Font = UIFont.preferredFont(forTextStyle: .title1)
+                let size = (title1Font.pointSize * 34.0 / 28.0).rounded()
+                return UIFont.systemFont(ofSize: size)
             }
             #endif
         case .title1:
@@ -38,14 +42,19 @@ extension TextStyle {
         case .title3:
             return UIFont.preferredFont(forTextStyle: .title3)
         case .code:
+            let bodyFont = UIFont.preferredFont(forTextStyle: .body)
             if #available(iOS 13.0, tvOS 13.0, *) {
-                return UIFont.monospacedSystemFont(ofSize: 17, weight: .regular)
+                return UIFont.monospacedSystemFont(ofSize: bodyFont.pointSize, weight: .regular)
             } else {
-                return FontDescriptor(name: .systemMonospace, size: 17, weight: .regular, traits: .monospace).makeFont()
+                return FontDescriptor(name: .systemMonospace, size: .fixed(bodyFont.pointSize), weight: .regular, traits: .monospace).makeFont()
             }
         case let .custom(descriptor):
             return descriptor.makeFont()
         }
+    }
+    
+    var pointSize: CGFloat {
+        makeFont().pointSize
     }
 }
 
@@ -56,12 +65,12 @@ extension Optional where Wrapped == UIFont {
     
     func withWeight(_ weight: UIFont.Weight) -> UIFont {
         flatMap { $0.withWeight(weight) }
-            ?? FontDescriptor(name: .system, size: 17, weight: weight, traits: .unspecified).makeFont()
+            ?? FontDescriptor(name: .system, size: .scaled(to: .body), weight: weight, traits: .unspecified).makeFont()
     }
     
     func withTraits(_ traits: FontTraits) -> UIFont {
         flatMap { $0.withTraits(traits) }
-            ?? FontDescriptor(name: .system, size: 17, weight: .regular, traits: traits).makeFont()
+            ?? FontDescriptor(name: .system, size: .scaled(to: .body), weight: .regular, traits: traits).makeFont()
     }
 }
 
@@ -114,7 +123,7 @@ private extension UIFontDescriptor {
 
 private extension FontDescriptor {
     func makeFont() -> UIFont {
-        UIFont(descriptor: descriptor(), size: size)
+        UIFont(descriptor: descriptor(), size: size.pointSize)
     }
 
     func descriptor() -> UIFontDescriptor {
@@ -123,19 +132,19 @@ private extension FontDescriptor {
         traits[.weight] = weight
         self.traits.updateTraits(&traits)
         attributes[.traits] = traits
-        attributes[.size] = size
+        attributes[.size] = size.pointSize
         return UIFontDescriptor(fontAttributes: attributes)
     }
     
     func baseAttributes() -> [UIFontDescriptor.AttributeName: Any] {
         switch name {
         case .system:
-            return UIFont.systemFont(ofSize: size)
+            return UIFont.systemFont(ofSize: size.pointSize)
                 .fontDescriptor
                 .fontAttributes
         case .systemMonospace:
             if #available(iOS 13.0, tvOS 13.0, *) {
-                return UIFont.monospacedSystemFont(ofSize: size, weight: weight)
+                return UIFont.monospacedSystemFont(ofSize: size.pointSize, weight: weight)
                     .fontDescriptor
                     .fontAttributes
             } else {

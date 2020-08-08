@@ -19,13 +19,27 @@ public enum FontTraits {
     case monospace
 }
 
+public enum FontSize {
+    indirect case scaled(to: TextStyle)
+    case fixed(CGFloat)
+    
+    var pointSize: CGFloat {
+        switch self {
+        case let .scaled(to: textStyle):
+            return textStyle.pointSize
+        case let .fixed(size):
+            return size
+        }
+    }
+}
+
 public struct FontDescriptor {
     public let name: FontName
-    public let size: CGFloat // TODO: should provide sizes that can be scaled relative for the platform
+    public let size: FontSize
     public let weight: NativeFontWeight
     public let traits: FontTraits
     
-    public init(name: FontName, size: CGFloat, weight: NativeFontWeight, traits: FontTraits) {
+    public init(name: FontName, size: FontSize, weight: NativeFontWeight, traits: FontTraits) {
         self.name = name
         self.size = size
         self.weight = weight
