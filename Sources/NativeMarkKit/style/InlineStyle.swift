@@ -17,8 +17,8 @@ public enum InlineStyle {
     case fontSize(CGFloat)
     case fontWeight(NativeFontWeight)
     case fontTraits(FontTraits)
-    case backgroundBorder(width: CGFloat = 1, color: NativeColor = .lightGray, sides: BorderSides = .all)
-    case inlineBackground(fillColor: NativeColor = .backgroundGray, strokeColor: NativeColor = .veryLightGray, strokeWidth: CGFloat = 1, cornerRadius: CGFloat = 3, topMargin: Length = 1.pt, bottomMargin: Length = 1.pt, leftMargin: Length = 6.pt, rightMargin: Length = 6.pt)
+    case backgroundBorder(width: CGFloat = 1, color: NativeColor = .adaptableBlockQuoteMarginColor, sides: BorderSides = .all)
+    case inlineBackground(fillColor: NativeColor = .adaptableCodeBackgroundColor, strokeColor: NativeColor = .adaptableCodeBorderColor, strokeWidth: CGFloat = 1, cornerRadius: CGFloat = 3, topMargin: Length = 1.pt, bottomMargin: Length = 1.pt, leftMargin: Length = 6.pt, rightMargin: Length = 6.pt)
 }
 
 extension InlineStyle: ExpressibleAsParagraphStyle {

@@ -120,6 +120,11 @@ final class AbstractView: NSObject {
         
         return accessibleUrls
     }
+    
+    // TODO: this is really about allow wrapping to happen. Need to re-think this
+    var isMultiline: Bool {
+        storage.string.contains(where: { $0 == "\r" || $0 == "\n" })
+    }
 }
 
 extension AbstractView: NSLayoutManagerDelegate {

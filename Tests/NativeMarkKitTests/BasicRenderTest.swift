@@ -1,8 +1,32 @@
 import Foundation
 import XCTest
 import NativeMarkKit
+#if canImport(AppKit)
+import AppKit
+#elseif canImport(UIKit)
+import UIKit
+#endif
 
 final class BasicRenderTest: XCTestCase {
+    override func setUp() {
+        super.setUp()
+        
+        // Force rendering to happen in light mode
+        if #available(OSX 10.14, *) {
+            #if canImport(AppKit)
+            NSApplication.shared.appearance = NSAppearance(named: .aqua)
+            #endif
+        }
+        
+        if #available(iOS 13.0, *) {
+            #if canImport(UIKit)
+            for window in UIApplication.shared.windows {
+                window.overrideUserInterfaceStyle = .light
+            }
+            #endif
+        }
+    }
+    
     func testHelloWorld() {
         let testCase = RenderTestCase(name: "HelloWorld",
                                       nativeMark: "**Hello**, _world_!",

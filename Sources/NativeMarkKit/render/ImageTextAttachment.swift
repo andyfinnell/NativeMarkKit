@@ -38,7 +38,7 @@ final class ImageTextAttachment: NativeTextAttachment {
             let drawRect = CGRect(origin: origin, size: rect.size)
             image.draw(in: drawRect)
         } else {
-            NativeColor.veryLightGray.set()
+            NativeColor.adaptableImagePlaceholderColor.set()
             rect.fill()
         }
     }

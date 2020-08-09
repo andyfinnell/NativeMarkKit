@@ -80,7 +80,7 @@ private extension Renderer {
         
         let attributes = styleStack.attributes()
         let thickness = attributes[.thematicBreakThickness] as? CGFloat ?? 1.0
-        let color = attributes[.thematicBreakColor] as? NativeColor ?? .veryLightGray
+        let color = attributes[.thematicBreakColor] as? NativeColor ?? .adaptableSeparatorColor
         let attachment = ThematicBreakAttachment(thickness: thickness, color: color)
         
         renderTextAttachment(attachment, with: styleStack, into: result)

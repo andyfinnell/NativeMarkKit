@@ -7,6 +7,8 @@ import UIKit
 #error("Unsupported platform")
 #endif
 
+// TODO: this thing will force the width of any document to be 10,000px
+
 final class ThematicBreakAttachment: NativeTextAttachment {
     let thickness: CGFloat
     private let color: NativeColor

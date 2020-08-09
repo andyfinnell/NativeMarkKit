@@ -20,7 +20,7 @@ public enum BlockStyle {
     case orderedListMarker(OrderedListMarkerFormat, separator: String)
     case unorderedListMarker(UnorderedListMarkerFormat)
     case thematicBreak(thickness: CGFloat, color: NativeColor)
-    case blockBackground(fillColor: NativeColor = .backgroundGray, strokeColor: NativeColor = .veryLightGray, strokeWidth: CGFloat = 1, cornerRadius: CGFloat = 3, topMargin: Length = 1.em, bottomMargin: Length = 1.em, leftMargin: Length = 1.em, rightMargin: Length = 1.em)
+    case blockBackground(fillColor: NativeColor = .adaptableCodeBackgroundColor, strokeColor: NativeColor = .adaptableCodeBorderColor, strokeWidth: CGFloat = 1, cornerRadius: CGFloat = 3, topMargin: Length = 1.em, bottomMargin: Length = 1.em, leftMargin: Length = 1.em, rightMargin: Length = 1.em)
     case inlineStyle(InlineStyle)
 }
 

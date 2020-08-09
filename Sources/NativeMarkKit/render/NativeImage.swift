@@ -2,14 +2,19 @@ import Foundation
 #if canImport(UIKit)
 import UIKit
 
-
 extension NativeImage {
     static func make(size: CGSize, draw: () -> Void) -> NativeImage {
-        UIGraphicsBeginImageContext(size)
+        UIGraphicsBeginImageContext(size.validImageSize)
         draw()
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return image!
+        return image ?? UIImage()
+    }
+}
+
+private extension CGSize {
+    var validImageSize: CGSize {
+        CGSize(width: max(1, width), height: max(1, height))
     }
 }
 

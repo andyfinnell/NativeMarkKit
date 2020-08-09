@@ -47,8 +47,8 @@ public extension StyleSheet {
         [
             .document: [
                 .textStyle(.body),
-                .backgroundColor(.white),
-                .textColor(.black)
+                .backgroundColor(.adaptableBackgroundColor),
+                .textColor(.adaptableTextColor)
             ],
             .heading(level: 1): [
                 .textStyle(.largeTitle),
@@ -83,14 +83,14 @@ public extension StyleSheet {
                 .textStyle(.code),
                 .paragraphSpacingBefore(0.pt),
                 .paragraphSpacingAfter(0.pt),
-                .blockBackground(fillColor: .backgroundGray, strokeColor: .lightGray, strokeWidth: 1, cornerRadius: 3)
+                .blockBackground(fillColor: .adaptableCodeBackgroundColor, strokeColor: .adaptableCodeBorderColor, strokeWidth: 1, cornerRadius: 3)
             ],
             .blockQuote: [
-                .textColor(.veryDarkGray),
+                .textColor(.adaptableBlockQuoteTextColor),
                 .paragraphSpacingBefore(0.5.em),
                 .paragraphSpacingAfter(0.5.em),
                 .tailIndent(-1.em),
-                .backgroundBorder(width: 8, color: .lightGray, sides: .left)
+                .backgroundBorder(width: 8, color: .adaptableBlockQuoteMarginColor, sides: .left)
             ],
             .list(isTight: true): [
                 .firstLineHeadIndent(0.5.em),
@@ -107,7 +107,7 @@ public extension StyleSheet {
                 .paragraphSpacingAfter(0.5.em),
             ],
             .thematicBreak: [
-                .thematicBreak(thickness: 1, color: .veryLightGray),
+                .thematicBreak(thickness: 1, color: .adaptableSeparatorColor),
             ]
         ],
         [
@@ -122,7 +122,7 @@ public extension StyleSheet {
                 .inlineBackground()
             ],
             .link: [
-                .textColor(.systemBlue),
+                .textColor(.adaptableLinkColor),
                 .underline(Underline(style: .single, color: nil))
             ]
         ]

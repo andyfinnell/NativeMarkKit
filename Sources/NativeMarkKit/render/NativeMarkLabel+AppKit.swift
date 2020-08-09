@@ -15,6 +15,9 @@ public final class NativeMarkLabel: NSView {
     public var nativeMark: String {
         get { abstractView.nativeMark }
         set {
+            guard abstractView.nativeMark != newValue else {
+                return
+            }
             abstractView.nativeMark = newValue
             invalidateIntrinsicContentSize()
             setNeedsDisplay(bounds)
@@ -22,7 +25,7 @@ public final class NativeMarkLabel: NSView {
         }
     }
 
-    public init(nativeMark: String, styleSheet: StyleSheet) {
+    public init(nativeMark: String, styleSheet: StyleSheet = .default) {
         abstractView = AbstractView(nativeMark: nativeMark, styleSheet: styleSheet)
         super.init(frame: .zero)
         abstractView.delegate = self
@@ -36,7 +39,16 @@ public final class NativeMarkLabel: NSView {
         updateAccessibility()
     }
     
-    public override var bounds: NSRect {
+    public override var intrinsicContentSize: CGSize {
+        let size = abstractView.intrinsicSize()
+        if abstractView.isMultiline {
+            return CGSize(width: NSView.noIntrinsicMetric, height: size.height)
+        } else {
+            return size
+        }
+    }
+        
+    public override var frame: NSRect {
         didSet {
             abstractView.bounds = bounds
             invalidateIntrinsicContentSize()
