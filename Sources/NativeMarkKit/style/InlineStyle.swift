@@ -8,7 +8,7 @@ import UIKit
 #endif
 
 public enum InlineStyle {
-    case textColor(NativeColor) // TODO: what about dark mode?
+    case textColor(NativeColor)
     case textStyle(TextStyle)
     case backgroundColor(NativeColor)
     case kerning(Length)
