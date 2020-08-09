@@ -139,7 +139,8 @@ private extension Renderer {
             result.addAttributes(styleStack.attributes(),
                                  range: NSRange(location: startLocation, length: result.length - startLocation))
         case let .ordered(start: start):
-            let format = styleStack.attributes()[.orderedListMarkerFormat] as? OrderedListMarkerFormatValue ?? OrderedListMarkerFormatValue(format: .arabicNumeral, separator: ".")
+            let format = styleStack.attributes()[.orderedListMarkerFormat] as? OrderedListMarkerFormatValue
+                ?? OrderedListMarkerFormatValue(format: .arabicNumeral, prefix: "", suffix: ".")
             let rawText = format.render(start + index)
             result.append(NSAttributedString(string: rawText, attributes: styleStack.attributes()))
         }

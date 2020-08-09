@@ -1,24 +1,24 @@
 import Foundation
 
 extension OrderedListMarkerFormat {
-    func render(_ number: Int, separator: String) -> String {
+    func render(_ number: Int, prefix: String, suffix: String) -> String {
         switch self {
         case .lowercaseAlpha:
-            return "\(number.asEnglishAlphabet.lowercased())\(separator)"
+            return "\(prefix)\(number.asEnglishAlphabet.lowercased())\(suffix)"
         case .lowercaseHexadecimal:
-            return "\(number.asHexadecimalString.lowercased())\(separator)"
+            return "\(prefix)\(number.asHexadecimalString.lowercased())\(suffix)"
         case .lowercaseRoman:
-            return "\(number.asRomanNumerals.lowercased())\(separator)"
+            return "\(prefix)\(number.asRomanNumerals.lowercased())\(suffix)"
         case .octal:
-            return "\(number.asOctalString)\(separator)"
+            return "\(prefix)\(number.asOctalString)\(suffix)"
         case .arabicNumeral:
-            return "\(number)\(separator)"
+            return "\(prefix)\(number)\(suffix)"
         case .uppercaseAlpha:
-            return "\(number.asEnglishAlphabet)\(separator)"
+            return "\(prefix)\(number.asEnglishAlphabet)\(suffix)"
         case .uppercaseHexadecimal:
-            return "\(number.asHexadecimalString)\(separator)"
+            return "\(prefix)\(number.asHexadecimalString)\(suffix)"
         case .uppercaseRoman:
-            return "\(number.asRomanNumerals)\(separator)"
+            return "\(prefix)\(number.asRomanNumerals)\(suffix)"
         }
     }
 }

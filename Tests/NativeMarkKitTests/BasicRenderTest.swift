@@ -18,7 +18,7 @@ final class BasicRenderTest: XCTestCase {
             #endif
         }
         
-        if #available(iOS 13.0, *) {
+        if #available(iOS 13.0, tvOS 13.0, *) {
             #if canImport(UIKit)
             for window in UIApplication.shared.windows {
                 window.overrideUserInterfaceStyle = .light
@@ -294,7 +294,7 @@ look correct.
 """
         let styleSheet = StyleSheet.default.duplicate().mutate([
             .list(isTight: true): [
-                .orderedListMarker(.lowercaseAlpha, separator: ")")
+                .orderedListMarker(.lowercaseAlpha, suffix: ")")
             ]
         ])
         let testCase = RenderTestCase(name: "LowercaseAlphaOrderedList",
@@ -329,7 +329,7 @@ look correct.
 """
         let styleSheet = StyleSheet.default.duplicate().mutate([
             .list(isTight: true): [
-                .orderedListMarker(.lowercaseHexadecimal, separator: ")")
+                .orderedListMarker(.lowercaseHexadecimal, suffix: ")")
             ]
         ])
         let testCase = RenderTestCase(name: "LowercaseHexadecimalOrderedList",
@@ -357,7 +357,7 @@ look correct.
 """
         let styleSheet = StyleSheet.default.duplicate().mutate([
             .list(isTight: true): [
-                .orderedListMarker(.lowercaseRoman, separator: ".")
+                .orderedListMarker(.lowercaseRoman, suffix: ".")
             ]
         ])
         let testCase = RenderTestCase(name: "LowercaseRomanOrderedList",
@@ -385,7 +385,7 @@ look correct.
 """
         let styleSheet = StyleSheet.default.duplicate().mutate([
             .list(isTight: true): [
-                .orderedListMarker(.octal, separator: ".")
+                .orderedListMarker(.octal, prefix: "(", suffix: ")")
             ]
         ])
         let testCase = RenderTestCase(name: "OctalOrderedList",
@@ -407,7 +407,7 @@ look correct.
 """
         let styleSheet = StyleSheet.default.duplicate().mutate([
             .list(isTight: true): [
-                .orderedListMarker(.uppercaseAlpha, separator: ")")
+                .orderedListMarker(.uppercaseAlpha, suffix: ")")
             ]
         ])
         let testCase = RenderTestCase(name: "UppercaseAlphaOrderedList",
@@ -442,7 +442,7 @@ look correct.
 """
         let styleSheet = StyleSheet.default.duplicate().mutate([
             .list(isTight: true): [
-                .orderedListMarker(.uppercaseHexadecimal, separator: ")")
+                .orderedListMarker(.uppercaseHexadecimal, suffix: ")")
             ]
         ])
         let testCase = RenderTestCase(name: "UppercaseHexadecimalOrderedList",
@@ -470,7 +470,7 @@ look correct.
 """
         let styleSheet = StyleSheet.default.duplicate().mutate([
             .list(isTight: true): [
-                .orderedListMarker(.uppercaseRoman, separator: ".")
+                .orderedListMarker(.uppercaseRoman, suffix: ".")
             ]
         ])
         let testCase = RenderTestCase(name: "UppercaseRomanOrderedList",

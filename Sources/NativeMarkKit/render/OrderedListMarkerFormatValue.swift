@@ -2,16 +2,18 @@ import Foundation
 
 final class OrderedListMarkerFormatValue: NSObject {
     let format: OrderedListMarkerFormat
-    let separator: String
+    let prefix: String
+    let suffix: String
     
-    init(format: OrderedListMarkerFormat, separator: String) {
+    init(format: OrderedListMarkerFormat, prefix: String, suffix: String) {
         self.format = format
-        self.separator = separator
+        self.prefix = prefix
+        self.suffix = suffix
         super.init()
     }
     
     func render(_ number: Int) -> String {
-        format.render(number, separator: separator)
+        format.render(number, prefix: prefix, suffix: suffix)
     }
     
     override func isEqual(_ object: Any?) -> Bool {
@@ -19,6 +21,6 @@ final class OrderedListMarkerFormatValue: NSObject {
             return false
         }
         
-        return format == rhs.format && separator == rhs.separator
+        return format == rhs.format && prefix == rhs.prefix && suffix == rhs.suffix
     }
 }

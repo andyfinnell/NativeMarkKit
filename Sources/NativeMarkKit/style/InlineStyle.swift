@@ -12,7 +12,7 @@ public enum InlineStyle {
     case textStyle(TextStyle)
     case backgroundColor(NativeColor)
     case kerning(Length)
-    case strikethrough(Strikethrough)
+    case strikethrough(Strikethrough) // TODO: underline and strikethrough are a bit verbose in use
     case underline(Underline)
     case fontSize(CGFloat)
     case fontWeight(NativeFontWeight)

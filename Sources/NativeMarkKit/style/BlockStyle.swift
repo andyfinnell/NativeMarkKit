@@ -17,9 +17,9 @@ public enum BlockStyle {
     case paragraphSpacingAfter(Length)
     case paragraphSpacingBefore(Length)
     case lineBreak(NSLineBreakMode)
-    case orderedListMarker(OrderedListMarkerFormat, separator: String)
+    case orderedListMarker(OrderedListMarkerFormat, prefix: String = "", suffix: String = ".")
     case unorderedListMarker(UnorderedListMarkerFormat)
-    case thematicBreak(thickness: CGFloat, color: NativeColor)
+    case thematicBreak(thickness: CGFloat, color: NativeColor = .adaptableSeparatorColor)
     case blockBackground(fillColor: NativeColor = .adaptableCodeBackgroundColor, strokeColor: NativeColor = .adaptableCodeBorderColor, strokeWidth: CGFloat = 1, cornerRadius: CGFloat = 3, topMargin: Length = 1.em, bottomMargin: Length = 1.em, leftMargin: Length = 1.em, rightMargin: Length = 1.em)
     case inlineStyle(InlineStyle)
 }
@@ -87,8 +87,8 @@ extension BlockStyle: ExpressibleAsAttributes {
         switch self {
         case let .inlineStyle(style):
             style.updateAttributes(&attributes)
-        case let .orderedListMarker(format, separator: separator):
-            attributes[.orderedListMarkerFormat] = OrderedListMarkerFormatValue(format: format, separator: separator)
+        case let .orderedListMarker(format, prefix: prefix, suffix: suffix):
+            attributes[.orderedListMarkerFormat] = OrderedListMarkerFormatValue(format: format, prefix: prefix, suffix: suffix)
         case let .unorderedListMarker(format):
             attributes[.unorderedListMarkerFormat] = UnorderedListMarkerFormatValue(format: format)
         case let .thematicBreak(thickness: thickness, color: color):

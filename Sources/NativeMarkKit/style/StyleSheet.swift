@@ -94,14 +94,14 @@ public extension StyleSheet {
             ],
             .list(isTight: true): [
                 .firstLineHeadIndent(0.5.em),
-                .orderedListMarker(.lowercaseRoman, separator: "."),
+                .orderedListMarker(.lowercaseRoman),
                 .unorderedListMarker(.check),
                 .paragraphSpacingBefore(0.0.em),
                 .paragraphSpacingAfter(0.0.em),
             ],
             .list(isTight: false): [
                 .firstLineHeadIndent(0.5.em),
-                .orderedListMarker(.lowercaseRoman, separator: "."),
+                .orderedListMarker(.lowercaseRoman),
                 .unorderedListMarker(.check),
                 .paragraphSpacingBefore(0.5.em),
                 .paragraphSpacingAfter(0.5.em),

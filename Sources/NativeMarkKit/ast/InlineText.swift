@@ -1,5 +1,6 @@
 import Foundation
 
+// TODO: eventually want emojii support
 indirect enum InlineText: Equatable {
     case code(String)
     case text(String)
