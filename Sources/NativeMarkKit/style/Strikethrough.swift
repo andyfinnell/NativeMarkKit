@@ -7,6 +7,10 @@ import UIKit
 #error("Unsupported platform")
 #endif
 
+public extension NSUnderlineStyle {
+    static let none = NSUnderlineStyle([])
+}
+
 public struct Strikethrough {
     public let style: NSUnderlineStyle
     public let color: NativeColor?

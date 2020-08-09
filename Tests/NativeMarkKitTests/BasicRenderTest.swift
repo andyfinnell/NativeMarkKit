@@ -194,10 +194,10 @@ to have the desired effect.
     func testBasicInlineStyles() {
         let styleSheet = StyleSheet.default.duplicate().mutate([:], [
             .emphasis: [
-                .strikethrough(Strikethrough(style: .single, color: nil))
+                .strikethrough(.single)
             ],
             .strong: [
-                .underline(Underline(style: .single, color: .blue)),
+                .underline(.single, color: .blue),
                 .kerning(0.2.em)
             ],
             .code: [

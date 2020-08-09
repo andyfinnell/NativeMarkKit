@@ -12,8 +12,8 @@ public enum InlineStyle {
     case textStyle(TextStyle)
     case backgroundColor(NativeColor)
     case kerning(Length)
-    case strikethrough(Strikethrough) // TODO: underline and strikethrough are a bit verbose in use
-    case underline(Underline)
+    case strikethrough(NSUnderlineStyle, color: NativeColor? = nil)
+    case underline(NSUnderlineStyle, color: NativeColor? = nil)
     case fontSize(CGFloat)
     case fontWeight(NativeFontWeight)
     case fontTraits(FontTraits)
@@ -39,16 +39,16 @@ extension InlineStyle: ExpressibleAsAttributes {
         case let .kerning(kerning):
             let defaultFont = (attributes[.font] as? NativeFont) ?? TextStyle.body.makeFont()
             attributes[.kern] = kerning.asRawPoints(for: defaultFont.pointSize)
-        case let .strikethrough(strikethrough):
-            if let color = strikethrough.color {
+        case let .strikethrough(style, color: color):
+            if let color = color {
                 attributes[.strikethroughColor] = color
             }
-            attributes[.strikethroughStyle] = NSNumber(value: strikethrough.style.rawValue)
-        case let .underline(underline):
-            if let color = underline.color {
+            attributes[.strikethroughStyle] = NSNumber(value: style.rawValue)
+        case let .underline(style, color: color):
+            if let color = color {
                 attributes[.underlineColor] = color
             }
-            attributes[.underlineStyle] = NSNumber(value: underline.style.rawValue)
+            attributes[.underlineStyle] = NSNumber(value: style.rawValue)
         case let .fontSize(fontSize):
             let currentFont = attributes[.font] as? NativeFont
             attributes[.font] = currentFont.withSize(fontSize)

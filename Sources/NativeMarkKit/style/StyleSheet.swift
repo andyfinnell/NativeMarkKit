@@ -123,7 +123,7 @@ public extension StyleSheet {
             ],
             .link: [
                 .textColor(.adaptableLinkColor),
-                .underline(Underline(style: .single, color: nil))
+                .underline(.single)
             ]
         ]
     )

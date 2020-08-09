@@ -41,12 +41,12 @@ public extension BlockStyle {
         .inlineStyle(.kerning(value))
     }
     
-    static func strikethrough(_ value: Strikethrough) -> BlockStyle {
-        .inlineStyle(.strikethrough(value))
+    static func strikethrough(_ style: NSUnderlineStyle, color: NativeColor? = nil) -> BlockStyle {
+        .inlineStyle(.strikethrough(style, color: color))
     }
         
-    static func underline(_ value: Underline) -> BlockStyle {
-        .inlineStyle(.underline(value))
+    static func underline(_ style: NSUnderlineStyle, color: NativeColor? = nil) -> BlockStyle {
+        .inlineStyle(.underline(style, color: color))
     }
     
     static func backgroundBorder(width: CGFloat = 1, color: NativeColor = .lightGray, sides: BorderSides = .all) -> BlockStyle {
