@@ -23,7 +23,7 @@ public final class StyleSheet {
         StyleSheet(blockStyles, inlineStyles, imageLoader: imageLoader)
     }
     
-    public func mutate(_ overrideBlockStyles: [BlockStyleSelector: [BlockStyle]] = [:], _ overrideInlineStyles: [InlineStyleSelector: [InlineStyle]] = [:], imageLoader: ImageLoader? = nil) -> StyleSheet {
+    public func mutate(block overrideBlockStyles: [BlockStyleSelector: [BlockStyle]] = [:], inline overrideInlineStyles: [InlineStyleSelector: [InlineStyle]] = [:], imageLoader: ImageLoader? = nil) -> StyleSheet {
         for (blockSelector, blockStylesForSelector) in overrideBlockStyles {
             let existingStyles = blockStyles[blockSelector] ?? []
             blockStyles[blockSelector] = existingStyles + blockStylesForSelector

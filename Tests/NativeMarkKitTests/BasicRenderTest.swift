@@ -75,7 +75,7 @@ enough it's going to wrap during
 the test render.
 """
         
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .paragraph: [
                 .alignment(.right)
             ]
@@ -109,7 +109,7 @@ Who knows. It just needs to wrap a bit
 to have the desired effect.
 """
 
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .paragraph: [
                 .lineHeightMultiple(1.5)
             ]
@@ -143,7 +143,7 @@ Who knows. It just needs to wrap a bit
 to have the desired effect.
 """
 
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .paragraph: [
                 .lineSpacing(0.5.em)
             ]
@@ -177,7 +177,7 @@ Who knows. It just needs to wrap a bit
 to have the desired effect.
 """
 
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .paragraph: [
                 .firstLineHeadIndent(1.em),
                 .headIndent(0.5.em),
@@ -192,7 +192,7 @@ to have the desired effect.
     }
 
     func testBasicInlineStyles() {
-        let styleSheet = StyleSheet.default.duplicate().mutate([:], [
+        let styleSheet = StyleSheet.default.duplicate().mutate(inline: [
             .emphasis: [
                 .strikethrough(.single)
             ],
@@ -292,7 +292,7 @@ look correct.
 1. Third should be here, and I need one that will wrap lines so I can see how that looks.
 1. And done.
 """
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .list(isTight: true): [
                 .orderedListMarker(.lowercaseAlpha, suffix: ")")
             ]
@@ -327,7 +327,7 @@ look correct.
 1. sixteen
 1. seventeen
 """
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .list(isTight: true): [
                 .orderedListMarker(.lowercaseHexadecimal, suffix: ")")
             ]
@@ -355,7 +355,7 @@ look correct.
 1. nine
 1. ten
 """
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .list(isTight: true): [
                 .orderedListMarker(.lowercaseRoman, suffix: ".")
             ]
@@ -383,7 +383,7 @@ look correct.
 1. nine
 1. ten
 """
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .list(isTight: true): [
                 .orderedListMarker(.octal, prefix: "(", suffix: ")")
             ]
@@ -405,7 +405,7 @@ look correct.
 1. Third should be here, and I need one that will wrap lines so I can see how that looks.
 1. And done.
 """
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .list(isTight: true): [
                 .orderedListMarker(.uppercaseAlpha, suffix: ")")
             ]
@@ -440,7 +440,7 @@ look correct.
 1. sixteen
 1. seventeen
 """
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .list(isTight: true): [
                 .orderedListMarker(.uppercaseHexadecimal, suffix: ")")
             ]
@@ -468,7 +468,7 @@ look correct.
 1. nine
 1. ten
 """
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .list(isTight: true): [
                 .orderedListMarker(.uppercaseRoman, suffix: ".")
             ]
@@ -526,7 +526,7 @@ look correct.
 - Three
 - Four
 """
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .list(isTight: true): [
                 .unorderedListMarker(.box)
             ]
@@ -549,7 +549,7 @@ look correct.
 * Three
 * Four
 """
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .list(isTight: true): [
                 .unorderedListMarker(.bullet)
             ]
@@ -572,7 +572,7 @@ look correct.
 * Three
 * Four
 """
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .list(isTight: true): [
                 .unorderedListMarker(.check)
             ]
@@ -595,7 +595,7 @@ look correct.
 * Three
 * Four
 """
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .list(isTight: true): [
                 .unorderedListMarker(.circle)
             ]
@@ -618,7 +618,7 @@ look correct.
 * Three
 * Four
 """
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .list(isTight: true): [
                 .unorderedListMarker(.diamond)
             ]
@@ -641,7 +641,7 @@ look correct.
 * Three
 * Four
 """
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .list(isTight: true): [
                 .unorderedListMarker(.hyphen)
             ]
@@ -664,7 +664,7 @@ look correct.
 * Three
 * Four
 """
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .list(isTight: true): [
                 .unorderedListMarker(.square)
             ]
@@ -777,7 +777,7 @@ This is a hard break.
 Headline.
 """
         
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .heading(level: 1): [
                 .textStyle(.body)
             ],
@@ -824,7 +824,7 @@ Headline.
 This is a paragraph in 12pt Helvetica.
 """
         
-        let styleSheet = StyleSheet.default.duplicate().mutate([
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
             .heading(level: 1): [
                 .textStyle(.largeTitle)
             ],

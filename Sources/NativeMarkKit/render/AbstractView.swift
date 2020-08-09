@@ -21,7 +21,6 @@ protocol AbstractViewDelegate: AnyObject {
     func abstractViewDidInvalidateRect(_ rect: CGRect)
 }
 
-// TODO: should this be NativeMarkString and public? like NSAttributedString
 final class AbstractView: NSObject {
     private let storage: NSTextStorage
     private let layoutManager = LayoutManager()
@@ -121,7 +120,6 @@ final class AbstractView: NSObject {
         return accessibleUrls
     }
     
-    // TODO: this is really about allow wrapping to happen. Need to re-think this
     var isMultiline: Bool {
         storage.string.contains(where: { $0 == "\r" || $0 == "\n" })
     }
@@ -301,7 +299,7 @@ private extension AbstractView {
             
             setDelegateForImageAttachments()
         } catch {
-            // TODO: do something
+            // do nothing if it's not valid NativeMark
         }
     }
 }

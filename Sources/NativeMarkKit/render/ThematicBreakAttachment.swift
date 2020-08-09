@@ -7,7 +7,7 @@ import UIKit
 #error("Unsupported platform")
 #endif
 
-// TODO: this thing will force the width of any document to be 10,000px unless
+// This thing will force the width of any document to be 10,000px unless
 //  there's an external constraint on the width. Which is maybe fine?
 
 final class ThematicBreakAttachment: NativeTextAttachment {
