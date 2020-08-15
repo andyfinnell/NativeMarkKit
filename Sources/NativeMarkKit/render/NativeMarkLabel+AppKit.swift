@@ -40,12 +40,7 @@ public final class NativeMarkLabel: NSView {
     }
     
     public override var intrinsicContentSize: CGSize {
-        let size = abstractView.intrinsicSize()
-        if abstractView.isMultiline {
-            return CGSize(width: NSView.noIntrinsicMetric, height: size.height)
-        } else {
-            return size
-        }
+        abstractView.intrinsicSize()
     }
         
     public override var frame: NSRect {

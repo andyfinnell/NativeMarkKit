@@ -34,7 +34,10 @@ private extension NativeMarkTextContainer {
     }
     
     func leadingMarginForTab(at characterIndex: Int) -> CGFloat? {
-        let desiredIndent = storage?.attribute(.leadingMarginIndent, at: characterIndex, effectiveRange: nil) as? Int
+        guard let storage = storage, characterIndex < storage.length else {
+            return nil
+        }
+        let desiredIndent = storage.attribute(.leadingMarginIndent, at: characterIndex, effectiveRange: nil) as? Int
         return desiredIndent.flatMap { findPreviousTab(characterIndex, forIndent: $0) }
             .flatMap { layoutManager?.horizontalLocation(for: $0) }
     }

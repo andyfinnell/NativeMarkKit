@@ -69,7 +69,10 @@ public final class NativeMarkStorage {
 
 extension NativeMarkStorage {
     func attribute(_ attributeKey: NSAttributedString.Key, at characterIndex: Int, effectiveRange: NSRangePointer?) -> Any? {
-        storage.attribute(attributeKey, at: characterIndex, effectiveRange: effectiveRange)
+        guard characterIndex < storage.length else {
+            return nil
+        }
+        return storage.attribute(attributeKey, at: characterIndex, effectiveRange: effectiveRange)
     }
 }
 

@@ -20,6 +20,8 @@ public struct NativeMarkText: UIViewRepresentable {
     
     public func makeUIView(context: Context) -> NativeMarkLabel {
         let label = NativeMarkLabel(nativeMark: nativeMark, styleSheet: styleSheet)
+        label.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         label.onOpenLink = onOpenLink
         return label
     }

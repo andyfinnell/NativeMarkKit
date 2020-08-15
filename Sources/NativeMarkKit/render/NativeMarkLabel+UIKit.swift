@@ -38,12 +38,7 @@ public final class NativeMarkLabel: UIControl {
     }
         
     public override var intrinsicContentSize: CGSize {
-        let size = abstractView.intrinsicSize()
-        if abstractView.isMultiline {
-            return CGSize(width: UIView.noIntrinsicMetric, height: size.height)
-        } else {
-            return size
-        }
+        abstractView.intrinsicSize()
     }
     
     public override var bounds: CGRect {

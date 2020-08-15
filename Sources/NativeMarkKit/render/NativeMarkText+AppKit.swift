@@ -7,7 +7,6 @@ public struct NativeMarkText: NSViewRepresentable {
     public typealias NSViewType = NativeMarkLabel
 
     // TODO: make sure style sheet is customizable
-    // TODO: figure out how to make this thing size correctly in SwiftUI
     let nativeMark: String
     let onOpenLink: ((URL) -> Void)?
     let styleSheet: StyleSheet
@@ -20,6 +19,8 @@ public struct NativeMarkText: NSViewRepresentable {
     
     public func makeNSView(context: Context) -> NativeMarkLabel {
         let label = NativeMarkLabel(nativeMark: nativeMark, styleSheet: styleSheet)
+        label.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         label.onOpenLink = onOpenLink
         return label
     }
