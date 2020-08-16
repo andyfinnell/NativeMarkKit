@@ -73,6 +73,20 @@ private extension BaseRenderTestCase {
         try fixturesUrl().appendingPathComponent("\(name).\(platformName)").appendingPathExtension("png")
     }
     
+    func outputUrl() throws -> URL {
+        let outputUrl = URL(fileURLWithPath: #file)
+            .deletingLastPathComponent() // NativeMarkKitTests
+            .deletingLastPathComponent() // Tests
+            .deletingLastPathComponent() // Project root
+            .appendingPathComponent("FailedRenderTests")
+        try FileManager.default.createDirectory(at: outputUrl, withIntermediateDirectories: true, attributes: nil)
+        return outputUrl
+    }
+    
+    func outputArtifactUrl(with artifactName: String) throws -> URL {
+        try outputUrl().appendingPathComponent("\(name).\(platformName).\(artifactName)").appendingPathExtension("png")
+    }
+    
     var platformName: String {
         #if os(macOS)
         return "macOS"
@@ -127,25 +141,14 @@ private extension BaseRenderTestCase {
             return .pass
         }
         
-        #if false // TODO: temporarily turn off attachments so Github will give us some output
         // We failed so create and attach images to the XCTestCase
-        let expectedImage = XCTAttachment(image: original)
-        expectedImage.name = "Expected"
-        activity.add(expectedImage)
-        
-        let gotImage = XCTAttachment(image: new)
-        gotImage.name = "Got"
-        activity.add(gotImage)
+        saveImage(original, with: "Expected", on: activity)
+        saveImage(new, with: "Got", on: activity)
         
         if let diffCGImage = context.makeImage() {
-            let diffImage = XCTAttachment(image: NativeImage(cgImage: diffCGImage))
-            diffImage.name = "Difference"
-            activity.add(diffImage)
+            saveImage(NativeImage(cgImage: diffCGImage), with: "Difference", on: activity)
         }
-        #endif
-        
-        XCTFail("Can we get any output to show up in Github actions?")
-        
+                
         return .fail
     }
     
@@ -174,6 +177,21 @@ private extension BaseRenderTestCase {
             }
         }
         return true
+    }
+    
+    func saveImage(_ image: NativeImage, with name: String, on activity: XCTActivity) {
+        #if false
+        let attachment = XCTAttachment(image: image)
+        attachment.name = name
+        activity.add(attachment)
+        #else
+        do {
+            let url = try outputArtifactUrl(with: name)
+            try image.pngData()?.write(to: url)
+        } catch let error {
+            XCTFail("Trying to store artifact for \(self.name) state \(name) failed because \(error)")
+        }
+        #endif
     }
 }
 
