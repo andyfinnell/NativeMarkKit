@@ -160,7 +160,7 @@ extension NativeMarkLayoutManager: NSLayoutManagerDelegate {
             } // else fall through
         }
         
-        #if DEBUG
+        #if false // DEBUG
         if let storage = storage, let stringRange = Range(characterRange, in: storage.string) {
             let string = storage.string[stringRange]
             print("laying out [\(characterRange)](\(string)) at \(lineFragmentRect.pointee)")
