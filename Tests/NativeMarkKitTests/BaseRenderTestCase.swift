@@ -78,6 +78,7 @@ private extension BaseRenderTestCase {
             .deletingLastPathComponent() // NativeMarkKitTests
             .deletingLastPathComponent() // Tests
             .deletingLastPathComponent() // Project root
+            .appendingPathComponent(".build")
             .appendingPathComponent("FailedRenderTests")
         try FileManager.default.createDirectory(at: outputUrl, withIntermediateDirectories: true, attributes: nil)
         return outputUrl
