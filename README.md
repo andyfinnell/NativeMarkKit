@@ -1,5 +1,5 @@
 # NativeMarkKit
-![Tests pass](https://github.com/andyfinnell/NativeMarkKit/workflows/swift/badge.svg) [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
+![Tests pass](https://github.com/andyfinnell/NativeMarkKit/workflows/Swift/badge.svg) [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 
 NativeMark is a flavor of Markdown designed to be rendered by native apps (i.e. it compiles down to native types, not HTML). Specifically, it implements the [CommonMark spec](https://spec.commonmark.org/0.29/) with the significant exception of raw HTML tags. NativeMark will treat raw HTML tags as plain text.
 
