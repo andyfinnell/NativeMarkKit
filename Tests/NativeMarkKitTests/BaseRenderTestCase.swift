@@ -194,8 +194,6 @@ private extension BaseRenderTestCase {
             } else {
                 throw RenderTestCaseError.unableToGeneratePNG
             }
-            
-            XCTFail("Saving artifact at \(url)")
         } catch let error {
             XCTFail("Trying to store artifact for \(self.name) state \(name) failed because \(error)")
         }

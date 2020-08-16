@@ -12,7 +12,7 @@ extension NativeImage {
     }
 }
 
-private extension CGSize {
+extension CGSize {
     var validImageSize: CGSize {
         CGSize(width: max(1, width), height: max(1, height))
     }
