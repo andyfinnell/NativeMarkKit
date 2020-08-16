@@ -1,0 +1,16 @@
+name: Testing
+on:
+  pull_request:
+    branches:
+    - master
+jobs:
+  test:
+    name: Testing
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+      - name: Force Xcode 11.5
+        run: sudo xcode-select -switch /Applications/Xcode_11.5.app
+      - name: Testing Swift Package
+        run: exec ./.github/scripts/test_package.sh
