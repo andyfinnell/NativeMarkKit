@@ -20,9 +20,13 @@ class BaseRenderTestCase {
     }
     
     let name: String
-
+    let isCI: Bool
+    
     init(name: String) {
         self.name = name
+        self.isCI = ProcessInfo.processInfo.environment["CI"].map { $0 == "true" } ?? false
+        
+        XCTFail("ENV = \(ProcessInfo.processInfo.environment["CI"]) interpreted as \(isCI)")
     }
     
     func render() -> NativeImage {
@@ -181,23 +185,22 @@ private extension BaseRenderTestCase {
     }
     
     func saveImage(_ image: NativeImage, with name: String, on activity: XCTActivity) {
-        // TODO: determine if on CI. If not, use attachments
-        #if false
-        let attachment = XCTAttachment(image: image)
-        attachment.name = name
-        activity.add(attachment)
-        #else
-        do {
-            let url = try outputArtifactUrl(with: name)
-            if let data = image.pngData() {
-                try data.write(to: url)
-            } else {
-                throw RenderTestCaseError.unableToGeneratePNG
+        if isCI {
+            do {
+                let url = try outputArtifactUrl(with: name)
+                if let data = image.pngData() {
+                    try data.write(to: url)
+                } else {
+                    throw RenderTestCaseError.unableToGeneratePNG
+                }
+            } catch let error {
+                XCTFail("Trying to store artifact for \(self.name) state \(name) failed because \(error)")
             }
-        } catch let error {
-            XCTFail("Trying to store artifact for \(self.name) state \(name) failed because \(error)")
+        } else {
+            let attachment = XCTAttachment(image: image)
+            attachment.name = name
+            activity.add(attachment)
         }
-        #endif
     }
 }
 
