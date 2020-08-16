@@ -13,16 +13,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - run: mkdir -p FailedRenderTests
-    - run: echo hello > FailedRenderTests/hello.txt
     - name: Build
       run: swift build -v
     - name: Run tests
       run: swift test -v
-    - run: mkdir -p FailedRenderTests
-      if: ${{ failure() }}
-    - run: echo goodbye > FailedRenderTests/goodbye.txt
-      if: ${{ failure() }}
     - uses: actions/upload-artifact@v2
       if: ${{ failure() }}
       with:
