@@ -34,7 +34,7 @@ public final class NativeMarkString {
         _ = layoutManager.glyphRange(for: textContainer)
         let usedRect = layoutManager.usedRect(for: textContainer)
         
-        let rect = CGRect(origin: point, size: usedRect.size)
+        let rect = CGRect(origin: point, size: usedRect.size).integral
         layoutManager.drawBackground(in: rect)
         let glyphRange = layoutManager.glyphRange(for: textContainer)
         layoutManager.drawBackground(forGlyphRange: glyphRange, at: rect.origin)
@@ -45,12 +45,12 @@ public final class NativeMarkString {
         let storage = NativeMarkStorage(nativeMarkString: self)
         let layoutManager = NativeMarkLayoutManager()
         let textContainer = NativeMarkTextContainer()
-        textContainer.size = rect.size
+        textContainer.size = rect.integral.size
         storage.addLayoutManager(layoutManager)
         layoutManager.addTextContainer(textContainer)
         layoutManager.textContainerChangedGeometry(textContainer)
 
-        layoutManager.drawBackground(in: rect)
+        layoutManager.drawBackground(in: rect.integral)
         let glyphRange = layoutManager.glyphRange(for: textContainer)
         layoutManager.drawBackground(forGlyphRange: glyphRange, at: rect.origin)
         layoutManager.drawGlyphs(forGlyphRange: glyphRange, at: rect.origin)

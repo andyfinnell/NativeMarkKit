@@ -1,7 +1,7 @@
 import Foundation
 
 extension NSAttributedString {
-    public convenience init(nativeMark: String, styleSheet: StyleSheet) throws {
+    convenience init(nativeMark: String, styleSheet: StyleSheet) throws {
         let lines = Lexer().scan(nativeMark)
         let documentBlock = Block(kind: .document, parser: DocumentBlockParser())
         LineParser().parse(lines, into: documentBlock)
