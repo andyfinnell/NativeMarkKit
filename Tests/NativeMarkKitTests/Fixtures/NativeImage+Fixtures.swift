@@ -9,7 +9,7 @@ import AppKit
 
 extension NativeImage {
     static func fixture(size: CGSize, color: NativeColor = .red) -> NativeImage {
-        NativeImage.make(size: size) {
+        NativeImage.testImage(size: size) {
             color.set()
             CGRect(origin: .zero, size: size).fill()
         }

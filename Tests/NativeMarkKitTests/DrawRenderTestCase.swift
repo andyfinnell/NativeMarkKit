@@ -17,6 +17,6 @@ final class DrawRenderTestCase: BaseRenderTestCase {
     }
     
     override func render() -> NativeImage {
-        NativeImage.make(size: size, draw: draw)
+        NativeImage.testImage(size: size, draw: draw)
     }
 }

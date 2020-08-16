@@ -11,6 +11,7 @@ enum RenderTestCaseError: Error {
     case invalidImageData
     case allocationFailure
     case createContextFailure
+    case unableToGeneratePNG
 }
 
 class BaseRenderTestCase {
@@ -19,9 +20,11 @@ class BaseRenderTestCase {
     }
     
     let name: String
-
+    let isCI: Bool
+    
     init(name: String) {
         self.name = name
+        self.isCI = ProcessInfo.processInfo.environment["CI"].map { $0 == "true" } ?? false
     }
     
     func render() -> NativeImage {
@@ -71,6 +74,20 @@ private extension BaseRenderTestCase {
     
     func testCaseDataUrl() throws  -> URL {
         try fixturesUrl().appendingPathComponent("\(name).\(platformName)").appendingPathExtension("png")
+    }
+    
+    func outputUrl() throws -> URL {
+        let outputUrl = URL(fileURLWithPath: #file)
+            .deletingLastPathComponent() // NativeMarkKitTests
+            .deletingLastPathComponent() // Tests
+            .deletingLastPathComponent() // Project root
+            .appendingPathComponent("FailedRenderTests")
+        try FileManager.default.createDirectory(at: outputUrl, withIntermediateDirectories: true, attributes: nil)
+        return outputUrl
+    }
+    
+    func outputArtifactUrl(with artifactName: String) throws -> URL {
+        try outputUrl().appendingPathComponent("\(name).\(platformName).\(artifactName)").appendingPathExtension("png")
     }
     
     var platformName: String {
@@ -127,23 +144,14 @@ private extension BaseRenderTestCase {
             return .pass
         }
         
-        #if false // TODO: temporarily turn off attachments so Github will give us some output
         // We failed so create and attach images to the XCTestCase
-        let expectedImage = XCTAttachment(image: original)
-        expectedImage.name = "Expected"
-        activity.add(expectedImage)
-        
-        let gotImage = XCTAttachment(image: new)
-        gotImage.name = "Got"
-        activity.add(gotImage)
+        saveImage(original, with: "Expected", on: activity)
+        saveImage(new, with: "Got", on: activity)
         
         if let diffCGImage = context.makeImage() {
-            let diffImage = XCTAttachment(image: NativeImage(cgImage: diffCGImage))
-            diffImage.name = "Difference"
-            activity.add(diffImage)
+            saveImage(NativeImage(cgImage: diffCGImage), with: "Difference", on: activity)
         }
-        #endif
-        
+                
         return .fail
     }
     
@@ -172,6 +180,25 @@ private extension BaseRenderTestCase {
             }
         }
         return true
+    }
+    
+    func saveImage(_ image: NativeImage, with name: String, on activity: XCTActivity) {
+        if isCI {
+            do {
+                let url = try outputArtifactUrl(with: name)
+                if let data = image.pngData() {
+                    try data.write(to: url)
+                } else {
+                    throw RenderTestCaseError.unableToGeneratePNG
+                }
+            } catch let error {
+                XCTFail("Trying to store artifact for \(self.name) state \(name) failed because \(error)")
+            }
+        } else {
+            let attachment = XCTAttachment(image: image)
+            attachment.name = name
+            activity.add(attachment)
+        }
     }
 }
 
