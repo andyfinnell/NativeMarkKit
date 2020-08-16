@@ -144,6 +144,8 @@ private extension BaseRenderTestCase {
         }
         #endif
         
+        XCTFail("Can we get any output to show up in Github actions?")
+        
         return .fail
     }
     
