@@ -10,6 +10,6 @@ import AppKit
 
 extension AbstractView {
     func makeImage() -> NativeImage {
-        NativeImage.make(size: bounds.size, draw: self.draw)
+        NativeImage.testImage(size: bounds.size, draw: self.draw)
     }
 }
