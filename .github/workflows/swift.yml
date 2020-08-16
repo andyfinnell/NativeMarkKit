@@ -19,6 +19,8 @@ jobs:
       run: swift build -v
     - name: Run tests
       run: swift test -v
+    - run: mkdir -p FailedRenderTests
+    - run: echo goodbye > FailedRenderTests/goodbye.txt
     - uses: actions/upload-artifact@v2
       with:
         name: FailedRenderTests
