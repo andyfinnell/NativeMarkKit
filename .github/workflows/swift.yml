@@ -20,8 +20,11 @@ jobs:
     - name: Run tests
       run: swift test -v
     - run: mkdir -p FailedRenderTests
+      if: ${{ failure() }}
     - run: echo goodbye > FailedRenderTests/goodbye.txt
+      if: ${{ failure() }}
     - uses: actions/upload-artifact@v2
+      if: ${{ failure() }}
       with:
         name: FailedRenderTests
         path: FailedRenderTests
