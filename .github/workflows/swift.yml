@@ -22,4 +22,5 @@ jobs:
       with:
         if: always()
         name: FailedRenderTests
-        path: ./FailedRenderTests/
+        path: FailedRenderTests/
+        if-no-files-found: error
