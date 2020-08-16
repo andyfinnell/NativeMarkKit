@@ -52,6 +52,10 @@ private extension BaseRenderTestCase {
         do {
             let expected = try loadRecordedImage()
             let got = render()
+            
+            XCTAssertEqual(expected.size.width, got.size.width)
+            XCTAssertEqual(expected.size.height, got.size.height)
+            
             return try diff(expected, against: got, for: activity)
         } catch let error {
             XCTFail("Failed to validate for test case \(name) because of \(error)")
