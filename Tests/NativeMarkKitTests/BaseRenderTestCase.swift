@@ -25,8 +25,6 @@ class BaseRenderTestCase {
     init(name: String) {
         self.name = name
         self.isCI = ProcessInfo.processInfo.environment["CI"].map { $0 == "true" } ?? false
-        
-        XCTFail("ENV = \(ProcessInfo.processInfo.environment["CI"]) interpreted as \(isCI)")
     }
     
     func render() -> NativeImage {
