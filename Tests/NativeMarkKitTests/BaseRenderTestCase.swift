@@ -181,6 +181,7 @@ private extension BaseRenderTestCase {
     }
     
     func saveImage(_ image: NativeImage, with name: String, on activity: XCTActivity) {
+        // TODO: determine if on CI. If not, use attachments
         #if false
         let attachment = XCTAttachment(image: image)
         attachment.name = name
