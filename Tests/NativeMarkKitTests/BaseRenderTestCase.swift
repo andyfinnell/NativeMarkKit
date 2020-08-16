@@ -127,6 +127,7 @@ private extension BaseRenderTestCase {
             return .pass
         }
         
+        #if false // TODO: temporarily turn off attachments so Github will give us some output
         // We failed so create and attach images to the XCTestCase
         let expectedImage = XCTAttachment(image: original)
         expectedImage.name = "Expected"
@@ -141,6 +142,7 @@ private extension BaseRenderTestCase {
             diffImage.name = "Difference"
             activity.add(diffImage)
         }
+        #endif
         
         return .fail
     }
