@@ -11,6 +11,7 @@ enum RenderTestCaseError: Error {
     case invalidImageData
     case allocationFailure
     case createContextFailure
+    case unableToGeneratePNG
 }
 
 class BaseRenderTestCase {
@@ -188,7 +189,13 @@ private extension BaseRenderTestCase {
         #else
         do {
             let url = try outputArtifactUrl(with: name)
-            try image.pngData()?.write(to: url)
+            if let data = image.pngData() {
+                try data.write(to: url)
+            } else {
+                throw RenderTestCaseError.unableToGeneratePNG
+            }
+            
+            XCTFail("Saving artifact at \(url)")
         } catch let error {
             XCTFail("Trying to store artifact for \(self.name) state \(name) failed because \(error)")
         }
