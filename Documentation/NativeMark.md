@@ -62,13 +62,9 @@ create [links](https://losingfight.com/blog) or mark `inline code`.
 
 ## Code blocks
 
-```Markdown
-
-```Swift
-struct MyStruct {
-    let foo: Int
-    let bar: String
-}
-\```
-
-```
+    ```Swift
+    struct MyStruct {
+        let foo: Int
+        let bar: String
+    }
+    ```
