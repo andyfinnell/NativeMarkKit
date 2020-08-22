@@ -138,6 +138,10 @@ label.onOpenLink = { url in
 }
 ```
 
+## Documentation
+
+More [documentation](Documentation).
+
 ## Acknowledgements
 
 The NativeMarkKit project would like to acknowledge the work of the [CommonMark](https://commonmark.org/) project to document a standardized flavor of Markdown. NativeMarkKit's front end parsing is based on [CommonMark's parsing strategy](https://spec.commonmark.org/0.29/#appendix-a-parsing-strategy) and the reference implementation [CommonMark.js](https://github.com/commonmark/commonmark.js). Additionally, this project derives its suite of parsing tests from [CommonMark's specs](https://spec.commonmark.org/0.29/spec.json).

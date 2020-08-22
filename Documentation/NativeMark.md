@@ -1,6 +1,8 @@
 # NativeMark
 
-NativeMark is a flavor of [Markdown](https://daringfireball.net/projects/markdown/) designed to be rendered in native apps. It can do basic text styling, lists, images, block quotes, and code.
+NativeMark is a flavor of [Markdown](https://daringfireball.net/projects/markdown/) 
+designed to be rendered in native apps. It can do basic text styling, lists, images, 
+block quotes, and code.
 
 ## Headers
 
@@ -48,7 +50,8 @@ a new paragraph.
 ## Text styling
 
 ```Markdown
-With NativeMark you can _emphasize_ or **bold** text. You can also create [links](https://losingfight.com/blog) or mark `inline code`.
+With NativeMark you can _emphasize_ or **bold** text. You can also 
+create [links](https://losingfight.com/blog) or mark `inline code`.
 ```
 
 ## Images
@@ -61,11 +64,11 @@ With NativeMark you can _emphasize_ or **bold** text. You can also create [links
 
 ```Markdown
 
-\```Swift
+```Swift
 struct MyStruct {
     let foo: Int
     let bar: String
 }
-```
+\```
 
 ```
