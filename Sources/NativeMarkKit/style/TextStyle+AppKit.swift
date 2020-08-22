@@ -34,7 +34,8 @@ extension TextStyle {
             } else {
                 return FontDescriptor(name: .systemMonospace, size: .fixed(12), weight: .regular, traits: .monospace).makeFont()
             }
-        case let .custom(descriptor):
+        case let .custom(name, size, weight, traits):
+            let descriptor = FontDescriptor(name: name, size: size, weight: weight, traits: traits)
             return descriptor.makeFont()
         }
     }

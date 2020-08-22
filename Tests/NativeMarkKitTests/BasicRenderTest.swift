@@ -841,10 +841,10 @@ This is a paragraph in 12pt Helvetica.
                 .textStyle(.title3)
             ],
             .heading(level: 6): [
-                .textStyle(.custom(FontDescriptor(name: .custom("Helvetica"), size: .scaled(to: .headline), weight: .regular, traits: .unspecified)))
+                .textStyle(.custom(name: .custom("Helvetica"), size: .scaled(to: .headline), weight: .regular, traits: .unspecified))
             ],
             .paragraph: [
-                .textStyle(.custom(FontDescriptor(name: .custom("Helvetica"), size: .fixed(12), weight: .bold, traits: .unspecified)))
+                .textStyle(.custom(name: .custom("Helvetica"), size: .fixed(12), weight: .bold, traits: .unspecified))
             ]
         ])
         let testCase = RenderTestCase(name: "TextStyles2",

@@ -60,5 +60,5 @@ public enum TextStyle {
     case title2
     case title3
     case code
-    case custom(FontDescriptor)
+    case custom(name: FontName = .system, size: FontSize = .scaled(to: .body), weight: NativeFontWeight = .regular, traits: FontTraits = .unspecified)
 }

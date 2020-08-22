@@ -2,7 +2,9 @@
 
 NativeMark is a flavor of [Markdown](https://daringfireball.net/projects/markdown/) 
 designed to be rendered in native apps. It can do basic text styling, lists, images, 
-block quotes, and code.
+block quotes, and code. Below are some examples, however they are not exhaustive. 
+As a guideline, if CommonMark supports a Markdown syntax, NativeMark does, too. 
+The one exception is raw HTML tags are not supported by NativeMark.
 
 ## Headers
 
