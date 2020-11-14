@@ -3,7 +3,7 @@ import Foundation
 import UIKit
 import SwiftUI
 
-@available(iOS 13.0, *)
+@available(iOS 13.0, tvOS 13.0, *)
 public struct NativeMarkText: View {
     @State private var intrinsicContentSize: CGSize = .zero
     let nativeMark: String

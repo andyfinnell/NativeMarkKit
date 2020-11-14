@@ -87,7 +87,7 @@ private extension LayoutManager {
         enumerateLineFragments(forGlyphRange: glyphRange) { lineFrame, usedRect, container, lineRange, _ in
             guard let intersectingRange = glyphRange.intersection(lineRange) else { return }
             
-            let totalFrame = self.typographicBounds(ofGlyphRange: intersectingRange, onLineFragment: lineFrame)
+            let totalFrame = self.typographicBounds(ofGlyphRange: intersectingRange, onLineFragment: lineFrame, container: container)
             
             if let theFrame = totalFrame {
                 block(intersectingRange, theFrame)
@@ -95,18 +95,18 @@ private extension LayoutManager {
         }
     }
     
-    func typographicBounds(ofGlyphRange glyphRange: NSRange, onLineFragment lineFrame: CGRect) -> CGRect? {
+    func typographicBounds(ofGlyphRange glyphRange: NSRange, onLineFragment lineFrame: CGRect, container: NSTextContainer) -> CGRect? {
         let glyphs = UnsafeMutablePointer<CGGlyph>.allocate(capacity: glyphRange.length)
         let characterIndices = UnsafeMutablePointer<Int>.allocate(capacity: glyphRange.length)
         let count = self.getGlyphs(in: glyphRange, glyphs: glyphs, properties: nil, characterIndexes: characterIndices, bidiLevels: nil)
-        
+
         var totalFrame: CGRect?
         for i in 0..<count {
             let glyph = glyphs[i]
             let characterIndex = characterIndices[i]
             let glyphIndex = glyphRange.location + i
             
-            let frame = typographicBounds(ofGlyph: glyph, atGlyphIndex: glyphIndex, characterIndex: characterIndex, onLineFragment: lineFrame)
+            let frame = typographicBounds(ofGlyph: glyph, atGlyphIndex: glyphIndex, characterIndex: characterIndex, onLineFragment: lineFrame, container: container)
             
             if let previousFrame = totalFrame {
                 totalFrame = previousFrame.union(frame)
@@ -114,35 +114,26 @@ private extension LayoutManager {
                 totalFrame = frame
             }
         }
-        
+                
         glyphs.deallocate()
         characterIndices.deallocate()
 
         return totalFrame
     }
     
-    func typographicBounds(ofGlyph glyph: CGGlyph, atGlyphIndex glyphIndex: Int, characterIndex: Int, onLineFragment lineFrame: CGRect) -> CGRect {
+    func typographicBounds(ofGlyph glyph: CGGlyph, atGlyphIndex glyphIndex: Int, characterIndex: Int, onLineFragment lineFrame: CGRect, container: NSTextContainer) -> CGRect {
         let location = self.location(forGlyphAt: glyphIndex)
         let defaultFont = self.textStorage?.attribute(.font, at: characterIndex, effectiveRange: nil) as? NativeFont ?? TextStyle.body.makeFont()
 
-        guard let cgFont = defaultFont.cgFont else {
-            return .zero
-        }
-        
-        var unscaledBoundingBox = CGRect.zero
-        var ioGlyph = glyph
-        cgFont.getGlyphBBoxes(glyphs: &ioGlyph, count: 1, bboxes: &unscaledBoundingBox)
-        let boundingBox = CGRect(x: unscaledBoundingBox.minX / CGFloat(cgFont.unitsPerEm) * defaultFont.pointSize,
-                                 y: unscaledBoundingBox.minY / CGFloat(cgFont.unitsPerEm) * defaultFont.pointSize,
-                                 width: unscaledBoundingBox.width / CGFloat(cgFont.unitsPerEm) * defaultFont.pointSize,
-                                 height: unscaledBoundingBox.height / CGFloat(cgFont.unitsPerEm) * defaultFont.pointSize)
         let frameLocation = CGPoint(x: lineFrame.minX + location.x,
                                     y: lineFrame.minY + location.y)
-        let ascender = CGFloat(cgFont.ascent) / CGFloat(cgFont.unitsPerEm) * defaultFont.pointSize
-        let descender = CGFloat(cgFont.descent) / CGFloat(cgFont.unitsPerEm) * defaultFont.pointSize
-        return CGRect(x: frameLocation.x + boundingBox.minX,
-                           y: frameLocation.y - ascender,
-                           width: boundingBox.width,
-                           height: ascender - descender)
+        let glyphBoundingRect = boundingRect(forGlyphRange: NSRange(location: glyphIndex, length: 1),
+                                             in: container)
+        let ascender = defaultFont.ascender
+        let descender = defaultFont.descender
+        return CGRect(x: glyphBoundingRect.minX,
+                      y: frameLocation.y - ascender,
+                      width: glyphBoundingRect.width,
+                      height: ascender - descender)
     }
 }
