@@ -3,7 +3,7 @@
 
 NativeMark is a flavor of Markdown designed to be rendered by native apps (i.e. it compiles down to native types, not HTML). Specifically, it implements the [CommonMark spec](https://spec.commonmark.org/0.29/) with the significant exception of raw HTML tags. NativeMark will treat raw HTML tags as plain text.
 
-The goal of NativeMark is to provide a simple, intuitive way to create styled text in native apps. NativeMarkKit is an implementation of NativeMark for macOS, iOS, and tvOS. NativeMarkKit supports dark mode and dynamic type where available.
+The goal of NativeMark is to provide a simple, intuitive way to create styled text in native apps. NativeMarkKit is an implementation of NativeMark for macOS, iOS, and tvOS. NativeMarkKit supports dark mode, dynamic type, and SwiftUI where available.
 
 ## Requirements
 

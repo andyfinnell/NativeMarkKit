@@ -22,9 +22,13 @@ public final class NativeMarkLabel: NSView {
             invalidateIntrinsicContentSize()
             setNeedsDisplay(bounds)
             updateAccessibility()
+            onIntrinsicSizeInvalidated?()
         }
     }
 
+    var onIntrinsicSizeInvalidated: (() -> Void)?
+    var isMultiline: Bool { abstractView.isMultiline }
+    
     public init(nativeMark: String, styleSheet: StyleSheet = .default) {
         abstractView = AbstractView(nativeMark: nativeMark, styleSheet: styleSheet)
         super.init(frame: .zero)
@@ -49,6 +53,7 @@ public final class NativeMarkLabel: NSView {
             invalidateIntrinsicContentSize()
             setNeedsDisplay(bounds)
             updateAccessibility()
+            onIntrinsicSizeInvalidated?()
         }
     }
     

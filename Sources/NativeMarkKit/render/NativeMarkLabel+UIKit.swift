@@ -20,8 +20,12 @@ public final class NativeMarkLabel: UIControl {
             invalidateIntrinsicContentSize()
             setNeedsDisplay()
             updateAccessibility()
+            onIntrinsicSizeInvalidated?()
         }
     }
+    
+    var onIntrinsicSizeInvalidated: (() -> Void)?
+    var isMultiline: Bool { abstractView.isMultiline }
 
     public init(nativeMark: String, styleSheet: StyleSheet = .default) {
         abstractView = AbstractView(nativeMark: nativeMark, styleSheet: styleSheet)
@@ -30,7 +34,7 @@ public final class NativeMarkLabel: UIControl {
         updateAccessibility()
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         abstractView = AbstractView(nativeMark: "", styleSheet: .default)
         super.init(frame: .zero)
         abstractView.delegate = self
@@ -47,6 +51,7 @@ public final class NativeMarkLabel: UIControl {
             invalidateIntrinsicContentSize()
             setNeedsDisplay()
             updateAccessibility()
+            onIntrinsicSizeInvalidated?()
         }
     }
 
@@ -56,6 +61,8 @@ public final class NativeMarkLabel: UIControl {
             invalidateIntrinsicContentSize()
             setNeedsDisplay()
             updateAccessibility()
+            onIntrinsicSizeInvalidated?()
+
         }
     }
     
