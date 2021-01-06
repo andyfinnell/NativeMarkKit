@@ -1,5 +1,5 @@
 import Foundation
-#if canImport(UIKit) && canImport(SwiftUI)
+#if canImport(UIKit) && canImport(SwiftUI) && (arch(arm64) || arch(x86_64))
 import UIKit
 import SwiftUI
 
