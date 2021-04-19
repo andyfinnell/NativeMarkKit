@@ -35,6 +35,22 @@ final class BasicRenderTest: XCTestCase {
         XCTAssert(testCase.isPassing(for: self))
     }
     
+    func testHelloWorldWithCustomFont() {
+        let style = StyleSheet.default.duplicate().mutate(
+                block: [
+                    .document: [
+                        .textStyle(.custom(name: .custom("Avenir-Medium"), size: .fixed(18))),
+                        .backgroundColor(.white),
+                        .textColor(.black)
+                    ],
+                ])
+        let testCase = RenderTestCase(name: "HelloWorldWithCustomFont",
+                                      nativeMark: "**Hello**, _world_!",
+                                      styleSheet: style,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
     func testParagraphs() {
         let nativeMark = """
 This is the first
@@ -841,10 +857,10 @@ This is a paragraph in 12pt Helvetica.
                 .textStyle(.title3)
             ],
             .heading(level: 6): [
-                .textStyle(.custom(name: .custom("Helvetica"), size: .scaled(to: .headline), weight: .regular, traits: .unspecified))
+                .textStyle(.custom(name: .custom("Helvetica"), size: .scaled(to: .headline), traits: .unspecified))
             ],
             .paragraph: [
-                .textStyle(.custom(name: .custom("Helvetica"), size: .fixed(12), weight: .bold, traits: .unspecified))
+                .textStyle(.custom(name: .custom("Helvetica"), size: .fixed(12), traits: .bold))
             ]
         ])
         let testCase = RenderTestCase(name: "TextStyles2",

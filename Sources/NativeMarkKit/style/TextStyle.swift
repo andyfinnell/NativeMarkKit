@@ -13,10 +13,17 @@ public enum FontName {
     case custom(String)
 }
 
-public enum FontTraits {
-    case unspecified
-    case italic
-    case monospace
+public struct FontTraits: OptionSet {
+    public let rawValue: Int
+    
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+    
+    public static let unspecified: FontTraits = []
+    public static let italic = FontTraits(rawValue: 1 << 0)
+    public static let bold = FontTraits(rawValue: 1 << 1)
+    public static let monospace = FontTraits(rawValue: 1 << 2)
 }
 
 public enum FontSize {
@@ -36,13 +43,11 @@ public enum FontSize {
 public struct FontDescriptor {
     public let name: FontName
     public let size: FontSize
-    public let weight: NativeFontWeight
     public let traits: FontTraits
     
-    public init(name: FontName, size: FontSize, weight: NativeFontWeight, traits: FontTraits) {
+    public init(name: FontName, size: FontSize, traits: FontTraits) {
         self.name = name
         self.size = size
-        self.weight = weight
         self.traits = traits
     }
 }
@@ -60,5 +65,5 @@ public enum TextStyle {
     case title2
     case title3
     case code
-    case custom(name: FontName = .system, size: FontSize = .scaled(to: .body), weight: NativeFontWeight = .regular, traits: FontTraits = .unspecified)
+    case custom(name: FontName = .system, size: FontSize = .scaled(to: .body), traits: FontTraits = .unspecified)
 }
