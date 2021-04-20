@@ -115,7 +115,7 @@ public extension StyleSheet {
                 .fontTraits(.italic)
             ],
             .strong: [
-                .fontWeight(.bold)
+                .fontTraits(.bold)
             ],
             .code: [
                 .textStyle(.code),

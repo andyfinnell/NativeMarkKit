@@ -15,7 +15,6 @@ public enum InlineStyle {
     case strikethrough(NSUnderlineStyle, color: NativeColor? = nil)
     case underline(NSUnderlineStyle, color: NativeColor? = nil)
     case fontSize(CGFloat)
-    case fontWeight(NativeFontWeight)
     case fontTraits(FontTraits)
     case backgroundBorder(width: CGFloat = 1, color: NativeColor = .adaptableBlockQuoteMarginColor, sides: BorderSides = .all)
     case inlineBackground(fillColor: NativeColor = .adaptableCodeBackgroundColor, strokeColor: NativeColor = .adaptableCodeBorderColor, strokeWidth: CGFloat = 1, cornerRadius: CGFloat = 3, topMargin: Length = 1.pt, bottomMargin: Length = 1.pt, leftMargin: Length = 6.pt, rightMargin: Length = 6.pt)
@@ -52,9 +51,6 @@ extension InlineStyle: ExpressibleAsAttributes {
         case let .fontSize(fontSize):
             let currentFont = attributes[.font] as? NativeFont
             attributes[.font] = currentFont.withSize(fontSize)
-        case let .fontWeight(weight):
-            let currentFont = attributes[.font] as? NativeFont
-            attributes[.font] = currentFont.withWeight(weight)
         case let .fontTraits(traits):
             let currentFont = attributes[.font] as? NativeFont
             attributes[.font] = currentFont.withTraits(traits)

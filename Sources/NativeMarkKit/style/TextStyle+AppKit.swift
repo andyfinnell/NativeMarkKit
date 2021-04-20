@@ -32,10 +32,10 @@ extension TextStyle {
             if #available(OSX 10.15, *) {
                 return NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)
             } else {
-                return FontDescriptor(name: .systemMonospace, size: .fixed(12), weight: .regular, traits: .monospace).makeFont()
+                return FontDescriptor(name: .systemMonospace, size: .fixed(12), traits: .monospace).makeFont()
             }
-        case let .custom(name, size, weight, traits):
-            let descriptor = FontDescriptor(name: name, size: size, weight: weight, traits: traits)
+        case let .custom(name, size, traits):
+            let descriptor = FontDescriptor(name: name, size: size, traits: traits)
             return descriptor.makeFont()
         }
     }
@@ -47,15 +47,10 @@ extension Optional where Wrapped == NSFont {
     func withSize(_ size: CGFloat) -> NSFont {
         flatMap { $0.withSize(size) } ?? NSFont.systemFont(ofSize: size)
     }
-    
-    func withWeight(_ weight: NSFont.Weight) -> NSFont {
-        flatMap { $0.withWeight(weight) }
-            ?? FontDescriptor(name: .system, size: .fixed(12), weight: weight, traits: .unspecified).makeFont()
-    }
-    
+        
     func withTraits(_ traits: FontTraits) -> NSFont {
         flatMap { $0.withTraits(traits) }
-            ?? FontDescriptor(name: .system, size: .fixed(12), weight: .regular, traits: traits).makeFont()
+            ?? FontDescriptor(name: .system, size: .fixed(12), traits: traits).makeFont()
     }
 }
 
@@ -63,11 +58,7 @@ extension NSFont {
     func withSize(_ size: CGFloat) -> NSFont? {
         NSFont(descriptor: fontDescriptor.withSize(size), textTransform: nil)
     }
-    
-    func withWeight(_ weight: NSFont.Weight) -> NSFont? {
-        NSFont(descriptor: fontDescriptor.withWeight(weight), textTransform: nil)
-    }
-    
+        
     func withTraits(_ traits: FontTraits) -> NSFont? {
         NSFont(descriptor: fontDescriptor.withTraits(traits), textTransform: nil)
     }
@@ -75,38 +66,23 @@ extension NSFont {
 
 private extension FontTraits {
     var symbolicTraits: NSFontDescriptor.SymbolicTraits {
-        switch self {
-        case .italic:
-            return [.italic]
-        case .monospace:
-            return [.monoSpace]
-        case .unspecified:
-            return []
+        var traits: NSFontDescriptor.SymbolicTraits = []
+        if contains(.italic) {
+            traits.formUnion(.italic)
         }
-    }
-    
-    func updateTraits(_ traits: inout [NSFontDescriptor.TraitKey: Any]) {
-        let currentRawValue = traits[.symbolic] as? UInt32 ?? 0
-        let current = NSFontDescriptor.SymbolicTraits(rawValue: currentRawValue)
-        traits[.symbolic] = current.union(symbolicTraits).rawValue
+        if contains(.bold) {
+            traits.formUnion(.bold)
+        }
+        if contains(.monospace) {
+            traits.formUnion(.monoSpace)
+        }
+        return traits
     }
 }
 
 private extension NSFontDescriptor {
-    func withWeight(_ weight: NSFont.Weight) -> NSFontDescriptor {
-        var attributes = fontAttributes
-        var traits = (attributes[.traits] as? [NSFontDescriptor.TraitKey: Any]) ?? [:]
-        traits[.weight] = weight
-        attributes[.traits] = traits
-        return NSFontDescriptor(fontAttributes: attributes)
-    }
-    
     func withTraits(_ fontTraits: FontTraits) -> NSFontDescriptor {
-        var attributes = fontAttributes
-        var traits = (attributes[.traits] as? [NSFontDescriptor.TraitKey: Any]) ?? [:]
-        fontTraits.updateTraits(&traits)
-        attributes[.traits] = traits
-        return NSFontDescriptor(fontAttributes: attributes)
+        withSymbolicTraits(symbolicTraits.union(fontTraits.symbolicTraits))
     }
 }
 
@@ -117,34 +93,32 @@ private extension FontDescriptor {
     }
     
     func descriptor() -> NSFontDescriptor {
-        var attributes = baseAttributes()
-        var traits = (attributes[.traits] as? [NSFontDescriptor.TraitKey: Any]) ?? [:]
-        traits[.weight] = weight
-        self.traits.updateTraits(&traits)
-        attributes[.traits] = traits
-        attributes[.size] = size.pointSize
-        return NSFontDescriptor(fontAttributes: attributes)
+        baseFontDescriptor().withTraits(traits)
     }
     
-    func baseAttributes() -> [NSFontDescriptor.AttributeName: Any] {
+    func baseFontDescriptor() -> NSFontDescriptor {
         switch name {
         case .system:
             return NSFont.systemFont(ofSize: size.pointSize)
                 .fontDescriptor
-                .fontAttributes
         case .systemMonospace:
             if #available(OSX 10.15, *) {
-                return NSFont.monospacedSystemFont(ofSize: size.pointSize, weight: weight)
+                return NSFont.monospacedSystemFont(ofSize: size.pointSize, weight: .regular)
                     .fontDescriptor
-                    .fontAttributes
             } else {
                 let traits: [NSFontDescriptor.TraitKey: Any] = [
                     .symbolic: NSFontMonoSpaceTrait
                 ]
-                return [.traits: traits]
+                return NSFontDescriptor(fontAttributes: [
+                    .traits: traits,
+                    .size: size.pointSize
+                ])
             }
         case let .custom(fontName):
-            return [.name: fontName]
+            return NSFontDescriptor(fontAttributes: [
+                .name: fontName,
+                .size: size.pointSize
+            ])
         }
     }
 }
