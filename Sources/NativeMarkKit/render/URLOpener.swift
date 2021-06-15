@@ -10,7 +10,7 @@ public struct URLOpener {
         #if canImport(AppKit)
         NSWorkspace.shared.open(url)
         #elseif canImport(UIKit)
-        UIApplication.shared.openURL(url)
+        UIApplication.shared.open(url)
         #else
         #error("Unsupported platform")
         #endif
