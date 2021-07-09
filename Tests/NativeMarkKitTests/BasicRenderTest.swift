@@ -52,6 +52,22 @@ final class BasicRenderTest: XCTestCase {
         XCTAssert(testCase.isPassing(for: self))
     }
 
+    func testHelloWorldWithCustomFontTake2() {
+        let style = StyleSheet.default.duplicate().mutate(
+                block: [
+                    .document: [
+                        .textStyle(.custom(name: .custom("Avenir-Roman"), size: .fixed(19))),
+                        .backgroundColor(.white),
+                        .textColor(.black)
+                    ],
+                ])
+        let testCase = RenderTestCase(name: "HelloWorldWithCustomFontTakeTwo",
+                                      nativeMark: "Avenir Avenir Avenir Avenir",
+                                      styleSheet: style,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
     func testParagraphs() {
         let nativeMark = """
 This is the first
