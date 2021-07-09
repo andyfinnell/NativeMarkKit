@@ -93,7 +93,11 @@ private extension FontTraits {
 
 private extension UIFontDescriptor {
     func withTraits(_ fontTraits: FontTraits) -> UIFontDescriptor {
-        withSymbolicTraits(symbolicTraits.union(fontTraits.symbolicTraits)) ?? self
+        guard fontTraits != .unspecified else {
+            return self
+        }
+
+        return withSymbolicTraits(symbolicTraits.union(fontTraits.symbolicTraits)) ?? self
     }
 }
 
@@ -116,19 +120,14 @@ private extension FontDescriptor {
                 return UIFont.monospacedSystemFont(ofSize: size.pointSize, weight: .regular)
                     .fontDescriptor
             } else {
-                let traits: [UIFontDescriptor.TraitKey: Any] = [
-                    .symbolic: UIFontDescriptor.SymbolicTraits.traitMonoSpace.rawValue
-                ]
-                return UIFontDescriptor(fontAttributes: [
-                    .traits: traits,
-                    .size: size.pointSize
-                ])
+                let baseDescriptor = UIFont.systemFont(ofSize: size.pointSize)
+                    .fontDescriptor
+                    
+                return baseDescriptor.withSymbolicTraits(.traitMonoSpace)
+                    ?? baseDescriptor
             }
         case let .custom(fontName):
-            return UIFontDescriptor(fontAttributes: [
-                .name: fontName,
-                .size: size.pointSize
-            ])
+            return UIFontDescriptor(name: fontName, size: size.pointSize)
         }
     }
 }
