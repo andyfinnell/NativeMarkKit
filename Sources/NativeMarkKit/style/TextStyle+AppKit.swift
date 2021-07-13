@@ -78,6 +78,20 @@ private extension FontTraits {
         }
         return traits
     }
+    
+    var fontTraits: NSFontTraitMask {
+        var traits: NSFontTraitMask = []
+        if contains(.italic) {
+            traits.formUnion(.italicFontMask)
+        }
+        if contains(.bold) {
+            traits.formUnion(.boldFontMask)
+        }
+        if contains(.monospace) {
+            traits.formUnion(.fixedPitchFontMask)
+        }
+        return traits
+    }
 }
 
 private extension NSFontDescriptor {
@@ -85,7 +99,12 @@ private extension NSFontDescriptor {
         guard fontTraits != .unspecified else {
             return self
         }
-        return withSymbolicTraits(symbolicTraits.union(fontTraits.symbolicTraits))
+        let startingFont = NSFont(descriptor: self, textTransform: nil)
+            ?? NSFont.systemFont(ofSize: pointSize)
+        
+        return NSFontManager.shared
+            .convert(startingFont, toHaveTrait: fontTraits.fontTraits)
+            .fontDescriptor
     }
 }
 
