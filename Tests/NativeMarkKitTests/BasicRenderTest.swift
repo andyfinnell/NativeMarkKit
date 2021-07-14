@@ -68,6 +68,36 @@ final class BasicRenderTest: XCTestCase {
         XCTAssert(testCase.isPassing(for: self))
     }
 
+    func testCustomFontsWithBoldAndItalic() {
+        let style = StyleSheet.default.duplicate().mutate(
+                block: [
+                    .document: [
+                        .textStyle(.custom(name: .custom("Avenir-Medium"), size: .fixed(19))),
+                        .backgroundColor(.white),
+                        .textColor(.black)
+                    ],
+                ])
+        let nativeMark = """
+            1 -- normal
+            
+            2 -- *italic*
+            
+            3 -- **bold**
+            
+            4 -- ***bold & italic***
+            
+            5 -- **bold -- *bold & italic***
+            
+            6 -- *italic -- **italic & bold***
+            """
+
+        let testCase = RenderTestCase(name: "CustomFontsWithBoldAndItalic",
+                                      nativeMark: nativeMark,
+                                      styleSheet: style,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+    
     func testParagraphs() {
         let nativeMark = """
 This is the first

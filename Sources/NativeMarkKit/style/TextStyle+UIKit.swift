@@ -119,7 +119,7 @@ private extension UIFontDescriptor {
         // If we're changing the weight (by being bold or bolding now), then
         //  the weight will be fixed to bold, and we can use withSymbolicTraits
         if fontTraits.contains(.bold) || symbolicTraits.contains(.traitBold) {
-            return withSymbolicTraits(fontTraits.symbolicTraits) ?? self
+            return withSymbolicTraits(symbolicTraits.union(fontTraits.symbolicTraits)) ?? self
         } else {
             // If we're just italicizing this font, withSymbolTraits won't
             //  attempt to preserve the weight of our current font. So if we're

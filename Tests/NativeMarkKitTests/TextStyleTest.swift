@@ -24,6 +24,13 @@ final class TextStyleTest: XCTestCase {
 
         let boldItalicFont = plainFont.withTraits([.italic, .bold])
         XCTAssertEqual(boldItalicFont?.fontName, "Avenir-HeavyOblique")
+        
+        let boldItalicFont2 = plainFont.withTraits(.italic)?.withTraits(.bold)
+        XCTAssertEqual(boldItalicFont2?.fontName, "Avenir-HeavyOblique")
+
+        let boldItalicFont3 = plainFont.withTraits(.bold)?.withTraits(.italic)
+        XCTAssertEqual(boldItalicFont3?.fontName, "Avenir-HeavyOblique")
+
     }
     
     func testCustomFontsWhenAvenirRoman() {
