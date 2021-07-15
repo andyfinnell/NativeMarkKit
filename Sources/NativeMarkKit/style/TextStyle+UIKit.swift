@@ -89,6 +89,25 @@ private extension FontTraits {
         }
         return traits
     }
+    
+    func matchScore(_ otherTraits: UIFontDescriptor.SymbolicTraits) -> Int {
+        var score = 0
+        if matchTrait(.italic, in: otherTraits) {
+            score += 1
+        }
+        if matchTrait(.bold, in: otherTraits) {
+            score += 1
+        }
+        if matchTrait(.monospace, in: otherTraits) {
+            score += 1
+        }
+        return score
+    }
+    
+    private func matchTrait(_ fontTrait: FontTraits, in symbolicTraits: UIFontDescriptor.SymbolicTraits) -> Bool {
+        (contains(fontTrait) && symbolicTraits.contains(fontTrait.symbolicTraits))
+            || (!contains(fontTrait) && !symbolicTraits.contains(fontTrait.symbolicTraits))
+    }
 }
 
 private extension UIFontDescriptor {
@@ -96,8 +115,61 @@ private extension UIFontDescriptor {
         guard fontTraits != .unspecified else {
             return self
         }
-
-        return withSymbolicTraits(symbolicTraits.union(fontTraits.symbolicTraits)) ?? self
+        
+        // If we're changing the weight (by being bold or bolding now), then
+        //  the weight will be fixed to bold, and we can use withSymbolicTraits
+        if fontTraits.contains(.bold) || symbolicTraits.contains(.traitBold) {
+            return withSymbolicTraits(symbolicTraits.union(fontTraits.symbolicTraits)) ?? self
+        } else {
+            // If we're just italicizing this font, withSymbolTraits won't
+            //  attempt to preserve the weight of our current font. So if we're
+            //  Avenir-Medium, we won't get Avenir-MediumOblique, we'll get
+            //  Avenir-BookOblique. For that reason, manually find the best font
+            //  ourselves.
+            return updateWithoutWeightChange(fontTraits)
+        }
+    }
+        
+    func updateWithoutWeightChange(_ fontTraits: FontTraits) -> UIFontDescriptor {
+        let currentFont = UIFont(descriptor: self, size: pointSize)
+        let currentWeight = weight
+        let sortedFonts = UIFont.fontNames(forFamilyName: currentFont.familyName).compactMap { fontname in
+            UIFont(name: fontname, size: pointSize)
+        }.map { font -> (font: UIFont, traitsScore: Int, weightScore: Double) in
+            let triats = font.fontDescriptor.symbolicTraits
+            let weight = font.fontDescriptor.weight
+            
+            return (font: font,
+                    traitsScore: fontTraits.matchScore(triats),
+                    weightScore: weightMatchScore(currentWeight, weight))
+        }.sorted(by: { fontPair1, fontPair2 in
+            if fontPair1.traitsScore == fontPair2.traitsScore {
+                return fontPair1.weightScore > fontPair2.weightScore
+            } else {
+                return fontPair1.traitsScore > fontPair2.traitsScore
+            }
+        }).map { $0.font }
+        
+        return sortedFonts.first?.fontDescriptor
+            ?? withSymbolicTraits(fontTraits.symbolicTraits)
+            ?? self
+    }
+    
+    func weightMatchScore(_ lhsWeight: Double?, _ rhsWeight: Double?) -> Double {
+        guard let lhsWeight = lhsWeight, let rhsWeight = rhsWeight else {
+            return 0 // assume no match
+        }
+        
+        // weight goes between [-1...1]. We want to normalize the return to go
+        //  between [0...1], with 1 being an exact match, 0 being exact opposite
+        return 1.0 - abs((lhsWeight + 1) - (rhsWeight + 1)) / 2.0
+    }
+    
+    var weight: Double? {
+        guard let traits = object(forKey: .traits) as? [UIFontDescriptor.TraitKey: Any] else {
+            return nil
+        }
+        return traits[.weight] as? Double
     }
 }
 
