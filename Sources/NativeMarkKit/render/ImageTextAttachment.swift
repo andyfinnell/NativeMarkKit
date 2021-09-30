@@ -45,7 +45,11 @@ final class ImageTextAttachment: NativeTextAttachment {
     
     override func lineFragment(for textContainer: NSTextContainer?, proposedLineFragment lineFrag: CGRect) -> CGRect {
         if let image = loadImage() {
-            return CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+            let aspectRatio = image.size.width / image.size.height
+            let width = min(lineFrag.width, image.size.width)
+            let height = width / aspectRatio
+
+            return CGRect(x: 0, y: 0, width: width, height: height)
         } else {
             return CGRect(x: 0, y: 0, width: lineFrag.height, height: lineFrag.height)
         }
