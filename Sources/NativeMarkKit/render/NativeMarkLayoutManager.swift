@@ -105,15 +105,24 @@ public final class NativeMarkLayoutManager: NSObject {
 
 extension NativeMarkLayoutManager {
     func invalidateImage(in characterRange: NSRange) {
-        layoutManager.invalidateLayout(forCharacterRange: characterRange, actualCharacterRange: nil)
-        layoutManager.invalidateDisplay(forCharacterRange: characterRange)
+        var actualRange = NSRange()
+        layoutManager.invalidateLayout(forCharacterRange: characterRange, actualCharacterRange: &actualRange)
+        layoutManager.invalidateDisplay(forCharacterRange: actualRange)
         
-        let glyphRange = layoutManager.glyphRange(forCharacterRange: characterRange, actualCharacterRange: nil)
+        let glyphRange = layoutManager.glyphRange(forCharacterRange: actualRange, actualCharacterRange: nil)
         
         if let container = layoutManager.textContainer(forGlyphAt: glyphRange.location, effectiveRange: nil),
             let wrappedContainer = textContainers.first(where: { $0.container === container }) {
             let bounds = layoutManager.boundingRect(forGlyphRange: glyphRange, in: container)
             delegate?.layoutManager(self, invalidateFrame: bounds, inContainer: wrappedContainer)
+        } else {
+            // In this case, the image is big enough to force things out of the container
+            //  Brute force the updates
+            for wrappedContainer in textContainers {
+                let glyphRange = layoutManager.glyphRange(for: wrappedContainer.container)
+                let bounds = layoutManager.boundingRect(forGlyphRange: glyphRange, in: wrappedContainer.container)
+                delegate?.layoutManager(self, invalidateFrame: bounds, inContainer: wrappedContainer)
+            }
         }
     }
         

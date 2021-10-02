@@ -114,7 +114,10 @@ private extension NativeMarkLabel {
 
 extension NativeMarkLabel: AbstractViewDelegate {
     func abstractViewDidInvalidateRect(_ rect: CGRect) {
+        invalidateIntrinsicContentSize()
         setNeedsDisplay(rect)
+        updateAccessibility()
+        onIntrinsicSizeInvalidated?()
     }
 }
 
