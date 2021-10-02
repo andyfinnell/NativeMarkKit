@@ -115,7 +115,10 @@ final class URLAcccessibilityElement: NSAccessibilityElement {
 
 extension NativeMarkLabel: AbstractViewDelegate {
     func abstractViewDidInvalidateRect(_ rect: CGRect) {
+        invalidateIntrinsicContentSize()
         setNeedsDisplay(rect)
+        updateAccessibility()
+        onIntrinsicSizeInvalidated?()
     }
 }
 #endif
