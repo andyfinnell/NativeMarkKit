@@ -7,6 +7,7 @@ import UIKit
 
 protocol ImageTextAttachmentDelegate: AnyObject {
     func imageTextAttachmentLoadImage(_ urlString: String, completion: @escaping (NativeImage?) -> Void)
+    func imageTextAttachmentResize(_ urlString: String?, image: NativeImage, lineFragment: CGRect) -> CGSize
 }
 
 protocol ImageTextAttachmentLayoutDelegate: AnyObject {
@@ -45,7 +46,11 @@ final class ImageTextAttachment: NativeTextAttachment {
     
     override func lineFragment(for textContainer: NSTextContainer?, proposedLineFragment lineFrag: CGRect) -> CGRect {
         if let image = loadImage() {
-            return CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+            if let resized = delegate?.imageTextAttachmentResize(imageUrl, image: image, lineFragment: lineFrag) {
+                return CGRect(origin: .zero, size: resized)
+            } else {
+                return CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+            }
         } else {
             return CGRect(x: 0, y: 0, width: lineFrag.height, height: lineFrag.height)
         }

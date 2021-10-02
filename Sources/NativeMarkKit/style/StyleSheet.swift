@@ -4,11 +4,16 @@ public final class StyleSheet {
     private var blockStyles: [BlockStyleSelector: [BlockStyle]]
     private var inlineStyles: [InlineStyleSelector: [InlineStyle]]
     private var imageLoader: ImageLoader
+    private var imageSizer: ImageSizer
     
-    public init(_ blockStyles: [BlockStyleSelector: [BlockStyle]], _ inlineStyles: [InlineStyleSelector: [InlineStyle]], imageLoader: ImageLoader = DefaultImageLoader()) {
+    public init(_ blockStyles: [BlockStyleSelector: [BlockStyle]],
+                _ inlineStyles: [InlineStyleSelector: [InlineStyle]],
+                imageLoader: ImageLoader = DefaultImageLoader(),
+                imageSizer: ImageSizer = DefaultImageSizer()) {
         self.blockStyles = blockStyles
         self.inlineStyles = inlineStyles
         self.imageLoader = imageLoader
+        self.imageSizer = imageSizer
     }
     
     func styles(for blockSelector: BlockStyleSelector) -> [BlockStyle] {
@@ -23,7 +28,10 @@ public final class StyleSheet {
         StyleSheet(blockStyles, inlineStyles, imageLoader: imageLoader)
     }
     
-    public func mutate(block overrideBlockStyles: [BlockStyleSelector: [BlockStyle]] = [:], inline overrideInlineStyles: [InlineStyleSelector: [InlineStyle]] = [:], imageLoader: ImageLoader? = nil) -> StyleSheet {
+    public func mutate(block overrideBlockStyles: [BlockStyleSelector: [BlockStyle]] = [:],
+                       inline overrideInlineStyles: [InlineStyleSelector: [InlineStyle]] = [:],
+                       imageLoader: ImageLoader? = nil,
+                       imageSizer: ImageSizer? = nil) -> StyleSheet {
         for (blockSelector, blockStylesForSelector) in overrideBlockStyles {
             let existingStyles = blockStyles[blockSelector] ?? []
             blockStyles[blockSelector] = existingStyles + blockStylesForSelector
@@ -36,6 +44,10 @@ public final class StyleSheet {
         
         if let imageLoader = imageLoader {
             self.imageLoader = imageLoader
+        }
+        
+        if let imageSizer = imageSizer {
+            self.imageSizer = imageSizer
         }
         
         return self
@@ -130,6 +142,10 @@ public extension StyleSheet {
 }
 
 extension StyleSheet: ImageTextAttachmentDelegate {
+    func imageTextAttachmentResize(_ urlString: String?, image: NativeImage, lineFragment: CGRect) -> CGSize {
+        imageSizer.imageSize(urlString, image: image, lineFragment: lineFragment)
+    }
+    
     func imageTextAttachmentLoadImage(_ urlString: String, completion: @escaping (NativeImage?) -> Void) {
         imageLoader.loadImage(urlString, completion: completion)
     }
