@@ -109,6 +109,7 @@ extension NativeMarkLayoutManager {
         layoutManager.invalidateDisplay(forCharacterRange: characterRange)
         
         let glyphRange = layoutManager.glyphRange(forCharacterRange: characterRange, actualCharacterRange: nil)
+        layoutManager.ensureLayout(forGlyphRange: glyphRange)
         
         if let container = layoutManager.textContainer(forGlyphAt: glyphRange.location, effectiveRange: nil),
             let wrappedContainer = textContainers.first(where: { $0.container === container }) {
