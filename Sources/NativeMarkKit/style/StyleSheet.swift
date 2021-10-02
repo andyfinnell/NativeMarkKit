@@ -1,4 +1,11 @@
 import Foundation
+#if canImport(AppKit)
+import AppKit
+#elseif canImport(UIKit)
+import UIKit
+#else
+#error("Unsupported platform")
+#endif
 
 public final class StyleSheet {
     private var blockStyles: [BlockStyleSelector: [BlockStyle]]
