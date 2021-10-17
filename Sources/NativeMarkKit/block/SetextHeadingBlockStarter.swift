@@ -19,10 +19,14 @@ struct SetextHeadingBlockStarter: BlockStarter {
         let blockKind = kind(from: startText)
                 
         closer.close()
-        let heading = Block(kind: blockKind, parser: HeadingBlockParser())
+        let heading = Block(kind: blockKind,
+                            parser: HeadingBlockParser(),
+                            startPosition: container.textLines.first?.startPosition ?? realLine.startPosition)
         for line in container.textLines {
-            heading.addText(line)
+            heading.addText(line, endOfLine: line.endPosition)
         }
+        heading.updateEndPosition(realLine.endPosition)
+
         _ = container.parent?.addChild(heading)
         container.removeFromParent()
         

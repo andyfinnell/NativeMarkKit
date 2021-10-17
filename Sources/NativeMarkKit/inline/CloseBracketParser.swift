@@ -9,12 +9,12 @@ struct CloseBracketParser {
         }
         
         guard let openBracket = delimiterStack.openBracket() else {
-            return closeBracket.map { .text($0) }
+            return closeBracket.map { .text(InlineString(text: $0, range: closeBracket.valueTextRange)) }
         }
         
         guard openBracket.isActive else {
             delimiterStack.demoteDelimiter(openBracket)
-            return closeBracket.map { .text($0) }
+            return closeBracket.map { .text(InlineString(text: $0, range: closeBracket.valueTextRange)) }
         }
         
         let unknownLinkResult = parseLinkOrRef(closeBracket.remaining,
@@ -23,7 +23,7 @@ struct CloseBracketParser {
         
         guard let unknownLink = unknownLinkResult.value else {
             delimiterStack.demoteDelimiter(openBracket)
-            return closeBracket.map { .text($0) }
+            return closeBracket.map { .text(InlineString(text: $0, range: closeBracket.valueTextRange)) }
         }
         
         let link = unknownLink.link
@@ -32,7 +32,10 @@ struct CloseBracketParser {
         let substack = delimiterStack.popSubstack(starting: openBracket)
         substack.processEmphasis()
         let contents = substack.inlineText
-        let inlineText = isImage ? InlineText.image(link, alt: plainText(contents)) : .link(link, text: contents)
+        let range = TextRange(start: openBracket.startCursor, end: unknownLinkResult.remaining.retreat())
+        let inlineText = isImage
+            ? InlineText.image(InlineImage(link: link, alt: InlineString(text: plainText(contents), range: contents.range), range: range))
+            : .link(InlineLink(link: link, text: contents, range: range))
                 
         if openBracket.isLinkOpener {
             delimiterStack.deactivateLinkOpeners()
@@ -40,7 +43,8 @@ struct CloseBracketParser {
         
         return TextResult(remaining: unknownLinkResult.remaining,
                           value: inlineText,
-                          valueLocation: openBracket.startCursor)
+                          valueLocation: openBracket.startCursor,
+                          valueTextRange: range)
     }
 }
 
@@ -102,20 +106,20 @@ private extension CloseBracketParser {
         inlineText.reduce("") { sum, inline in
             switch inline {
             case let .text(t):
-                return sum + t
+                return sum + t.text
             case let .code(t):
-                return sum + t
+                return sum + t.code.text
             case .linebreak,
                  .softbreak:
                 return sum
-            case let .image(_, alt: alt):
-                return sum + alt
-            case let .link(_, text: t):
-                return sum + plainText(t)
+            case let .image(image):
+                return sum + image.alt.text
+            case let .link(link):
+                return sum + plainText(link.text)
             case let .emphasis(t):
-                return sum + plainText(t)
+                return sum + plainText(t.text)
             case let .strong(t):
-                return sum + plainText(t)
+                return sum + plainText(t.text)
             }
         }
     }

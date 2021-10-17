@@ -38,7 +38,8 @@ private extension LinkDestinationParser {
         let urlString = start.substring(upto: current).unescaped()
         return TextResult(remaining: current.advance(),
                           value: urlString,
-                          valueLocation: input)
+                          valueLocation: input,
+                          valueTextRange: TextRange(start: input, end: current))
     }
     
     func parseUnquoted(_ input: TextCursor) -> TextResult<String?> {
@@ -67,6 +68,7 @@ private extension LinkDestinationParser {
         
         return TextResult(remaining: current,
                           value: urlString,
-                          valueLocation: input)
+                          valueLocation: input,
+                          valueTextRange: TextRange(start: input, end: current.retreat()))
     }
 }

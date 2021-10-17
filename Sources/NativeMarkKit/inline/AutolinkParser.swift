@@ -8,14 +8,29 @@ struct AutolinkParser {
         let email = input.parse(Self.emailAutolinkRegex)
         if email.value.isNotEmpty {
             let mailtoText = email.value.trimmed(by: 1)
+            let mailtoTextRangeStart = email.valueLocation.advance()
+            let mailtoTextRangeEnd = email.remaining.retreat().retreat()
+            let mailToTextRange = TextRange(start: mailtoTextRangeStart, end: mailtoTextRangeEnd)
             let mailto = "mailto:\(mailtoText)"
-            return email.map { _ in .link(Link(title: "", url: mailto), text: [.text(String(mailtoText))]) }
+            return email.map { _ in
+                .link(InlineLink(link: Link(title: nil, url: InlineString(text: mailto, range: mailToTextRange)),
+                                 text: [.text(InlineString(text: String(mailtoText), range: mailToTextRange))],
+                                 range: email.valueTextRange))
+            }
         }
         
         let autolink = input.parse(Self.autolinkRegex)
         if autolink.value.isNotEmpty {
             let autolinkText = String(autolink.value.trimmed(by: 1))
-            return autolink.map { _ in .link(Link(title: "", url: autolinkText), text: [.text(autolinkText)]) }
+            let autolinkTextRangeStart = autolink.valueLocation.advance()
+            let autolinkTextRangeEnd = autolink.remaining.retreat().retreat()
+            let autolinkTextRange = TextRange(start: autolinkTextRangeStart, end: autolinkTextRangeEnd)
+
+            return autolink.map { _ in
+                .link(InlineLink(link: Link(title: nil, url: InlineString(text: autolinkText, range: autolinkTextRange)),
+                                 text: [.text(InlineString(text: autolinkText, range: autolinkTextRange))],
+                                 range: autolink.valueTextRange))
+            }
         }
         
         return input.noMatch(nil)

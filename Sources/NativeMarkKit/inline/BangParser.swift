@@ -18,6 +18,6 @@ struct BangParser {
             return input.noMatch(nil)
         }
         
-        return bang.map { .inlineText(.text($0)) }
+        return bang.map { .inlineText(.text(InlineString(text: $0, range: bang.valueTextRange))) }
     }
 }

@@ -13,7 +13,7 @@ struct BackticksParser {
         if let closingTicks = findClosingBackticks(ticks) {
             return makeCode(opening: ticks, closing: closingTicks)
         } else {
-            return ticks.map { .text($0) }
+            return ticks.map { .text(InlineString(text: $0, range: ticks.valueTextRange)) }
         }
     }
 }
@@ -37,15 +37,24 @@ private extension BackticksParser {
         let hasNonSpace = rawText.contains(where: { $0 != " " })
         let hasUntrimmedSpaces = rawText.hasPrefix(" ") && rawText.hasSuffix(" ")
         
-        let text: String
+        let text: InlineString
+        let rawTextStart = opening.remaining
+        let rawTextEnd = closing.valueLocation.retreat()
+        
         if rawText.isNotEmpty && hasNonSpace && hasUntrimmedSpaces {
-            text = rawText.trimmed(by: 1)
+            let rawTextRange = TextRange(start: rawTextStart.advance(),
+                                         end: rawTextEnd.retreat())
+            text = InlineString(text: rawText.trimmed(by: 1),
+                                range: rawTextRange)
         } else {
-            text = rawText
+            let rawTextRange = TextRange(start: rawTextStart, end: rawTextEnd)
+            text = InlineString(text: rawText,
+                                range: rawTextRange)
         }
         
         return TextResult(remaining: closing.remaining,
-                          value: .code(text),
-                          valueLocation: opening.valueLocation)
+                          value: .code(InlineCode(code: text, range: TextRange(start: opening, end: closing))),
+                          valueLocation: opening.valueLocation,
+                          valueTextRange: TextRange(start: opening, end: closing))
     }
 }

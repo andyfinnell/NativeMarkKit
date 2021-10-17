@@ -10,6 +10,6 @@ struct EntityParser {
         }
         
         // TODO: what should be done with the entity?
-        return entity.map { .text($0.unescaped()) }
+        return entity.map { .text(InlineString(text: $0.unescaped(), range: entity.valueTextRange)) }
     }
 }

@@ -18,6 +18,7 @@ struct FencedCodeBlockParser: BlockParser {
     
     func attemptContinuation(_ block: Block, with line: Line) -> LineResult<Bool> {
         if isEndingFence(line.nonIndentedStart) {
+            block.updateEndPosition(line.endPosition)
             block.close()
             
             return LineResult(remainingLine: line.end, value: true)

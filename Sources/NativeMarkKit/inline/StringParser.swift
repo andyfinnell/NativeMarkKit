@@ -14,7 +14,7 @@ struct StringParser {
         let text = string.value.replacingOccurrences(of: Self.ellipsisRegex, with: "…")
             .replacingOccurrences(of: Self.dashesRegex, using: smartDashes(_:))
         
-        return string.map { _ in .text(text) }
+        return string.map { _ in .text(InlineString(text: text, range: string.valueTextRange)) }
     }
 }
 

@@ -4,6 +4,14 @@ extension String {
     static let escapablePattern = "[!\"#$%&'()*+,.\\/:;<=>?@\\[\\\\\\]^_`{|}~-]"
     static let entityPattern = "&(?:#x[a-f0-9]{1,6}|#[0-9]{1,7}|[a-z][a-z0-9]{1,31});"
     
+    init<T>(optional: T?) {
+        if let value = optional {
+            self = String(describing: value)
+        } else {
+            self = "nil"
+        }
+    }
+    
     var isNotEmpty: Bool {
         !isEmpty
     }

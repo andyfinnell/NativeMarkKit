@@ -2,19 +2,25 @@ import Foundation
 
 struct Line {
     private let source: String
+    let lineNumber: Int
+    let columnNumber: Int
     let column: LineColumn
     private let index: String.Index
     private let activeText: Substring
     
-    init(text: String) {
+    init(text: String, lineNumber: Int) {
         self.source = text
+        self.lineNumber = lineNumber
+        self.columnNumber = 0
         self.column = LineColumn(0)
         self.index = text.startIndex
         self.activeText = text[text.startIndex..<text.endIndex]
     }
     
-    init(source: String, column: LineColumn, index: String.Index) {
+    init(source: String, lineNumber: Int, columnNumber: Int, column: LineColumn, index: String.Index) {
         self.source = source
+        self.lineNumber = lineNumber
+        self.columnNumber = columnNumber
         self.column = column
         self.index = index
         self.activeText = source[index..<source.endIndex]
@@ -69,6 +75,8 @@ extension Line {
         }
 
         return Line(source: source,
+                    lineNumber: lineNumber,
+                    columnNumber: columnNumber(of: replaceRange.upperBound),
                     column: column(of: replaceRange.upperBound),
                     index: replaceRange.upperBound)
     }
@@ -79,7 +87,27 @@ extension Line {
         }
         return skip(match)
     }
-        
+
+    func trimStart(_ regex: NSRegularExpression) -> Line {
+        skip(regex)
+    }
+    
+    func trimEnd(_ regex: NSRegularExpression) -> Line {
+        guard let match = firstMatch(regex),
+              let replaceRange = Range(match.range, in: source),
+              replaceRange.upperBound == source.endIndex else {
+            return self
+        }
+
+        var trimmedSource = source
+        trimmedSource.removeSubrange(replaceRange)
+        return Line(source: trimmedSource,
+                    lineNumber: lineNumber,
+                    columnNumber: columnNumber,
+                    column: column,
+                    index: index)
+    }
+    
     var nonIndentedStart: Line {
         var current = index
         var column = self.column
@@ -88,7 +116,11 @@ extension Line {
             column = column.space()
             current = source.index(after: current)
         }
-        return Line(source: source, column: column, index: current)
+        return Line(source: source,
+                    lineNumber: lineNumber,
+                    columnNumber: columnNumber(of: current),
+                    column: column,
+                    index: current)
     }
 
     var hasIndent: Bool {
@@ -118,17 +150,48 @@ extension Line {
         return current
     }
         
+    func trimStartWhitespace() -> Line {
+        var current = self
+        while current.index < source.endIndex, source[current.index].isWhitespace {
+            current = current.advanceOneColumn()
+        }
+        return current
+    }
+    
+    func trimEndWhitespace() -> Line {
+        var current = self
+        while current.doesEndInWhitespace {
+            current = current.trimLastCharacter()
+        }
+        return current
+    }
+    
+    var startPosition: TextPosition {
+        TextPosition(line: lineNumber, column: columnNumber)
+    }
+
+    var endPosition: TextPosition {
+        TextPosition(line: lineNumber, column: columnNumber(of: source.endIndex))
+    }
+
+    var range: TextRange {
+        TextRange(start: startPosition,
+                  end: endPosition)
+    }
+    
     var isBlank: Bool {
         Self.isBlank(activeText)
     }
     
     var end: Line {
         Line(source: source,
+             lineNumber: lineNumber,
+             columnNumber: columnNumber,
              column: column(of: source.endIndex),
              index: source.endIndex)
     }
     
-    static let blank = Line(text: "")
+    static let blank = Line(text: "", lineNumber: -1)
 }
 
 private extension Line {
@@ -150,7 +213,17 @@ private extension Line {
         }
         return column
     }
-    
+
+    func columnNumber(of endIndex: String.Index) -> Int {
+        var current = index
+        var column = self.columnNumber
+        while current < endIndex {
+            column += 1
+            current = source.index(after: current)
+        }
+        return column
+    }
+
     func advanceOneColumn() -> Line {
         guard index < source.endIndex else {
             return self
@@ -158,6 +231,7 @@ private extension Line {
         
         let nextColumn: LineColumn
         let nextIndex: String.Index
+        let nextColumnNumber: Int
         if source[index] == "\t" {
             let advanceBy = LineColumnCount(1)
             let charactersToTab = column.tab() - column
@@ -165,11 +239,41 @@ private extension Line {
             
             nextColumn = column.space()
             nextIndex = partiallyConsumedTab ? index : source.index(after: index)
+            nextColumnNumber = partiallyConsumedTab ? columnNumber : columnNumber + 1
         } else {
             nextColumn = column.space()
             nextIndex = source.index(after: index)
+            nextColumnNumber = columnNumber + 1
         }
         
-        return Line(source: source, column: nextColumn, index: nextIndex)
+        return Line(source: source,
+                    lineNumber: lineNumber,
+                    columnNumber: nextColumnNumber,
+                    column: nextColumn,
+                    index: nextIndex)
+    }
+    
+    var doesEndInWhitespace: Bool {
+        activeText.last?.isWhitespace ?? false
+    }
+    
+    func trimLastCharacter() -> Line {
+        Line(source: String(source.dropLast()),
+             lineNumber: lineNumber,
+             columnNumber: columnNumber,
+             column: column,
+             index: index)
+    }
+}
+
+extension Array where Element == Line {
+    var range: TextRange? {
+        guard let firstLine = first else {
+            return nil
+        }
+        
+        return reduce(firstLine.range) { partialResults, line in
+            TextRange(start: partialResults.start, end: line.range.end)
+        }
     }
 }
