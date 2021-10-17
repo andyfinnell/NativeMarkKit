@@ -17,6 +17,8 @@ struct ItemBlockStarter: BlockStarter {
         
         closer.close()
         
+        let nonIndented = line.nonIndentedStart
+        
         var list = container
         if !isSameKindOfList(container, as: itemMarkerResult.value.kind) {
             let listStyle = ListStyle(isTight: true, kind: itemMarkerResult.value.kind)
@@ -30,7 +32,8 @@ struct ItemBlockStarter: BlockStarter {
                                      padding: itemMarkerResult.value.padding)
         let itemBlock = Block(kind: .item,
                               parser: parser,
-                              startPosition: line.startPosition)
+                              startPosition: nonIndented.startPosition)
+        itemBlock.updateEndPosition(nonIndented.endPosition)
         _ = list.addChild(itemBlock)
         
         return LineResult(remainingLine: itemMarkerResult.remainingLine, value: .container(itemBlock))

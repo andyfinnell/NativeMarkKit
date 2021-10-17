@@ -237,7 +237,7 @@ final class ThematicbreaksTest: XCTestCase {
                                     .text(InlineString(text: "foo", range: (0,2)-(0,4)))
                                 ],
                                 range: (0, 2)-(0, 5)))
-                            ])
+                            ], range: (0, 0)-(0,5))
                         ])),
                         .thematicBreak(ThematicBreak(range: (1, 0)-(1, 3))),
                         .list(List(info: ListInfo(isTight: true, kind: .bulleted), items: [
@@ -246,7 +246,7 @@ final class ThematicbreaksTest: XCTestCase {
                                     .text(InlineString(text: "bar", range: (2,2)-(2,4)))
                                 ],
                                 range: (2, 2)-(2, 5)))
-                            ])
+                            ], range: (2, 0)-(2,5))
                         ]))
                        ]))
     }
@@ -311,7 +311,7 @@ final class ThematicbreaksTest: XCTestCase {
                                     .text(InlineString(text: "Foo", range: (0,2)-(0,4)))
                                 ],
                                 range: (0, 2)-(0, 5)))
-                            ])
+                            ], range: (0, 0)-(0,5))
                         ])),
                         .thematicBreak(ThematicBreak(range: (1, 0)-(1, 5))),
                         .list(List(info: ListInfo(isTight: true, kind: .bulleted), items: [
@@ -320,7 +320,7 @@ final class ThematicbreaksTest: XCTestCase {
                                     .text(InlineString(text: "Bar", range: (2,2)-(2,4)))
                                 ],
                                 range: (2, 2)-(2, 5)))
-                            ])
+                            ], range: (2, 0)-(2,5))
                         ]))
                        ]))
     }
@@ -340,10 +340,10 @@ final class ThematicbreaksTest: XCTestCase {
                                     .text(InlineString(text: "Foo", range: (0,2)-(0,4)))
                                 ],
                                 range: (0, 2)-(0, 5)))
-                            ]),
+                            ], range: (0, 0)-(0,5)),
                             ListItem(elements: [
                                 .thematicBreak(ThematicBreak(range: (1, 2)-(1, 7)))
-                            ])
+                            ], range: (1, 0)-(1,7))
                         ]))
                        ]))
     }

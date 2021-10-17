@@ -38,7 +38,7 @@ final class IndentedcodeblocksTest: XCTestCase {
                                     .text(InlineString(text: "bar", range: (2,4)-(2,6)))
                                 ],
                                 range: (2, 4)-(2, 7)))
-                            ])
+                            ], range: (0, 2)-(2,7))
                         ]))
                        ]))
     }
@@ -65,9 +65,9 @@ final class IndentedcodeblocksTest: XCTestCase {
                                             .text(InlineString(text: "bar", range: (2,6)-(2,8)))
                                         ],
                                         range: (2, 6)-(2, 9)))
-                                    ])
+                                    ], range: (2, 4)-(2,9))
                                 ]))
-                            ])
+                            ], range: (0, 0)-(2,9))
                         ]))
                        ]))
     }

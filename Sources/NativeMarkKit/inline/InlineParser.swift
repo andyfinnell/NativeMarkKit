@@ -66,7 +66,8 @@ private extension InlineParser {
             throw ASTError.expectedBlock(.item)
         }
         
-        return try ListItem(elements: block.children.map { try element($0, linkDefs: linkDefs) })
+        return try ListItem(elements: block.children.map { try element($0, linkDefs: linkDefs) },
+                            range: block.range)
     }
     
     func listInfo(_ style: ListStyle) -> ListInfo {

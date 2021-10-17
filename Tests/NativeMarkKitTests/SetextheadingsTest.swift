@@ -339,7 +339,7 @@ final class SetextheadingsTest: XCTestCase {
                                     .text(InlineString(text: "Foo", range: (0,2)-(0,4)))
                                 ],
                                 range: (0, 2)-(0, 5)))
-                            ])
+                            ], range: (0, 0)-(0,5))
                         ])),
                         .thematicBreak(ThematicBreak(range: (1, 0)-(1, 3)))
                        ]))
@@ -441,7 +441,7 @@ final class SetextheadingsTest: XCTestCase {
                                     .text(InlineString(text: "foo", range: (0,2)-(0,4)))
                                 ],
                                 range: (0, 2)-(0, 5)))
-                            ])
+                            ], range: (0, 0)-(0,5))
                         ])),
                         .thematicBreak(ThematicBreak(range: (1, 0)-(1, 5)))
                        ]))
