@@ -19,13 +19,13 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "foo", range: (0,2)-(0,4)))
                                 ],
                                 range: (0, 2)-(0, 5)))
-                            ]),
+                            ], range: (0, 0)-(0,5)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "bar", range: (1,2)-(1,4)))
                                 ],
                                 range: (1, 2)-(1, 5)))
-                            ])
+                            ], range: (1, 0)-(1,5))
                         ])),
                         .list(List(info: ListInfo(isTight: true, kind: .bulleted), items: [
                             ListItem(elements: [
@@ -33,7 +33,7 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "baz", range: (2,2)-(2,4)))
                                 ],
                                 range: (2, 2)-(2, 5)))
-                            ])
+                            ], range: (2, 0)-(2,5))
                         ]))
                        ]))
     }
@@ -54,13 +54,13 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "foo", range: (0,3)-(0,5)))
                                 ],
                                 range: (0, 3)-(0, 6)))
-                            ]),
+                            ], range: (0, 0)-(0,6)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "bar", range: (1,3)-(1,5)))
                                 ],
                                 range: (1, 3)-(1, 6)))
-                            ])
+                            ], range: (1, 0)-(1,6))
                         ])),
                         .list(List(info: ListInfo(isTight: true, kind: .ordered(start: 3)), items: [
                             ListItem(elements: [
@@ -68,7 +68,7 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "baz", range: (2,3)-(2,5)))
                                 ],
                                 range: (2, 3)-(2, 6)))
-                            ])
+                            ], range: (2, 0)-(2,6))
                         ]))
                        ]))
     }
@@ -93,13 +93,13 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "bar", range: (1,2)-(1,4)))
                                 ],
                                 range: (1, 2)-(1, 5)))
-                            ]),
+                            ], range: (1, 0)-(1,5)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "baz", range: (2,2)-(2,4)))
                                 ],
                                 range: (2, 2)-(2, 5)))
-                            ])
+                            ], range: (2, 0)-(2,5))
                         ]))
                        ]))
     }
@@ -141,7 +141,7 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "The number of doors is 6.", range: (1,4)-(1,28)))
                                 ],
                                 range: (1, 4)-(1, 29)))
-                            ])
+                            ], range: (1, 0)-(1,29))
                         ]))
                        ]))
     }
@@ -165,19 +165,19 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "foo", range: (0,2)-(0,4)))
                                 ],
                                 range: (0, 2)-(0, 5)))
-                            ]),
+                            ], range: (0, 0)-(0,5)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "bar", range: (2,2)-(2,4)))
                                 ],
                                 range: (2, 2)-(2, 5)))
-                            ]),
+                            ], range: (2, 0)-(2,5)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "baz", range: (5,2)-(5,4)))
                                 ],
                                 range: (5, 2)-(5, 5)))
-                            ])
+                            ], range: (5, 0)-(5,5))
                         ]))
                        ]))
     }
@@ -217,11 +217,11 @@ final class ListsTest: XCTestCase {
                                                     .text(InlineString(text: "bim", range: (5,6)-(5,8)))
                                                 ],
                                                 range: (5, 6)-(5, 9)))
-                                            ])
+                                            ], range: (2, 4)-(5,9))
                                         ]))
-                                    ])
+                                    ], range: (1, 2)-(5,9))
                                 ]))
-                            ])
+                            ], range: (0, 0)-(5,9))
                         ]))
                        ]))
     }
@@ -246,13 +246,13 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "foo", range: (0,2)-(0,4)))
                                 ],
                                 range: (0, 2)-(0, 5)))
-                            ]),
+                            ], range: (0, 0)-(0,5)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "bar", range: (1,2)-(1,4)))
                                 ],
                                 range: (1, 2)-(1, 5)))
-                            ])
+                            ], range: (1, 0)-(1,5))
                         ])),
                         .paragraph(Paragraph(text: [
                             .text(InlineString(text: "<!– –>", range: (3, 0)-(3, 7)))
@@ -264,13 +264,13 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "baz", range: (5,2)-(5,4)))
                                 ],
                                 range: (5, 2)-(5, 5)))
-                            ]),
+                            ], range: (5, 0)-(5,5)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "bim", range: (6,2)-(6,4)))
                                 ],
                                 range: (6, 2)-(6, 5)))
-                            ])
+                            ], range: (6, 0)-(6,5))
                         ]))
                        ]))
     }
@@ -301,13 +301,13 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "notcode", range: (2,4)-(2,10)))
                                 ],
                                 range: (2, 4)-(2, 11)))
-                            ]),
+                            ], range: (0, 0)-(2,11)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "foo", range: (4,4)-(4,6)))
                                 ],
                                 range: (4, 4)-(4, 7)))
-                            ])
+                            ], range: (4, 0)-(4,7))
                         ])),
                         .paragraph(Paragraph(text: [
                             .text(InlineString(text: "<!– –>", range: (6, 0)-(6, 7)))
@@ -337,43 +337,43 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "a", range: (0,2)-(0,2)))
                                 ],
                                 range: (0, 2)-(0, 3)))
-                            ]),
+                            ], range: (0, 0)-(0,3)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "b", range: (1,3)-(1,3)))
                                 ],
                                 range: (1, 3)-(1, 4)))
-                            ]),
+                            ], range: (1, 1)-(1,4)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "c", range: (2,4)-(2,4)))
                                 ],
                                 range: (2, 4)-(2, 5)))
-                            ]),
+                            ], range: (2, 2)-(2,5)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "d", range: (3,5)-(3,5)))
                                 ],
                                 range: (3, 5)-(3, 6)))
-                            ]),
+                            ], range: (3, 3)-(3,6)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "e", range: (4,4)-(4,4)))
                                 ],
                                 range: (4, 4)-(4, 5)))
-                            ]),
+                            ], range: (4, 2)-(4,5)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "f", range: (5,3)-(5,3)))
                                 ],
                                 range: (5, 3)-(5, 4)))
-                            ]),
+                            ], range: (5, 1)-(5,4)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "g", range: (6,2)-(6,2)))
                                 ],
                                 range: (6, 2)-(6, 3)))
-                            ])
+                            ], range: (6, 0)-(6,3))
                         ]))
                        ]))
     }
@@ -396,19 +396,19 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "a", range: (0,3)-(0,3)))
                                 ],
                                 range: (0, 3)-(0, 4)))
-                            ]),
+                            ], range: (0, 0)-(0,4)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "b", range: (2,5)-(2,5)))
                                 ],
                                 range: (2, 5)-(2, 6)))
-                            ]),
+                            ], range: (2, 2)-(2,6)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "c", range: (4,6)-(4,6)))
                                 ],
                                 range: (4, 6)-(4, 7)))
-                            ])
+                            ], range: (4, 3)-(4,7))
                         ]))
                        ]))
     }
@@ -431,19 +431,19 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "a", range: (0,2)-(0,2)))
                                 ],
                                 range: (0, 2)-(0, 3)))
-                            ]),
+                            ], range: (0, 0)-(0,3)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "b", range: (1,3)-(1,3)))
                                 ],
                                 range: (1, 3)-(1, 4)))
-                            ]),
+                            ], range: (1, 1)-(1,4)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "c", range: (2,4)-(2,4)))
                                 ],
                                 range: (2, 4)-(2, 5)))
-                            ]),
+                            ], range: (2, 2)-(2,5)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "d", range: (3,5)-(3,5))),
@@ -451,7 +451,7 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "- e", range: (4,4)-(4,6)))
                                 ],
                                 range: (3, 5)-(4, 7)))
-                            ])
+                            ], range: (3, 3)-(4,7))
                         ]))
                        ]))
     }
@@ -474,13 +474,13 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "a", range: (0,3)-(0,3)))
                                 ],
                                 range: (0, 3)-(0, 4)))
-                            ]),
+                            ], range: (0, 0)-(0,4)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "b", range: (2,5)-(2,5)))
                                 ],
                                 range: (2, 5)-(2, 6)))
-                            ])
+                            ], range: (2, 2)-(2,6))
                         ])),
                         .codeBlock(CodeBlock(infoString: "", content: "3. c\n", range: (4, 4)-(5, 0)))
                        ]))
@@ -503,19 +503,19 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "a", range: (0,2)-(0,2)))
                                 ],
                                 range: (0, 2)-(0, 3)))
-                            ]),
+                            ], range: (0, 0)-(0,3)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "b", range: (1,2)-(1,2)))
                                 ],
                                 range: (1, 2)-(1, 3)))
-                            ]),
+                            ], range: (1, 0)-(1,3)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "c", range: (3,2)-(3,2)))
                                 ],
                                 range: (3, 2)-(3, 3)))
-                            ])
+                            ], range: (3, 0)-(3,3))
                         ]))
                        ]))
     }
@@ -537,16 +537,16 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "a", range: (0,2)-(0,2)))
                                 ],
                                 range: (0, 2)-(0, 3)))
-                            ]),
+                            ], range: (0, 0)-(0,3)),
                             ListItem(elements: [
                                 
-                            ]),
+                            ], range: (1, 0)-(1,1)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "c", range: (3,2)-(3,2)))
                                 ],
                                 range: (3, 2)-(3, 3)))
-                            ])
+                            ], range: (3, 0)-(3,3))
                         ]))
                        ]))
     }
@@ -569,7 +569,7 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "a", range: (0,2)-(0,2)))
                                 ],
                                 range: (0, 2)-(0, 3)))
-                            ]),
+                            ], range: (0, 0)-(0,3)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "b", range: (1,2)-(1,2)))
@@ -579,13 +579,13 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "c", range: (3,2)-(3,2)))
                                 ],
                                 range: (3, 2)-(3, 3)))
-                            ]),
+                            ], range: (1, 0)-(3,3)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "d", range: (4,2)-(4,2)))
                                 ],
                                 range: (4, 2)-(4, 3)))
-                            ])
+                            ], range: (4, 0)-(4,3))
                         ]))
                        ]))
     }
@@ -608,19 +608,19 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "a", range: (0,2)-(0,2)))
                                 ],
                                 range: (0, 2)-(0, 3)))
-                            ]),
+                            ], range: (0, 0)-(0,3)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "b", range: (1,2)-(1,2)))
                                 ],
                                 range: (1, 2)-(1, 3)))
-                            ]),
+                            ], range: (1, 0)-(1,3)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "d", range: (4,2)-(4,2)))
                                 ],
                                 range: (4, 2)-(4,3)))
-                            ])
+                            ], range: (4, 0)-(4,3))
                         ]))
                        ]))
     }
@@ -645,16 +645,16 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "a", range: (0,2)-(0,2)))
                                 ],
                                 range: (0, 2)-(0, 3)))
-                            ]),
+                            ], range: (0, 0)-(0,3)),
                             ListItem(elements: [
                                 .codeBlock(CodeBlock(infoString: "", content: "b\n\n\n", range: (1, 2)-(5, 5)))
-                            ]),
+                            ], range: (1, 0)-(5,5)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "c", range: (6,2)-(6,2)))
                                 ],
                                 range: (6, 2)-(6, 3)))
-                            ])
+                            ], range: (6, 0)-(6,3))
                         ]))
                        ]))
     }
@@ -687,15 +687,15 @@ final class ListsTest: XCTestCase {
                                             .text(InlineString(text: "c", range: (3,4)-(3,4)))
                                         ],
                                         range: (3, 4)-(3, 5)))
-                                    ])
+                                    ], range: (1, 2)-(3,5))
                                 ]))
-                            ]),
+                            ], range: (0, 0)-(3,5)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "d", range: (4,2)-(4,2)))
                                 ],
                                 range: (4, 2)-(4, 3)))
-                            ])
+                            ], range: (4, 0)-(4,3))
                         ]))
                        ]))
     }
@@ -724,13 +724,13 @@ final class ListsTest: XCTestCase {
                                     range: (1, 4)-(1, 5)))
                                 ],
                                 range: (1, 2)-(2, 3)))
-                            ]),
+                            ], range: (0, 0)-(2,3)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "c", range: (3,2)-(3,2)))
                                 ],
                                 range: (3, 2)-(3, 3)))
-                            ])
+                            ], range: (3, 0)-(3,3))
                         ]))
                        ]))
     }
@@ -762,13 +762,13 @@ final class ListsTest: XCTestCase {
                                 ],
                                 range: (1, 2)-(1, 5))),
                                 .codeBlock(CodeBlock(infoString: "", content: "c\n", range: (2, 2)-(4, 5)))
-                            ]),
+                            ], range: (0, 0)-(4,5)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "d", range: (5,2)-(5,2)))
                                 ],
                                 range: (5, 2)-(5, 3)))
-                            ])
+                            ], range: (5, 0)-(5,3))
                         ]))
                        ]))
     }
@@ -787,7 +787,7 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "a", range: (0,2)-(0,2)))
                                 ],
                                 range: (0, 2)-(0, 3)))
-                            ])
+                            ], range: (0, 0)-(0,3))
                         ]))
                        ]))
     }
@@ -813,9 +813,9 @@ final class ListsTest: XCTestCase {
                                             .text(InlineString(text: "b", range: (1,4)-(1,4)))
                                         ],
                                         range: (1, 4)-(1, 5)))
-                                    ])
+                                    ], range: (1, 2)-(1,5))
                                 ]))
-                            ])
+                            ], range: (0, 0)-(1,5))
                         ]))
                        ]))
     }
@@ -839,7 +839,7 @@ final class ListsTest: XCTestCase {
                                     .text(InlineString(text: "bar", range: (4,3)-(4,5)))
                                 ],
                                 range: (4, 3)-(4, 6)))
-                            ])
+                            ], range: (0, 0)-(4,6))
                         ]))
                        ]))
     }
@@ -867,13 +867,13 @@ final class ListsTest: XCTestCase {
                                             .text(InlineString(text: "bar", range: (1,4)-(1,6)))
                                         ],
                                         range: (1, 4)-(1, 7)))
-                                    ])
+                                    ], range: (1, 2)-(1,7))
                                 ])),
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "baz", range: (3,2)-(3,4)))
                                 ],
                                 range: (3, 2)-(3, 5)))
-                            ])
+                            ], range: (0, 0)-(3,5))
                         ]))
                        ]))
     }
@@ -904,15 +904,15 @@ final class ListsTest: XCTestCase {
                                             .text(InlineString(text: "b", range: (1,4)-(1,4)))
                                         ],
                                         range: (1, 4)-(1, 5)))
-                                    ]),
+                                    ], range: (1, 2)-(1,5)),
                                     ListItem(elements: [
                                         .paragraph(Paragraph(text: [
                                             .text(InlineString(text: "c", range: (2,4)-(2,4)))
                                         ],
                                         range: (2, 4)-(2, 5)))
-                                    ])
+                                    ], range: (2, 2)-(2,5))
                                 ]))
-                            ]),
+                            ], range: (0, 0)-(2,5)),
                             ListItem(elements: [
                                 .paragraph(Paragraph(text: [
                                     .text(InlineString(text: "d", range: (4,2)-(4,2)))
@@ -924,15 +924,15 @@ final class ListsTest: XCTestCase {
                                             .text(InlineString(text: "e", range: (5,4)-(5,4)))
                                         ],
                                         range: (5, 4)-(5, 5)))
-                                    ]),
+                                    ], range: (5, 2)-(5,5)),
                                     ListItem(elements: [
                                         .paragraph(Paragraph(text: [
                                             .text(InlineString(text: "f", range: (6,4)-(6,4)))
                                         ],
                                         range: (6, 4)-(6, 5)))
-                                    ])
+                                    ], range: (6, 2)-(6,5))
                                 ]))
-                            ])
+                            ], range: (4, 0)-(6,5))
                         ]))
                        ]))
     }

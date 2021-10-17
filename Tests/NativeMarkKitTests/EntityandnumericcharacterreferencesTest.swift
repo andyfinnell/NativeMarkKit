@@ -249,7 +249,7 @@ final class EntityandnumericcharacterreferencesTest: XCTestCase {
                                     .text(InlineString(text: "foo", range: (2,2)-(2,4)))
                                 ],
                                 range: (2, 2)-(2, 5)))
-                            ])
+                            ], range: (2, 0)-(2,5))
                         ]))
                        ]))
     }

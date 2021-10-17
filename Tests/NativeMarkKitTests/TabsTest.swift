@@ -60,7 +60,7 @@ final class TabsTest: XCTestCase {
                                     .text(InlineString(text: "bar", range: (2,1)-(2,3)))
                                 ],
                                 range: (2, 1)-(2, 4)))
-                            ])
+                            ], range: (0, 2)-(2,4))
                         ]))
                        ]))
     }
@@ -82,7 +82,7 @@ final class TabsTest: XCTestCase {
                                 ],
                                 range: (0, 2)-(0, 5))),
                                 .codeBlock(CodeBlock(infoString: "", content: "  bar\n", range: (2, 1)-(3, 0)))
-                            ])
+                            ], range: (0, 0)-(3,0))
                         ]))
                        ]))
     }
@@ -113,7 +113,7 @@ final class TabsTest: XCTestCase {
                         .list(List(info: ListInfo(isTight: true, kind: .bulleted), items: [
                             ListItem(elements: [
                                 .codeBlock(CodeBlock(infoString: "", content: "  foo\n", range: (0, 2)-(1, 0)))
-                            ])
+                            ], range: (0, 0)-(1,0))
                         ]))
                        ]))
     }
@@ -159,11 +159,11 @@ final class TabsTest: XCTestCase {
                                                     .text(InlineString(text: "baz", range: (2,4)-(2,6)))
                                                 ],
                                                 range: (2, 4)-(2, 7)))
-                                            ])
+                                            ], range: (2, 2)-(2,7))
                                         ]))
-                                    ])
+                                    ], range: (1,3)-(2,7))
                                 ]))
-                            ])
+                            ], range: (0, 1)-(2,7))
                         ]))
                        ]))
     }

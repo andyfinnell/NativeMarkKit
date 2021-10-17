@@ -187,7 +187,7 @@ final class BlockquotesTest: XCTestCase {
                                         .text(InlineString(text: "foo", range: (0,4)-(0,6)))
                                     ],
                                     range: (0, 4)-(0, 7)))
-                                ])
+                                ], range: (0, 2)-(0,7))
                             ]))
                         ],
                         range: (0, 0)-(0, 7))),
@@ -197,7 +197,7 @@ final class BlockquotesTest: XCTestCase {
                                     .text(InlineString(text: "bar", range: (1,2)-(1,4)))
                                 ],
                                 range: (1, 2)-(1, 5)))
-                            ])
+                            ], range: (1, 0)-(1,5))
                         ]))
                        ]))
     }
