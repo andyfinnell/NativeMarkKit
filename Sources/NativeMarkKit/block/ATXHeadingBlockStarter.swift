@@ -14,14 +14,16 @@ struct ATXHeadingBlockStarter: BlockStarter {
         let startText = realLine.matchedText(startMatch).trimmingCharacters(in: .whitespacesAndNewlines)
         let blockKind = kind(fromCount: startText.count)
         
-        let content = realLine.text
-            .remove(Self.startRegex)
-            .remove(Self.ending1Regex)
-            .remove(Self.ending2Regex)
+        let content = realLine
+            .trimStart(Self.startRegex)
+            .trimEnd(Self.ending1Regex)
+            .trimEnd(Self.ending2Regex)
         
         closer.close()
-        let heading = Block(kind: blockKind, parser: HeadingBlockParser())
-        heading.addText(Line(text: content))
+        let heading = Block(kind: blockKind,
+                            parser: HeadingBlockParser(),
+                            startPosition: line.startPosition)
+        heading.addText(content, endOfLine: realLine.endPosition)
         let newContainer = container.addChild(heading)
         
         return LineResult(remainingLine: line.end, value: .leaf(newContainer))

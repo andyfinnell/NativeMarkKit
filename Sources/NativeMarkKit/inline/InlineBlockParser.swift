@@ -3,8 +3,19 @@ import Foundation
 struct InlineBlockParser {
     func parse(_ block: Block, using linkDefs: [LinkLabel: LinkDefinition]) -> [InlineText] {
         let delimiterStack = DelimiterStack()
-        let buffer = block.textLines.map { $0.text }.joined(separator: "\n").trimmingCharacters(in: .whitespaces)
-        var current = parseInline(TextCursor(text: buffer), into: delimiterStack, using: linkDefs)
+        let trimmedLines = block.textLines
+            .enumerated()
+            .map { i, line -> Line in
+                var newLine = line
+                if i == 0 {
+                    newLine = newLine.trimStartWhitespace()
+                }
+                if i == (block.textLines.count - 1) {
+                    newLine = newLine.trimEndWhitespace()
+                }
+                return newLine
+            }
+        var current = parseInline(TextCursor(lines: trimmedLines), into: delimiterStack, using: linkDefs)
 
         while current.value {
             current = parseInline(current.remaining, into: delimiterStack, using: linkDefs)
@@ -69,7 +80,8 @@ private extension InlineBlockParser {
         if wasParsed.value {
             return wasParsed
         } else {
-            let unhandled = input.parse(String(char)).map { InlineText.text($0) }
+            let unhandled = input.parse(String(char))
+                .map { InlineText.text(InlineString(text: $0, range: TextRange(start: input, end: input.advance()))) }
             delimiterStack.push(unhandled.value)
             return unhandled.map { _ in true }
         }

@@ -12,7 +12,10 @@ struct BlockQuoteStarter: BlockStarter {
         let remainingLine = realLine.skip(startMatch).trimIndent(1)
         
         closer.close()
-        let blockQuote = Block(kind: .blockQuote, parser: BlockQuoteBlockParser())
+        let blockQuote = Block(kind: .blockQuote,
+                               parser: BlockQuoteBlockParser(),
+                               startPosition: realLine.startPosition)
+        blockQuote.updateEndPosition(realLine.endPosition)
         let newContainer = container.addChild(blockQuote)
         
         return LineResult(remainingLine: remainingLine, value: .container(newContainer))

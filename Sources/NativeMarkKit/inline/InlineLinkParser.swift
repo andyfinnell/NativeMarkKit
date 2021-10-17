@@ -20,10 +20,12 @@ struct InlineLinkParser {
             return input.noMatch(nil)
         }
 
-        let url = destinationResult.value ?? ""
+        let title = titleResult.value.isEmpty ? nil : titleResult.toInlineString()
         return TextResult(remaining: closeParen.remaining,
-                          value: Link(title: titleResult.value, url: url),
-                          valueLocation: openParen.valueLocation)
+                          value: Link(title: title,
+                                      url: destinationResult.value.map { InlineString(text: $0, range: destinationResult.valueTextRange) }),
+                          valueLocation: openParen.valueLocation,
+                          valueTextRange: TextRange(start: openParen, end: closeParen))
     }
 }
 

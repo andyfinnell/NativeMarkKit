@@ -3,19 +3,21 @@ import Foundation
 struct LineInserter {
     func insert(_ line: Line, into container: Block, tip: Block, closer: BlockCloser) -> Block {
         if isLazyParagraphContinuation(line, for: tip, using: closer) {
-            tip.addText(line)
+            tip.addText(line, endOfLine: line.endPosition)
             
             return tip
         } else {
             closer.close(with: line) // this moves us up to container
             
             if container.acceptsLines {
-                container.addText(line)
+                container.addText(line, endOfLine: line.endPosition)
                 
                 return container
             } else if !line.isBlank {
-                let paragraph = Block(kind: .paragraph, parser: ParagraphBlockParser())
-                paragraph.addText(line.nonIndentedStart)
+                let paragraph = Block(kind: .paragraph,
+                                      parser: ParagraphBlockParser(),
+                                      startPosition: line.nonIndentedStart.startPosition)
+                paragraph.addText(line.nonIndentedStart, endOfLine: line.endPosition)
                 return container.addChild(paragraph)
             } else {
                 return container

@@ -16,6 +16,7 @@ struct BlockQuoteBlockParser: BlockParser {
         }
         
         let remainingLine = realLine.skip(match)
+        block.updateEndPosition(line.endPosition)
         return LineResult(remainingLine: remainingLine, value: true)
     }
 

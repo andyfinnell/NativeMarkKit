@@ -38,16 +38,19 @@ struct LinkDefinitionParser {
             return input.noMatch(nil)
         }
         
+        let title = titleResult.value.isEmpty ? nil : titleResult.toInlineString()
+        
         let definition = LinkDefinition(label: labelResult.value,
-                                        url: destination,
-                                        title: titleResult.value)
+                                        url: InlineString(text: destination, range: destinationResult.valueTextRange),
+                                        title: title)
         guard definition.key.isNotEmpty else {
             return input.noMatch(nil)
         }
         
         return TextResult(remaining: isAtEndOfLineResult.remaining,
                           value: definition,
-                          valueLocation: input)
+                          valueLocation: input,
+                          valueTextRange: TextRange(start: labelResult, end: isAtEndOfLineResult))
     }
 }
 
@@ -73,7 +76,10 @@ private extension LinkDefinitionParser {
     
     func isAtEndOfLine(_ input: TextCursor) -> TextResult<Bool> {
         if input.isAtEnd {
-            return TextResult(remaining: input, value: true, valueLocation: input)
+            return TextResult(remaining: input,
+                              value: true,
+                              valueLocation: input,
+                              valueTextRange: TextRange(start: input, end: input))
         } else {
             return parseSpacesAtEndOfLine(input).map { $0.isNotEmpty }
         }

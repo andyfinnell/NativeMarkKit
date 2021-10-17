@@ -15,7 +15,9 @@ struct FencedCodeBlockStarter: BlockStarter {
         let parser = FencedCodeBlockParser(fenceOffset: realLine.column - line.column,
                                            fence: String(fence))
         closer.close()
-        let codeBlock = Block(kind: .codeBlock(infoString: ""), parser: parser)
+        let codeBlock = Block(kind: .codeBlock(infoString: ""),
+                              parser: parser,
+                              startPosition: realLine.startPosition)
         let newContainer = container.addChild(codeBlock)
         
         return LineResult(remainingLine: remainingLine, value: .leaf(newContainer))

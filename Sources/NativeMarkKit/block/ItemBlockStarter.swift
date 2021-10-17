@@ -20,13 +20,17 @@ struct ItemBlockStarter: BlockStarter {
         var list = container
         if !isSameKindOfList(container, as: itemMarkerResult.value.kind) {
             let listStyle = ListStyle(isTight: true, kind: itemMarkerResult.value.kind)
-            list = Block(kind: .list(listStyle), parser: ListBlockParser())
+            list = Block(kind: .list(listStyle),
+                         parser: ListBlockParser(),
+                         startPosition: line.startPosition)
             _ = container.addChild(list)
         }
         
         let parser = ItemBlockParser(markerOffset: itemMarkerResult.value.markerIndent,
                                      padding: itemMarkerResult.value.padding)
-        let itemBlock = Block(kind: .item, parser: parser)
+        let itemBlock = Block(kind: .item,
+                              parser: parser,
+                              startPosition: line.startPosition)
         _ = list.addChild(itemBlock)
         
         return LineResult(remainingLine: itemMarkerResult.remainingLine, value: .container(itemBlock))

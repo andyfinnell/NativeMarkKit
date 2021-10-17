@@ -8,10 +8,13 @@ final class Block {
     private(set) var linkDefinitions = [LinkLabel: LinkDefinition]()
     private let parser: BlockParser
     private(set) weak var parent: Block?
+    private var startPosition: TextPosition
+    private var endPosition: TextPosition?
     
-    init(kind: BlockKind, parser: BlockParser) {
+    init(kind: BlockKind, parser: BlockParser, startPosition: TextPosition) {
         self.kind = kind
         self.parser = parser
+        self.startPosition = startPosition
     }
     
     func addChild(_ block: Block) -> Block {
@@ -25,12 +28,27 @@ final class Block {
         return block
     }
     
-    func addText(_ line: Line) {
+    func addText(_ line: Line, endOfLine: TextPosition) {
         textLines.append(line)
+        updateEndPosition(endOfLine)
+    }
+    
+    func updateEndPosition(_ endOfLine: TextPosition) {
+        if let current = endPosition {
+            endPosition = max(endOfLine, current)
+        } else {
+            endPosition = endOfLine
+        }
     }
     
     func updateText(_ transform: ([Line]) -> [Line]) {
         textLines = transform(textLines)
+        
+        // We might have stripped off links definition
+        if let newStart = textLines.first?.startPosition,
+           newStart > startPosition {
+            startPosition = newStart
+        }
     }
     
     func addLinkDefinitions(_ definitions: [LinkDefinition]) {
@@ -79,6 +97,18 @@ final class Block {
     
     var isLastChild: Bool {
         parent?.children.last === self
+    }
+    
+    var range: TextRange? {
+        let possibleEndPositions = [
+            startPosition,
+            endPosition,
+            textLines.last?.endPosition,
+            children.last?.range?.end
+        ].compactMap { $0 }
+        
+        let end = possibleEndPositions.max() ?? startPosition
+        return TextRange(start: startPosition, end: end)
     }
 }
 
