@@ -1,7 +1,7 @@
 import Foundation
 
 struct InlineBlockParser {
-    func parse(_ block: Block, using linkDefs: [LinkLabel: LinkDefinition]) -> [InlineText] {
+    func parse(_ block: Block, using linkDefs: [LinkLabel: BlockLinkDefinition]) -> [InlineText] {
         let delimiterStack = DelimiterStack()
         let trimmedLines = block.textLines
             .enumerated()
@@ -28,7 +28,7 @@ struct InlineBlockParser {
 }
 
 private extension InlineBlockParser {
-    func parseInline(_ input: TextCursor, into delimiterStack: DelimiterStack, using linkDefs: [LinkLabel: LinkDefinition]) -> TextResult<Bool> {
+    func parseInline(_ input: TextCursor, into delimiterStack: DelimiterStack, using linkDefs: [LinkLabel: BlockLinkDefinition]) -> TextResult<Bool> {
         guard let char = input.character else {
             return input.noMatch(false)
         }

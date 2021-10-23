@@ -212,6 +212,11 @@ final class BackslashescapesTest: XCTestCase {
                                              range: (0, 0)-(0, 4)))
                         ],
                         range: (0, 0)-(0, 5)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[foo]", range: (2,0)-(2,4)),
+                                       link: Link(title: InlineString(text: "ti*tle", range: (2, 14)-(2, 22)),
+                                                  url: InlineString(text: "/bar*", range: (2, 7)-(2, 12))),
+                                       range: (2,0)-(2,23))
                        ]))
     }
     

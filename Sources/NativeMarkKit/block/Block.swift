@@ -5,7 +5,8 @@ final class Block {
     private(set) var isOpen = true
     private(set) var children = [Block]()
     private(set) var textLines = [Line]()
-    private(set) var linkDefinitions = [LinkLabel: LinkDefinition]()
+    private(set) var linkDefinitions = [LinkLabel: BlockLinkDefinition]()
+    private(set) var allLinkDefinitions = [LinkDefinition]()
     private let parser: BlockParser
     private(set) weak var parent: Block?
     private var startPosition: TextPosition
@@ -51,7 +52,7 @@ final class Block {
         }
     }
     
-    func addLinkDefinitions(_ definitions: [LinkDefinition]) {
+    func addLinkDefinitions(_ definitions: [BlockLinkDefinition]) {
         if let parent = self.parent {
             parent.addLinkDefinitions(definitions)
         } else {
@@ -61,6 +62,9 @@ final class Block {
                 }
                 linkDefinitions[definition.key] = definition
             }
+            allLinkDefinitions.append(contentsOf: definitions.map {
+                LinkDefinition(label: $0.label, link: $0.link, range: $0.range)
+            })
         }
     }
     

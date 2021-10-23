@@ -32,6 +32,7 @@ private extension BackticksParser {
     
     func makeCode(opening: TextResult<String>, closing: TextResult<String>) -> TextResult<InlineText?> {
         let rawText = opening.remaining.substring(upto: closing.valueLocation)
+            .value
             .replacingOccurrences(of: "\n", with: " ")
         
         let hasNonSpace = rawText.contains(where: { $0 != " " })

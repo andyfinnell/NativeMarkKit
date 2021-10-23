@@ -31,7 +31,7 @@ struct ParagraphBlockParser: BlockParser {
 
     func parseLinkDefinitions(_ block: Block) -> Bool {
         let parser = LinkDefinitionsLineParser()
-        var definitions = [LinkDefinition]()
+        var definitions = [BlockLinkDefinition]()
         block.updateText { lines in
             let result = parser.parse(lines)
             definitions = result.0

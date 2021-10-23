@@ -123,8 +123,11 @@ struct TextCursor: Equatable {
                           valueTextRange: TextRange(start: valueLocation, end: remaining.retreat()))
     }
     
-    func substring(upto stopCursor: TextCursor) -> String {
-        String(text[index..<stopCursor.index])
+    func substring(upto stopCursor: TextCursor) -> TextResult<String> {
+        TextResult(remaining: stopCursor,
+                   value: String(text[index..<stopCursor.index]),
+                   valueLocation: self,
+                   valueTextRange: TextRange(start: self, end: stopCursor.retreat()))
     }
 
     func remaining() -> String {

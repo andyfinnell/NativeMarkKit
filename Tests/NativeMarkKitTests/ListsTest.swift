@@ -622,6 +622,11 @@ final class ListsTest: XCTestCase {
                                 range: (4, 2)-(4,3)))
                             ], range: (4, 0)-(4,3))
                         ]))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[ref]", range: (3,2)-(3,6)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url", range: (3,9)-(3,12))),
+                                       range: (3,2)-(3,13))
                        ]))
     }
     

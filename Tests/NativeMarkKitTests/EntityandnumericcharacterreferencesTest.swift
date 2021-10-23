@@ -159,6 +159,11 @@ final class EntityandnumericcharacterreferencesTest: XCTestCase {
                                              range: (0, 0)-(0, 4)))
                         ],
                         range: (0, 0)-(0, 5)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[foo]", range: (2,0)-(2,4)),
+                                       link: Link(title: InlineString(text: "föö", range: (2, 22)-(2, 36)),
+                                                url: InlineString(text: "/föö", range: (2, 7)-(2, 20))),
+                                       range: (2,0)-(2, 37))
                        ]))
     }
     

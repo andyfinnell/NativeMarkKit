@@ -1,10 +1,10 @@
 import Foundation
 
 struct LinkDefinitionsLineParser {
-    func parse(_ lines: [Line]) -> ([LinkDefinition], [Line]) {
+    func parse(_ lines: [Line]) -> ([BlockLinkDefinition], [Line]) {
         let input = TextCursor(lines: lines)
         let parser = LinkDefinitionParser()
-        var definitions = [LinkDefinition]()
+        var definitions = [BlockLinkDefinition]()
         
         var current = parser.parse(input: input)
         while let definition = current.value {
