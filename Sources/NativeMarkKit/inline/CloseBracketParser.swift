@@ -2,7 +2,7 @@ import Foundation
 
 struct CloseBracketParser {
     
-    func parse(_ input: TextCursor, with delimiterStack: DelimiterStack, linkDefs: [LinkLabel: LinkDefinition]) -> TextResult<InlineText?> {
+    func parse(_ input: TextCursor, with delimiterStack: DelimiterStack, linkDefs: [LinkLabel: BlockLinkDefinition]) -> TextResult<InlineText?> {
         let closeBracket = input.parse("]")
         guard closeBracket.value.isNotEmpty else {
             return input.noMatch(nil)
@@ -61,7 +61,7 @@ private extension CloseBracketParser {
         }
     }
     
-    func parseLinkOrRef(_ input: TextCursor, linkDefs: [LinkLabel: LinkDefinition], openingBracket: Delimiter) -> TextResult<UnknownLink?> {
+    func parseLinkOrRef(_ input: TextCursor, linkDefs: [LinkLabel: BlockLinkDefinition], openingBracket: Delimiter) -> TextResult<UnknownLink?> {
         let inlineLinkResult = InlineLinkParser().parse(input)
         if let link = inlineLinkResult.value {
             return inlineLinkResult.map { _ in .valid(link) }
@@ -77,17 +77,17 @@ private extension CloseBracketParser {
         return input.noMatch(nil)
     }
     
-    func parseLinkReference(_ input: TextCursor, linkDefs: [LinkLabel: LinkDefinition], openingBracket: Delimiter) -> TextResult<UnknownLink?> {
+    func parseLinkReference(_ input: TextCursor, linkDefs: [LinkLabel: BlockLinkDefinition], openingBracket: Delimiter) -> TextResult<UnknownLink?> {
         let linkLabelResult = LinkLabelParser().parse(input)        
         let linkLabel: LinkLabel?
         if linkLabelResult.value.count > 2 {
-            linkLabel = LinkLabel(linkLabelResult.value)
+            linkLabel = LinkLabel(linkLabelResult.toInlineString())
         } else {
             // Either there's no label or it's empty. In that case, we want to
             //  use the "content" of the link as the label. However, the rule
             //  says that it's not allowed to have a bracket in it
             let starting = openingBracket.startCursor == "!" ? openingBracket.startCursor.advance() : openingBracket.startCursor
-            let potentialLabel = LinkLabel(starting.substring(upto: input))
+            let potentialLabel = LinkLabel(starting.substring(upto: input).toInlineString())
             linkLabel = potentialLabel.value.contains("[") ? nil : potentialLabel
         }
         

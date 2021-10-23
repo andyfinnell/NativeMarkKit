@@ -3,7 +3,7 @@ import Foundation
 struct LinkDefinitionParser {
     private static let spacesAtEndOfLineRegex = try! NSRegularExpression(pattern: "^ *(?:\\n|$)", options: [])
     
-    func parse(input: TextCursor) -> TextResult<LinkDefinition?> {
+    func parse(input: TextCursor) -> TextResult<BlockLinkDefinition?> {
         let labelResult = LinkLabelParser().parse(input)
         guard labelResult.value.isNotEmpty else {
             return input.noMatch(nil)
@@ -38,11 +38,13 @@ struct LinkDefinitionParser {
             return input.noMatch(nil)
         }
         
+        let label = labelResult.toInlineString()
         let title = titleResult.value.isEmpty ? nil : titleResult.toInlineString()
-        
-        let definition = LinkDefinition(label: labelResult.value,
-                                        url: InlineString(text: destination, range: destinationResult.valueTextRange),
-                                        title: title)
+        let url = InlineString(text: destination, range: destinationResult.valueTextRange)
+        let definition = BlockLinkDefinition(label: label,
+                                             url: url,
+                                             title: title,
+                                             range: TextRange(start: labelResult, end: isAtEndOfLineResult))
         guard definition.key.isNotEmpty else {
             return input.noMatch(nil)
         }

@@ -5,8 +5,8 @@ struct LinkLabel: Hashable {
 
     let value: String
     
-    init(_ value: String) {
-        self.value = value.trimmed(by: 1)
+    init(_ string: InlineString) {
+        self.value = string.text.trimmed(by: 1)
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .replacingOccurrences(of: Self.whitespaceRun, with: "")
             .lowercased()

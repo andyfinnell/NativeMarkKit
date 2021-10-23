@@ -894,6 +894,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 0)-(0, 9)))
                         ],
                         range: (0, 0)-(0, 10)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[bar]", range: (2,0)-(2,4)),
+                                       link: Link(title: InlineString(text: "title", range: (2, 12)-(2, 18)),
+                                                  url: InlineString(text: "/url", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,19))
                        ]))
     }
     
@@ -916,6 +921,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 0)-(0, 22)))
                         ],
                         range: (0, 0)-(0, 23)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[ref]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/uri", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,11))
                        ]))
     }
     
@@ -938,6 +948,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 0)-(0, 16)))
                         ],
                         range: (0, 0)-(0, 17)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[ref]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/uri", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,11))
                        ]))
     }
     
@@ -971,6 +986,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 0)-(0, 28)))
                         ],
                         range: (0, 0)-(0, 29)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[ref]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/uri", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,11))
                        ]))
     }
     
@@ -996,6 +1016,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 0)-(0, 23)))
                         ],
                         range: (0, 0)-(0, 24)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[ref]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/uri", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,11))
                        ]))
     }
     
@@ -1026,6 +1051,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 17)-(0, 21)))
                         ],
                         range: (0, 0)-(0, 22)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[ref]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/uri", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,11))
                        ]))
     }
     
@@ -1060,6 +1090,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 22)-(0, 26)))
                         ],
                         range: (0, 0)-(0, 27)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[ref]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/uri", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,11))
                        ]))
     }
     
@@ -1083,6 +1118,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 1)-(0, 11)))
                         ],
                         range: (0, 0)-(0, 12)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[ref]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/uri", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,11))
                        ]))
     }
     
@@ -1105,6 +1145,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 0)-(0, 14)))
                         ],
                         range: (0, 0)-(0, 15)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[ref]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/uri", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,11))
                        ]))
     }
     
@@ -1128,6 +1173,11 @@ final class LinksTest: XCTestCase {
                             .text(InlineString(text: "\">", range: (0, 22)-(0, 23)))
                         ],
                         range: (0, 0)-(0, 24)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[ref]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/uri", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,11))
                        ]))
     }
     
@@ -1147,6 +1197,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 4)-(0, 11)))
                         ],
                         range: (0, 0)-(0, 12)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[ref]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/uri", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,11))
                        ]))
     }
     
@@ -1170,6 +1225,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 4)-(0, 38)))
                         ],
                         range: (0, 0)-(0, 39)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[ref]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/uri", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,11))
                        ]))
     }
     
@@ -1192,6 +1252,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 0)-(0, 9)))
                         ],
                         range: (0, 0)-(0, 10)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[bar]", range: (2,0)-(2,4)),
+                                       link: Link(title: InlineString(text: "title", range: (2, 12)-(2, 18)),
+                                                  url: InlineString(text: "/url", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,19))
                        ]))
     }
     
@@ -1215,6 +1280,11 @@ final class LinksTest: XCTestCase {
                             .text(InlineString(text: " is a Russian word.", range: (0,16)-(0,34)))
                         ],
                         range: (0, 0)-(0, 35)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[ТОЛПОЙ]", range: (2,0)-(2,7)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url", range: (2, 10)-(2, 13))),
+                                       range: (2,0)-(2,14))
                        ]))
     }
     
@@ -1238,6 +1308,11 @@ final class LinksTest: XCTestCase {
                                              range: (3, 0)-(3, 13)))
                         ],
                         range: (3, 0)-(3, 14)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[Foo\n  bar]", range: (0,0)-(1,5)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url", range: (1, 8)-(1, 11))),
+                                       range: (0,0)-(1,12))
                        ]))
     }
     
@@ -1261,6 +1336,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 6)-(0, 10)))
                         ],
                         range: (0, 0)-(0, 11)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[bar]", range: (2,0)-(2,4)),
+                                       link: Link(title: InlineString(text: "title", range: (2, 12)-(2, 18)),
+                                                  url: InlineString(text: "/url", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,19))
                        ]))
     }
     
@@ -1286,6 +1366,11 @@ final class LinksTest: XCTestCase {
                                              range: (1, 0)-(1, 4)))
                         ],
                         range: (0, 0)-(1, 5)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[bar]", range: (3,0)-(3,4)),
+                                       link: Link(title: InlineString(text: "title", range: (3, 12)-(3, 18)),
+                                                  url: InlineString(text: "/url", range: (3, 7)-(3, 10))),
+                                       range: (3,0)-(3,19))
                        ]))
     }
     
@@ -1310,6 +1395,15 @@ final class LinksTest: XCTestCase {
                                              range: (4, 0)-(4, 9)))
                         ],
                         range: (4, 0)-(4, 10)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[foo]", range: (0,0)-(0,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url1", range: (0, 7)-(0, 11))),
+                                       range: (0,0)-(0,12)),
+                        LinkDefinition(label: InlineString(text: "[foo]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url2", range: (2, 7)-(2, 11))),
+                                       range: (2,0)-(2,12))
                        ]))
     }
     
@@ -1327,6 +1421,11 @@ final class LinksTest: XCTestCase {
                             .text(InlineString(text: "[bar][foo!]", range: (0, 0)-(0, 11)))
                         ],
                         range: (0, 0)-(0, 12)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[foo!]", range: (2,0)-(2,5)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url", range: (2,8)-(2,11))),
+                                       range: (2,0)-(2,12))
                        ]))
     }
     
@@ -1412,6 +1511,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 0)-(0, 11)))
                         ],
                         range: (0, 0)-(0, 12)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[ref\\[]", range: (2,0)-(2,6)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/uri", range: (2, 9)-(2, 12))),
+                                       range: (2,0)-(2,13))
                        ]))
     }
     
@@ -1434,6 +1538,11 @@ final class LinksTest: XCTestCase {
                                              range: (2, 0)-(2, 6)))
                         ],
                         range: (2, 0)-(2, 7)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[bar\\\\]", range: (0,0)-(0,6)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/uri", range: (0, 9)-(0, 12))),
+                                       range: (0,0)-(0,13))
                        ]))
     }
     
@@ -1504,6 +1613,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 0)-(0, 6)))
                         ],
                         range: (0, 0)-(0, 7)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[foo]", range: (2,0)-(2,4)),
+                                       link: Link(title: InlineString(text: "title", range: (2, 12)-(2, 18)),
+                                                  url: InlineString(text: "/url", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,19))
                        ]))
     }
     
@@ -1530,6 +1644,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 0)-(0, 12)))
                         ],
                         range: (0, 0)-(0, 13)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[*foo* bar]", range: (2,0)-(2,10)),
+                                       link: Link(title: InlineString(text: "title", range: (2, 18)-(2, 24)),
+                                                  url: InlineString(text: "/url", range: (2, 13)-(2, 16))),
+                                       range: (2,0)-(2,25))
                        ]))
     }
     
@@ -1552,6 +1671,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 0)-(0, 6)))
                         ],
                         range: (0, 0)-(0, 7)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[foo]", range: (2,0)-(2,4)),
+                                       link: Link(title: InlineString(text: "title", range: (2, 12)-(2, 18)),
+                                                  url: InlineString(text: "/url", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,19))
                        ]))
     }
     
@@ -1577,6 +1701,11 @@ final class LinksTest: XCTestCase {
                             .text(InlineString(text: "[]", range: (1,0)-(1,1)))
                         ],
                         range: (0, 0)-(1, 2)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[foo]", range: (3,0)-(3,4)),
+                                       link: Link(title: InlineString(text: "title", range: (3, 12)-(3, 18)),
+                                                  url: InlineString(text: "/url", range: (3, 7)-(3, 10))),
+                                       range: (3,0)-(3,19))
                        ]))
     }
     
@@ -1599,6 +1728,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 0)-(0, 4)))
                         ],
                         range: (0, 0)-(0, 5)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[foo]", range: (2,0)-(2,4)),
+                                       link: Link(title: InlineString(text: "title", range: (2, 12)-(2, 18)),
+                                                  url: InlineString(text: "/url", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,19))
                        ]))
     }
     
@@ -1625,6 +1759,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 0)-(0, 10)))
                         ],
                         range: (0, 0)-(0, 11)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[*foo* bar]", range: (2,0)-(2,10)),
+                                       link: Link(title: InlineString(text: "title", range: (2, 18)-(2, 24)),
+                                                  url: InlineString(text: "/url", range: (2, 13)-(2, 16))),
+                                       range: (2,0)-(2,25))
                        ]))
     }
     
@@ -1653,6 +1792,11 @@ final class LinksTest: XCTestCase {
                             .text(InlineString(text: "]", range: (0,12)-(0,12)))
                         ],
                         range: (0, 0)-(0, 13)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[*foo* bar]", range: (2,0)-(2,10)),
+                                       link: Link(title: InlineString(text: "title", range: (2, 18)-(2, 24)),
+                                                  url: InlineString(text: "/url", range: (2, 13)-(2, 16))),
+                                       range: (2,0)-(2,25))
                        ]))
     }
     
@@ -1676,6 +1820,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 6)-(0, 10)))
                         ],
                         range: (0, 0)-(0, 11)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[foo]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,11))
                        ]))
     }
     
@@ -1698,6 +1847,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 0)-(0, 4)))
                         ],
                         range: (0, 0)-(0, 5)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[foo]", range: (2,0)-(2,4)),
+                                       link: Link(title: InlineString(text: "title", range: (2, 12)-(2, 18)),
+                                                  url: InlineString(text: "/url", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,19))
                        ]))
     }
     
@@ -1721,6 +1875,11 @@ final class LinksTest: XCTestCase {
                             .text(InlineString(text: " bar", range: (0,5)-(0,8)))
                         ],
                         range: (0, 0)-(0, 9)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[foo]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,11))
                        ]))
     }
     
@@ -1738,6 +1897,11 @@ final class LinksTest: XCTestCase {
                             .text(InlineString(text: "[foo]", range: (0,0)-(0,5)))
                         ],
                         range: (0, 0)-(0, 6)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[foo]", range: (2,0)-(2,4)),
+                                       link: Link(title: InlineString(text: "title", range: (2, 12)-(2, 18)),
+                                                  url: InlineString(text: "/url", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,19))
                        ]))
     }
     
@@ -1761,6 +1925,11 @@ final class LinksTest: XCTestCase {
                                              range: (2, 1)-(2, 6)))
                         ],
                         range: (2, 0)-(2, 7)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[foo*]", range: (0,0)-(0,5)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url", range: (0, 8)-(0, 11))),
+                                       range: (0,0)-(0,12))
                        ]))
     }
     
@@ -1784,6 +1953,15 @@ final class LinksTest: XCTestCase {
                                              range: (0, 0)-(0, 9)))
                         ],
                         range: (0, 0)-(0, 10)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[foo]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url1", range: (2, 7)-(2, 11))),
+                                       range: (2,0)-(2,12)),
+                        LinkDefinition(label: InlineString(text: "[bar]", range: (3,0)-(3,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url2", range: (3, 7)-(3, 11))),
+                                       range: (3,0)-(3,12))
                        ]))
     }
     
@@ -1806,6 +1984,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 0)-(0, 6)))
                         ],
                         range: (0, 0)-(0, 7)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[foo]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url1", range: (2, 7)-(2, 11))),
+                                       range: (2,0)-(2,12))
                        ]))
     }
     
@@ -1828,6 +2011,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 0)-(0, 6)))
                         ],
                         range: (0, 0)-(0, 7)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[foo]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url1", range: (2, 7)-(2, 11))),
+                                       range: (2,0)-(2,12))
                        ]))
     }
     
@@ -1851,6 +2039,11 @@ final class LinksTest: XCTestCase {
                             .text(InlineString(text: "(not a link)", range: (0,5)-(0,16)))
                         ],
                         range: (0, 0)-(0, 17)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[foo]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url1", range: (2, 7)-(2, 11))),
+                                       range: (2,0)-(2,12))
                        ]))
     }
     
@@ -1874,6 +2067,11 @@ final class LinksTest: XCTestCase {
                                              range: (0, 5)-(0, 14)))
                         ],
                         range: (0, 0)-(0, 15)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[baz]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url", range: (2, 7)-(2, 10))),
+                                       range: (2,0)-(2,11))
                        ]))
     }
     
@@ -1903,6 +2101,15 @@ final class LinksTest: XCTestCase {
                                              range: (0, 10)-(0, 14)))
                         ],
                         range: (0, 0)-(0, 15)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[baz]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url1", range: (2, 7)-(2, 11))),
+                                       range: (2,0)-(2,12)),
+                        LinkDefinition(label: InlineString(text: "[bar]", range: (3,0)-(3,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url2", range: (3, 7)-(3, 11))),
+                                       range: (3,0)-(3,12))
                        ]))
     }
     
@@ -1927,6 +2134,15 @@ final class LinksTest: XCTestCase {
                                              range: (0, 5)-(0, 14)))
                         ],
                         range: (0, 0)-(0, 15)))
+                       ], linkDefinitions: [
+                        LinkDefinition(label: InlineString(text: "[baz]", range: (2,0)-(2,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url1", range: (2, 7)-(2, 11))),
+                                       range: (2,0)-(2,12)),
+                        LinkDefinition(label: InlineString(text: "[foo]", range: (3,0)-(3,4)),
+                                       link: Link(title: nil,
+                                                  url: InlineString(text: "/url2", range: (3, 7)-(3, 11))),
+                                       range: (3,0)-(3,12))
                        ]))
     }
     

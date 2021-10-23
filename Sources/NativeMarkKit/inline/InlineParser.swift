@@ -13,11 +13,12 @@ struct InlineParser {
 }
 
 private extension InlineParser {
-    func document(_ block: Block, linkDefs: [LinkLabel: LinkDefinition]) throws -> Document {
-        try Document(elements: block.children.map { try element($0, linkDefs: linkDefs) })
+    func document(_ block: Block, linkDefs: [LinkLabel: BlockLinkDefinition]) throws -> Document {
+        try Document(elements: block.children.map { try element($0, linkDefs: linkDefs) },
+                     linkDefinitions: block.allLinkDefinitions)
     }
     
-    func element(_ block: Block, linkDefs: [LinkLabel: LinkDefinition]) throws -> Element {
+    func element(_ block: Block, linkDefs: [LinkLabel: BlockLinkDefinition]) throws -> Element {
         switch block.kind {
         case .blockQuote:
             return try blockQuote(block, linkDefs: linkDefs)
@@ -37,31 +38,31 @@ private extension InlineParser {
         }
     }
     
-    func blockQuote(_ block: Block, linkDefs: [LinkLabel: LinkDefinition]) throws -> Element {
+    func blockQuote(_ block: Block, linkDefs: [LinkLabel: BlockLinkDefinition]) throws -> Element {
         try .blockQuote(BlockQuote(blocks: block.children.map { try element($0, linkDefs: linkDefs) }, range: block.range))
     }
     
-    func codeBlock(_ block: Block, infoString: String, linkDefs: [LinkLabel: LinkDefinition]) -> Element {
+    func codeBlock(_ block: Block, infoString: String, linkDefs: [LinkLabel: BlockLinkDefinition]) -> Element {
         let text = block.textLines.map { $0.text }.joined(separator: "\n")
         let suffix = (text.isEmpty || text.hasSuffix("\n")) ? "" : "\n"
         return .codeBlock(CodeBlock(infoString: infoString, content: text + suffix, range: block.range))
     }
     
-    func heading(_ block: Block, level: Int, linkDefs: [LinkLabel: LinkDefinition]) -> Element {
+    func heading(_ block: Block, level: Int, linkDefs: [LinkLabel: BlockLinkDefinition]) -> Element {
         let inlineText = InlineBlockParser().parse(block, using: linkDefs)
         return .heading(Heading(level: level, text: inlineText, range: block.range))
     }
 
-    func list(_ block: Block, style: ListStyle, linkDefs: [LinkLabel: LinkDefinition]) throws -> Element {
+    func list(_ block: Block, style: ListStyle, linkDefs: [LinkLabel: BlockLinkDefinition]) throws -> Element {
         try .list(List(info: listInfo(style), items: block.children.map { try listItem($0, linkDefs: linkDefs) }))
     }
 
-    func paragraph(_ block: Block, linkDefs: [LinkLabel: LinkDefinition]) -> Element {
+    func paragraph(_ block: Block, linkDefs: [LinkLabel: BlockLinkDefinition]) -> Element {
         let inlineText = InlineBlockParser().parse(block, using: linkDefs)
         return .paragraph(Paragraph(text: inlineText, range: block.range))
     }
 
-    func listItem(_ block: Block, linkDefs: [LinkLabel: LinkDefinition]) throws -> ListItem {
+    func listItem(_ block: Block, linkDefs: [LinkLabel: BlockLinkDefinition]) throws -> ListItem {
         guard block.kind == .item else {
             throw ASTError.expectedBlock(.item)
         }
