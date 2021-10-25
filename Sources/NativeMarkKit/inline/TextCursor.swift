@@ -184,7 +184,7 @@ private extension TextCursor {
     }
 }
 
-private extension String {
+extension String {
     func indices(of ch: Character) -> [String.Index] {
         var indices = [String.Index]()
         var current = startIndex
