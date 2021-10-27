@@ -8,8 +8,8 @@ import AppKit
 // TODO: implement copy/paste in terms of nativemark
 // TODO: drap & drop, particularly urls/files
 
-public final class NativeMarkTextView: NSTextView {
-    private let editorTextStorage: HighlighterTextStorage
+public final class NativeMarkSourceEditorView: NSTextView {
+    private let editorTextStorage: SourceEditorTextStorage
     private let editorLayoutManager = NSLayoutManager()
     private let editorContainer = NSTextContainer()
 
@@ -31,7 +31,7 @@ public final class NativeMarkTextView: NSTextView {
     }
     
     public init(nativeMark: String, styleSheet: StyleSheet = .sourceCode) {
-        editorTextStorage = HighlighterTextStorage(editableNativeMark: nativeMark, styleSheet: styleSheet)
+        editorTextStorage = SourceEditorTextStorage(editableNativeMark: nativeMark, styleSheet: styleSheet)
         super.init(frame: .zero, textContainer: editorContainer)
         editorLayoutManager.addTextContainer(editorContainer)
         editorTextStorage.addLayoutManager(editorLayoutManager)
@@ -39,7 +39,7 @@ public final class NativeMarkTextView: NSTextView {
     }
         
     required init?(coder: NSCoder) {
-        editorTextStorage = HighlighterTextStorage(editableNativeMark: "", styleSheet: .sourceCode)
+        editorTextStorage = SourceEditorTextStorage(editableNativeMark: "", styleSheet: .sourceCode)
         super.init(frame: .zero, textContainer: editorContainer)
         editorLayoutManager.addTextContainer(editorContainer)
         editorTextStorage.addLayoutManager(editorLayoutManager)

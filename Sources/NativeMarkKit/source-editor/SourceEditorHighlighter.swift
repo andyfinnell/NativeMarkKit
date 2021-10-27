@@ -16,7 +16,7 @@ protocol HighlightedSource {
     func textRange(_ range: TextRange?) -> NSRange?
 }
 
-struct Highlighter {
+struct SourceEditorHighlighter {
     // TODO: should color headings
     // TODO: should color links
     // TODO: should color escape sequences? (might be hard via AST)
@@ -37,7 +37,7 @@ struct Highlighter {
     }
 }
 
-private extension Highlighter {
+private extension SourceEditorHighlighter {
     func highlight(_ elements: [Element], indent: Int, with styleStack: StyleStack, in result: HighlightedSource) {
         for element in elements {
             highlight(element, indent: indent, with: styleStack, in: result)

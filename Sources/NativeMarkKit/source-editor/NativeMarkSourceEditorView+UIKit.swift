@@ -2,8 +2,8 @@ import Foundation
 #if canImport(UIKit)
 import UIKit
 
-public final class NativeMarkTextView: UITextView {
-    private let editorTextStorage: HighlighterTextStorage
+public final class NativeMarkSourceEditorView: UITextView {
+    private let editorTextStorage: SourceEditorTextStorage
     private let editorLayoutManager: NSLayoutManager
     private let editorContainer: NSTextContainer
     private var keyboardShowObserver: AnyObject?
@@ -60,9 +60,9 @@ public final class NativeMarkTextView: UITextView {
     }
 }
 
-private extension NativeMarkTextView {
-    static func makeTextSystem(nativeMark: String, styleSheet: StyleSheet) -> (HighlighterTextStorage, NSLayoutManager, NSTextContainer) {
-        let editorTextStorage = HighlighterTextStorage(editableNativeMark: nativeMark, styleSheet: styleSheet)
+private extension NativeMarkSourceEditorView {
+    static func makeTextSystem(nativeMark: String, styleSheet: StyleSheet) -> (SourceEditorTextStorage, NSLayoutManager, NSTextContainer) {
+        let editorTextStorage = SourceEditorTextStorage(editableNativeMark: nativeMark, styleSheet: styleSheet)
         let editorLayoutManager = NSLayoutManager()
         let editorContainer = NSTextContainer()
         editorContainer.widthTracksTextView = true

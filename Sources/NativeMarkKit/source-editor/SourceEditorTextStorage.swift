@@ -5,11 +5,11 @@ import AppKit
 import UIKit
 #endif
 
-final class HighlighterTextStorage: NSTextStorage {
+final class SourceEditorTextStorage: NSTextStorage {
     private let impl: NSMutableAttributedString
     private var lineStarts: [String.Index]
     private var document: Document
-    private let highlighter = Highlighter() // could dependency inject instead
+    private let highlighter = SourceEditorHighlighter() // could dependency inject instead
 
     var styleSheet: StyleSheet {
         didSet {
@@ -20,8 +20,8 @@ final class HighlighterTextStorage: NSTextStorage {
     init(editableNativeMark: String, styleSheet: StyleSheet) {
         impl = NSMutableAttributedString(string: editableNativeMark)
         self.styleSheet = styleSheet
-        document = HighlighterTextStorage.compile(editableNativeMark)
-        lineStarts = HighlighterTextStorage.computeLineStarts(for: editableNativeMark)
+        document = SourceEditorTextStorage.compile(editableNativeMark)
+        lineStarts = SourceEditorTextStorage.computeLineStarts(for: editableNativeMark)
         
         super.init()
         
@@ -43,8 +43,8 @@ final class HighlighterTextStorage: NSTextStorage {
     override func processEditing() {
 
         if editedMask.contains(.editedCharacters) {
-            document = HighlighterTextStorage.compile(impl.string)
-            lineStarts = HighlighterTextStorage.computeLineStarts(for: impl.string)
+            document = SourceEditorTextStorage.compile(impl.string)
+            lineStarts = SourceEditorTextStorage.computeLineStarts(for: impl.string)
                    
             highlighter.highlight(self, using: document, with: styleSheet)
         }
@@ -56,7 +56,7 @@ final class HighlighterTextStorage: NSTextStorage {
 
 // MARK: - NSTextStorage class cluster
 
-extension HighlighterTextStorage {
+extension SourceEditorTextStorage {
     override var string: String {
         impl.string
     }
@@ -80,7 +80,7 @@ extension HighlighterTextStorage {
     }
 }
 
-extension HighlighterTextStorage: HighlightedSource {
+extension SourceEditorTextStorage: HighlightedSource {
     func textRange(_ range: TextRange?) -> NSRange? {
         guard let startIndex = textIndex(range?.start),
               let endIndex = textIndex(range?.end) else {
@@ -100,7 +100,7 @@ extension HighlighterTextStorage: HighlightedSource {
 
 }
 
-private extension HighlighterTextStorage {
+private extension SourceEditorTextStorage {
     func textIndex(_ position: TextPosition?) -> String.Index? {
         guard let lineNumber = position?.line,
               let lineStartIndex = lineStarts.at(lineNumber),
