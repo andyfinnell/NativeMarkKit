@@ -10,13 +10,17 @@ import UIKit
 protocol HighlightedSource {
     var length: Int { get }
     
-    func setAttributes(_ attributes: [NSAttributedString.Key: Any]?, range: NSRange)
-    func addAttributes(_ attributes: [NSAttributedString.Key: Any], range: NSRange)
+    func setHighlightedAttributes(_ attributes: [NSAttributedString.Key: Any]?, range: NSRange)
+    func addHighlightedAttributes(_ attributes: [NSAttributedString.Key: Any], range: NSRange)
 
     func textRange(_ range: TextRange?) -> NSRange?
 }
 
 struct Highlighter {
+    // TODO: should color headings
+    // TODO: should color links
+    // TODO: should color escape sequences? (might be hard via AST)
+    // TODO: should color thematic breaks
     
     func highlight(_ result: HighlightedSource, using document: Document, with stylesheet: StyleSheet) {
         let styleStack = StyleStack(stylesheet: stylesheet)
@@ -25,7 +29,7 @@ struct Highlighter {
             styleStack.pop()
         }
         
-        result.setAttributes(styleStack.attributes(), range: NSRange(location: 0, length: result.length))
+        result.setHighlightedAttributes(styleStack.attributes(), range: NSRange(location: 0, length: result.length))
 
         highlight(document.elements, indent: 0, with: styleStack, in: result)
                 
@@ -227,6 +231,6 @@ private extension Highlighter {
     func highlight(_ range: TextRange?, with styleStack: StyleStack, in result: HighlightedSource) {
         guard let nsRange = result.textRange(range) else { return }
         
-        result.addAttributes(styleStack.attributes(), range: nsRange)
+        result.addHighlightedAttributes(styleStack.attributes(), range: nsRange)
     }
 }

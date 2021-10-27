@@ -23,7 +23,7 @@ final class HighlighterTextStorage: NSTextStorage {
         document = HighlighterTextStorage.compile(editableNativeMark)
         lineStarts = HighlighterTextStorage.computeLineStarts(for: editableNativeMark)
         
-        super.init(string: editableNativeMark)
+        super.init()
         
         highlighter.highlight(self, using: document, with: styleSheet)
     }
@@ -41,15 +41,16 @@ final class HighlighterTextStorage: NSTextStorage {
     #endif
     
     override func processEditing() {
-        super.processEditing()
-        
-        guard editedMask.contains(.editedCharacters) else {
-            return
+
+        if editedMask.contains(.editedCharacters) {
+            document = HighlighterTextStorage.compile(impl.string)
+            lineStarts = HighlighterTextStorage.computeLineStarts(for: impl.string)
+                   
+            highlighter.highlight(self, using: document, with: styleSheet)
         }
         
-        document = HighlighterTextStorage.compile(impl.string)
-        lineStarts = HighlighterTextStorage.computeLineStarts(for: impl.string)
-        highlighter.highlight(self, using: document, with: styleSheet)
+        
+        super.processEditing()
     }
 }
 
@@ -65,13 +66,17 @@ extension HighlighterTextStorage {
     }
     
     override func replaceCharacters(in range: NSRange, with str: String) {
+        beginEditing()
         impl.replaceCharacters(in: range, with: str)
         edited(.editedCharacters, range: range, changeInLength: str.count - range.length)
+        endEditing()
     }
     
     override func setAttributes(_ attrs: [NSAttributedString.Key : Any]?, range: NSRange) {
+        beginEditing()
         impl.setAttributes(attrs, range: range)
         edited(.editedAttributes, range: range, changeInLength: 0)
+        endEditing()
     }
 }
 
@@ -84,6 +89,15 @@ extension HighlighterTextStorage: HighlightedSource {
         let nsRange = NSRange(startIndex...endIndex, in: impl.string)
         return nsRange
     }
+    
+    func setHighlightedAttributes(_ attributes: [NSAttributedString.Key: Any]?, range: NSRange) {
+        impl.setAttributes(attributes, range: range)
+    }
+    
+    func addHighlightedAttributes(_ attributes: [NSAttributedString.Key: Any], range: NSRange) {
+        impl.addAttributes(attributes, range: range)
+    }
+
 }
 
 private extension HighlighterTextStorage {
@@ -91,7 +105,8 @@ private extension HighlighterTextStorage {
         guard let lineNumber = position?.line,
               let lineStartIndex = lineStarts.at(lineNumber),
               let columnNumber = position?.column,
-              let columnIndex = impl.string.index(lineStartIndex, offsetBy: columnNumber, limitedBy: impl.string.endIndex) else {
+              let columnIndex = impl.string.index(lineStartIndex, offsetBy: columnNumber, limitedBy: impl.string.endIndex),
+              columnIndex != impl.string.endIndex else {
                   return nil
               }
         
