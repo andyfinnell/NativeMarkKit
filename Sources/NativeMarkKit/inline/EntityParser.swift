@@ -9,7 +9,6 @@ struct EntityParser {
             return input.noMatch(nil)
         }
         
-        // TODO: what should be done with the entity?
         return entity.map { .text(InlineString(text: $0.unescaped(), range: entity.valueTextRange)) }
     }
 }

@@ -17,11 +17,6 @@ protocol HighlightedSource {
 }
 
 struct SourceEditorHighlighter {
-    // TODO: should color headings
-    // TODO: should color links
-    // TODO: should color escape sequences? (might be hard via AST)
-    // TODO: should color thematic breaks
-    
     func highlight(_ result: HighlightedSource, using document: Document, with stylesheet: StyleSheet) {
         let styleStack = StyleStack(stylesheet: stylesheet)
         styleStack.push(.document)
@@ -168,15 +163,19 @@ private extension SourceEditorHighlighter {
     }
     
     func highlight(_ text: InlineString, with styleStack: StyleStack, in result: HighlightedSource) {
-        // TODO: nop?
+        // nop
     }
 
     func highlight(_ linebreak: InlineLinebreak, with styleStack: StyleStack, in result: HighlightedSource) {
-        // TODO: nop?
+        styleStack.push(.linebreak)
+        defer {
+            styleStack.pop()
+        }
+        highlight(linebreak.range, with: styleStack, in: result)
     }
 
     func highlight(_ softbreak: InlineSoftbreak, with styleStack: StyleStack, in result: HighlightedSource) {
-        // TODO: nop?
+        // nop
     }
 
     func highlight(_ link: InlineLink, with styleStack: StyleStack, in result: HighlightedSource) {
@@ -184,9 +183,13 @@ private extension SourceEditorHighlighter {
         defer {
             styleStack.pop()
         }
-        
+
         highlight(link.range, with: styleStack, in: result)
-        highlight(link.text, with: styleStack, in: result)
+
+        highlightLinkAlt(link.text.range, with: styleStack, in: result)
+        if let link = link.link {
+            highlight(link, with: styleStack, in: result)
+        }
     }
     
     func highlight(_ image: InlineImage, with styleStack: StyleStack, in result: HighlightedSource) {
@@ -196,6 +199,10 @@ private extension SourceEditorHighlighter {
         }
 
         highlight(image.range, with: styleStack, in: result)
+        highlightLinkAlt(image.alt.range, with: styleStack, in: result)
+        if let link = image.link {
+            highlight(link, with: styleStack, in: result)
+        }
     }
 
     func highlight(_ emphasis: InlineEmphasis, with styleStack: StyleStack, in result: HighlightedSource) {
@@ -225,9 +232,39 @@ private extension SourceEditorHighlighter {
     }
     
     func highlight(_ linkDefinition: LinkDefinition, with styleStack: StyleStack, in result: HighlightedSource) {
-        // TODO: need selector for link definitions
+        highlightLinkAlt(linkDefinition.label.range, with: styleStack, in: result)
+        highlight(linkDefinition.link, with: styleStack, in: result)
     }
     
+    func highlight(_ link: Link, with styleStack: StyleStack, in result: HighlightedSource) {
+        highlightLinkUrl(link.url?.range, with: styleStack, in: result)
+        highlightLinkTitle(link.title?.range, with: styleStack, in: result)
+    }
+    
+    func highlightLinkAlt(_ range: TextRange?, with styleStack: StyleStack, in result: HighlightedSource) {
+        styleStack.push(.linkAlt)
+        defer {
+            styleStack.pop()
+        }
+        highlight(range, with: styleStack, in: result)
+    }
+
+    func highlightLinkTitle(_ range: TextRange?, with styleStack: StyleStack, in result: HighlightedSource) {
+        styleStack.push(.linkTitle)
+        defer {
+            styleStack.pop()
+        }
+        highlight(range, with: styleStack, in: result)
+    }
+
+    func highlightLinkUrl(_ range: TextRange?, with styleStack: StyleStack, in result: HighlightedSource) {
+        styleStack.push(.linkUrl)
+        defer {
+            styleStack.pop()
+        }
+        highlight(range, with: styleStack, in: result)
+    }
+
     func highlight(_ range: TextRange?, with styleStack: StyleStack, in result: HighlightedSource) {
         guard let nsRange = result.textRange(range) else { return }
         

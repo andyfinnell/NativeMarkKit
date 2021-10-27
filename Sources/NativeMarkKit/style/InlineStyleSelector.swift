@@ -6,4 +6,8 @@ public enum InlineStyleSelector: Hashable {
     case image
     case emphasis
     case strong
+    case linkAlt
+    case linkTitle
+    case linkUrl
+    case linebreak
 }
