@@ -30,13 +30,20 @@ public final class NativeMarkLabel: UIControl {
     public init(nativeMark: String, styleSheet: StyleSheet = .default) {
         abstractView = AbstractView(nativeMark: nativeMark, styleSheet: styleSheet)
         super.init(frame: .zero)
+        if styleSheet.backgroundColor() == nil {
+            backgroundColor = .clear
+        }
         abstractView.delegate = self
         updateAccessibility()
     }
     
     public required init?(coder: NSCoder) {
-        abstractView = AbstractView(nativeMark: "", styleSheet: .default)
+        let styleSheet = StyleSheet.default
+        abstractView = AbstractView(nativeMark: "", styleSheet: styleSheet)
         super.init(frame: .zero)
+        if styleSheet.backgroundColor() == nil {
+            backgroundColor = .clear
+        }
         abstractView.delegate = self
         updateAccessibility()
     }
@@ -118,6 +125,14 @@ extension NativeMarkLabel: AbstractViewDelegate {
         setNeedsDisplay(rect)
         updateAccessibility()
         onIntrinsicSizeInvalidated?()
+    }
+}
+
+private extension StyleSheet {
+    func backgroundColor() -> NativeColor? {
+        var attributes = [NSAttributedString.Key: Any]()
+        styles(for: .document).updateAttributes(&attributes)
+        return attributes[.backgroundColor] as? NativeColor
     }
 }
 

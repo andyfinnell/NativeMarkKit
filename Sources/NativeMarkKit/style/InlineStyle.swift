@@ -10,7 +10,7 @@ import UIKit
 public enum InlineStyle {
     case textColor(NativeColor)
     case textStyle(TextStyle)
-    case backgroundColor(NativeColor)
+    case backgroundColor(NativeColor?)
     case kerning(Length)
     case strikethrough(NSUnderlineStyle, color: NativeColor? = nil)
     case underline(NSUnderlineStyle, color: NativeColor? = nil)

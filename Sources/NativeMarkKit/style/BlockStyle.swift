@@ -33,7 +33,7 @@ public extension BlockStyle {
         .inlineStyle(.textStyle(value))
     }
         
-    static func backgroundColor(_ value: NativeColor) -> BlockStyle {
+    static func backgroundColor(_ value: NativeColor?) -> BlockStyle {
         .inlineStyle(.backgroundColor(value))
     }
     
