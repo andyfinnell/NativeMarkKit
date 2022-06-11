@@ -54,6 +54,7 @@ a new paragraph.
 ```Markdown
 With NativeMark you can _emphasize_ or **bold** text. You can also 
 create [links](https://losingfight.com/blog) or mark `inline code`.
+NativeMark also supports Github Flavored Markdown's ~~strikethrough~~.
 ```
 
 ## Images

@@ -1,7 +1,7 @@
 # NativeMarkKit
 ![Tests](https://github.com/andyfinnell/NativeMarkKit/workflows/Tests/badge.svg) [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 
-NativeMark is a flavor of Markdown designed to be rendered by native apps (i.e. it compiles down to native types, not HTML). Specifically, it implements the [CommonMark spec](https://spec.commonmark.org/0.29/) with the significant exception of raw HTML tags. NativeMark will treat raw HTML tags as plain text.
+NativeMark is a flavor of Markdown designed to be rendered by native apps (i.e. it compiles down to native types, not HTML). Specifically, it implements the [CommonMark spec](https://spec.commonmark.org/0.29/) with the significant exception of raw HTML tags. NativeMark will treat raw HTML tags as plain text. It also supports some of Github Flavored Markdown's extensions, such as strikethrough.
 
 The goal of NativeMark is to provide a simple, intuitive way to create styled text in native apps. NativeMarkKit is an implementation of NativeMark for macOS, iOS, and tvOS. NativeMarkKit supports dark mode, dynamic type, and SwiftUI where available.
 
@@ -145,3 +145,5 @@ More [documentation](Documentation).
 ## Acknowledgements
 
 The NativeMarkKit project would like to acknowledge the work of the [CommonMark](https://commonmark.org/) project to document a standardized flavor of Markdown. NativeMarkKit's front end parsing is based on [CommonMark's parsing strategy](https://spec.commonmark.org/0.29/#appendix-a-parsing-strategy) and the reference implementation [CommonMark.js](https://github.com/commonmark/commonmark.js). Additionally, this project derives its suite of parsing tests from [CommonMark's specs](https://spec.commonmark.org/0.29/spec.json).
+
+For Github Flavored Markdown extensions the [Github Flavored Markdown Spec](https://github.github.com/gfm/) was used.

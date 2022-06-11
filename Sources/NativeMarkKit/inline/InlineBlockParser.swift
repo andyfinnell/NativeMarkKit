@@ -47,7 +47,7 @@ private extension InlineBlockParser {
             let backticks = BackticksParser().parse(input)
             delimiterStack.push(backticks.value)
             wasParsed = backticks.map { $0 != nil }
-        case "*", "_", "'", "\"":
+        case "*", "_", "'", "\"", "~":
             let delimiter = DelimiterParser(delimiter: String(char)).parse(input)
             delimiterStack.push(delimiter.value)
             wasParsed = delimiter.map { $0 != nil }

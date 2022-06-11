@@ -136,6 +136,9 @@ public extension StyleSheet {
             .strong: [
                 .fontTraits(.bold)
             ],
+            .strikethrough: [
+                .strikethrough(.single)
+            ],
             .code: [
                 .textStyle(.code),
                 .inlineBackground()

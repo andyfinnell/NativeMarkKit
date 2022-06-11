@@ -183,6 +183,8 @@ private extension Renderer {
             renderEmphasis(text.text, with: styleStack, into: result)
         case let .strong(text):
             renderStrong(text.text, with: styleStack, into: result)
+        case let .strikethrough(text):
+            renderStrikethrough(text.text, with: styleStack, into: result)
         case .softbreak:
             renderSoftbreak(with: styleStack, into: result)
         }
@@ -262,7 +264,16 @@ private extension Renderer {
 
         render(text, with: styleStack, into: result)
     }
-        
+
+    func renderStrikethrough(_ text: [InlineText], with styleStack: StyleStack, into result: NSMutableAttributedString) {
+        styleStack.push(.strikethrough)
+        defer {
+            styleStack.pop()
+        }
+
+        render(text, with: styleStack, into: result)
+    }
+
     func renderNewline(with styleStack: StyleStack, into result: NSMutableAttributedString) {
         result.append(NSAttributedString(string: "\n", attributes: styleStack.attributes()))
     }

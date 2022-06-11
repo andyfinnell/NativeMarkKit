@@ -1,7 +1,7 @@
 import Foundation
 
 struct StringParser {
-    private static let stringRegex = try! NSRegularExpression(pattern: "^[^\\n`\\[\\]\\\\!<&*_'\"]+", options: [])
+    private static let stringRegex = try! NSRegularExpression(pattern: "^[^\\n`\\[\\]\\\\!<&*_~'\"]+", options: [])
     private static let ellipsisRegex = try! NSRegularExpression(pattern: "\\.\\.\\.", options: [])
     private static let dashesRegex = try! NSRegularExpression(pattern: "--+", options: [])
     

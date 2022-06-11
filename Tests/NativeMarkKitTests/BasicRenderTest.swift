@@ -35,7 +35,15 @@ final class BasicRenderTest: XCTestCase {
                                       width: 320)
         XCTAssert(testCase.isPassing(for: self))
     }
-    
+
+    func testHelloUniverse() {
+        let testCase = RenderTestCase(name: "HelloUniverse",
+                                      nativeMark: "**Hello**, ~~world~~_universe_!",
+                                      styleSheet: .default,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
     func testHelloWorldWithCustomFont() {
         let style = StyleSheet.default.duplicate().mutate(
                 block: [
