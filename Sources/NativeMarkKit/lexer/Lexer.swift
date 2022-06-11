@@ -6,6 +6,7 @@ struct Lexer {
             return []
         }
         return source.split(omittingEmptySubsequences: false, whereSeparator: { $0.isNewline })
-            .map { Line(text: String($0)) }
+            .enumerated()
+            .map { Line(text: String($1), lineNumber: $0) }
     }
 }

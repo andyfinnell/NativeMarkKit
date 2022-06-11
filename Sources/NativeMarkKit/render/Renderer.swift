@@ -47,18 +47,18 @@ private extension Renderer {
     
     func render(_ element: Element, indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         switch element {
-        case let .paragraph(text):
-            renderParagraph(text, indent: indent, with: styleStack, into: result)
+        case let .paragraph(paragraph):
+            renderParagraph(paragraph.text, indent: indent, with: styleStack, into: result)
         case .thematicBreak:
             renderThematicBreak(with: styleStack, into: result)
-        case let .heading(level: level, text: text):
-            renderHeading(level: level, text: text, indent: indent, with: styleStack, into: result)
-        case let .blockQuote(elements):
-            renderBlockQuote(elements, indent: indent, with: styleStack, into: result)
-        case let .codeBlock(infoString: infoString, content: text):
-            renderCodeBlock(info: infoString, text: text, indent: indent, with: styleStack, into: result)
-        case let .list(info, items: items):
-            renderList(info, items: items, indent: indent, with: styleStack, into: result)
+        case let .heading(heading):
+            renderHeading(level: heading.level, text: heading.text, indent: indent, with: styleStack, into: result)
+        case let .blockQuote(blockQuote):
+            renderBlockQuote(blockQuote.blocks, indent: indent, with: styleStack, into: result)
+        case let .codeBlock(codeBlock):
+            renderCodeBlock(info: codeBlock.infoString, text: codeBlock.content, indent: indent, with: styleStack, into: result)
+        case let .list(list):
+            renderList(list.info, items: list.items, indent: indent, with: styleStack, into: result)
         }
     }
     
@@ -169,20 +169,20 @@ private extension Renderer {
 
     func render(_ text: InlineText, with styleStack: StyleStack, into result: NSMutableAttributedString) {
         switch text {
-        case let .code(text):
-            renderCode(text, with: styleStack, into: result)
+        case let .code(code):
+            renderCode(code.code.text, with: styleStack, into: result)
         case let .text(text):
-            renderText(text, with: styleStack, into: result)
+            renderText(text.text, with: styleStack, into: result)
         case .linebreak:
             renderLinebreak(with: styleStack, into: result)
-        case let .link(link, text: content):
-            renderLink(link, text: content, with: styleStack, into: result)
-        case let .image(link, alt: altText):
-            renderImage(link, altText: altText, with: styleStack, into: result)
+        case let .link(link):
+            renderLink(link.link, text: link.text, with: styleStack, into: result)
+        case let .image(image):
+            renderImage(image.link, altText: image.alt.text, with: styleStack, into: result)
         case let .emphasis(text):
-            renderEmphasis(text, with: styleStack, into: result)
+            renderEmphasis(text.text, with: styleStack, into: result)
         case let .strong(text):
-            renderStrong(text, with: styleStack, into: result)
+            renderStrong(text.text, with: styleStack, into: result)
         case .softbreak:
             renderSoftbreak(with: styleStack, into: result)
         }
@@ -216,7 +216,7 @@ private extension Renderer {
         }
         
         var attributes = [NSAttributedString.Key: Any]()
-        if let url = link.flatMap({ NSURL(string: $0.url) }) {
+        if let url = link?.url.flatMap({ NSURL(string: $0.text) }) {
             attributes[.nativeMarkLink] = url
         }
         if let title = link?.title {
@@ -241,7 +241,7 @@ private extension Renderer {
             styleStack.pop()
         }
 
-        let attachment = ImageTextAttachment(imageUrl: link?.url, delegate: styleStack.stylesheet)
+        let attachment = ImageTextAttachment(imageUrl: link?.url?.text, delegate: styleStack.stylesheet)
         renderTextAttachment(attachment, with: styleStack, into: result)
     }
 

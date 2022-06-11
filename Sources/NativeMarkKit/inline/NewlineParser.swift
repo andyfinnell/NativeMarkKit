@@ -10,23 +10,36 @@ struct NewlineParser {
             return input.noMatch(previous.map { [$0] } ?? [])
         }
         
+        let spaces = newline.remaining.parse(Self.spacesRegex)
+
         let linebreak: InlineText
         let updatedPrevious: InlineText?
-        if case let .text(previousText) = previous, previousText.hasSuffix(" ") {
-            let isHardbreak = previousText.hasSuffix("  ")
-            let updatedText = previousText.replacingOccurrences(of: Self.finalSpacesRegex, with: "")
-            updatedPrevious = .text(updatedText)
+        if case let .text(previousText) = previous, previousText.text.hasSuffix(" ") {
+            let isHardbreak = previousText.text.hasSuffix("  ")
+            let updatedText = previousText.text.replacingOccurrences(of: Self.finalSpacesRegex, with: "")
+            let deltaCount = previousText.text.count - updatedText.count
             
-            linebreak = isHardbreak ? .linebreak : .softbreak
+            let startOfPreviousSpaces = previousText.range?.end.retreatColumn(by: deltaCount)
+            let updatedPreviousRange = TextRange(start: previousText.range?.start,
+                                                 end: startOfPreviousSpaces)
+            updatedPrevious = .text(InlineString(text: updatedText, range: updatedPreviousRange))
+            
+            let range = TextRange(start: startOfPreviousSpaces?.advanceColumn(),
+                                  end: spaces.valueTextRange?.end)
+
+            linebreak = isHardbreak
+                ? .linebreak(InlineLinebreak(range: range))
+                : .softbreak(InlineSoftbreak(range: range))
         } else {
             updatedPrevious = previous
-            linebreak = .softbreak
+            let range = TextRange(start: newline, end: spaces)
+            linebreak = .softbreak(InlineSoftbreak(range: range))
         }
         
-        let spaces = newline.remaining.parse(Self.spacesRegex)
         
         return TextResult(remaining: spaces.remaining,
                           value: updatedPrevious.map { [$0, linebreak] } ?? [linebreak],
-                          valueLocation: newline.valueLocation)
+                          valueLocation: newline.valueLocation,
+                          valueTextRange: TextRange(start: newline, end: spaces))
     }
 }

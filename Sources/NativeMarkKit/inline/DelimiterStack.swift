@@ -185,13 +185,25 @@ private extension DelimiterStack {
             return closerIndex + 1
         }
         
+        var openerEndCursor = opener.endCursor
+        var closerStartCursor = closer.startCursor
+        
         let usedDelimitersCount = closer.count >= 2 && opener.count >= 2 ? 2 : 1
-        closer.count -= usedDelimitersCount
-        opener.count -= usedDelimitersCount
+        closer.usedCloserCount(usedDelimitersCount)
+        opener.usedOpenerCount(usedDelimitersCount)
+        
+        if usedDelimitersCount > 1 {
+            openerEndCursor = openerEndCursor.retreat()
+            closerStartCursor = closerStartCursor.advance()
+        }
+        let range = TextRange(start: openerEndCursor, end: closerStartCursor)
+
         let isEmphasis = usedDelimitersCount == 1
         
         let content = extract(opener, until: closer)
-        opener.after = [isEmphasis ? InlineText.emphasis(content) : .strong(content)]
+        opener.after = [isEmphasis
+                            ? InlineText.emphasis(InlineEmphasis(text: content, range: range))
+                            : .strong(InlineStrong(text: content, range: range))]
         
         if opener.count == 0 {
             demoteDelimiter(opener)
@@ -234,22 +246,35 @@ private extension DelimiterStack {
     func coalesceText(_ inlines: [InlineText]) -> [InlineText] {
         var output = [InlineText]()
         var currentText = ""
+        var currentTextRange: TextRange?
         
         for inline in inlines {
             if case let .text(text) = inline {
-                currentText += text
+                guard text.text.isNotEmpty else {
+                    // we don't want this modifying the text range
+                    continue
+                }
+                
+                currentText += text.text
+                if let currentRange = currentTextRange {
+                    currentTextRange = currentRange.union(with: text.range)
+                } else {
+                    currentTextRange = text.range
+                }
             } else {
                 if !currentText.isEmpty {
-                    output.append(.text(currentText))
+                    output.append(.text(InlineString(text: currentText, range: currentTextRange)))
                     currentText = ""
+                    currentTextRange = nil
                 }
                 output.append(inline)
             }
         }
         
         if !currentText.isEmpty {
-            output.append(.text(currentText))
+            output.append(.text(InlineString(text: currentText, range: currentTextRange)))
             currentText = ""
+            currentTextRange = nil
         }
 
         return output

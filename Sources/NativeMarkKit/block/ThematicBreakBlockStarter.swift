@@ -10,7 +10,10 @@ struct ThematicBreakBlockStarter: BlockStarter {
         }
 
         closer.close()
-        let heading = Block(kind: .thematicBreak, parser: ThematicBreakBlockParser())
+        let heading = Block(kind: .thematicBreak,
+                            parser: ThematicBreakBlockParser(),
+                            startPosition: line.startPosition)
+        heading.updateEndPosition(line.endPosition)
         let newContainer = container.addChild(heading)
         
         return LineResult(remainingLine: line.end, value: .leaf(newContainer))

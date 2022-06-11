@@ -3,7 +3,7 @@ import Foundation
 struct LinkDefinitionParser {
     private static let spacesAtEndOfLineRegex = try! NSRegularExpression(pattern: "^ *(?:\\n|$)", options: [])
     
-    func parse(input: TextCursor) -> TextResult<LinkDefinition?> {
+    func parse(input: TextCursor) -> TextResult<BlockLinkDefinition?> {
         let labelResult = LinkLabelParser().parse(input)
         guard labelResult.value.isNotEmpty else {
             return input.noMatch(nil)
@@ -38,16 +38,21 @@ struct LinkDefinitionParser {
             return input.noMatch(nil)
         }
         
-        let definition = LinkDefinition(label: labelResult.value,
-                                        url: destination,
-                                        title: titleResult.value)
+        let label = labelResult.toInlineString()
+        let title = titleResult.value.isEmpty ? nil : titleResult.toInlineString()
+        let url = InlineString(text: destination, range: destinationResult.valueTextRange)
+        let definition = BlockLinkDefinition(label: label,
+                                             url: url,
+                                             title: title,
+                                             range: TextRange(start: labelResult, end: isAtEndOfLineResult))
         guard definition.key.isNotEmpty else {
             return input.noMatch(nil)
         }
         
         return TextResult(remaining: isAtEndOfLineResult.remaining,
                           value: definition,
-                          valueLocation: input)
+                          valueLocation: input,
+                          valueTextRange: TextRange(start: labelResult, end: isAtEndOfLineResult))
     }
 }
 
@@ -73,7 +78,10 @@ private extension LinkDefinitionParser {
     
     func isAtEndOfLine(_ input: TextCursor) -> TextResult<Bool> {
         if input.isAtEnd {
-            return TextResult(remaining: input, value: true, valueLocation: input)
+            return TextResult(remaining: input,
+                              value: true,
+                              valueLocation: input,
+                              valueTextRange: TextRange(start: input, end: input))
         } else {
             return parseSpacesAtEndOfLine(input).map { $0.isNotEmpty }
         }

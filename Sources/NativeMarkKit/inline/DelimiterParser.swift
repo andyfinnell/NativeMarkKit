@@ -41,7 +41,8 @@ private extension DelimiterParser {
         
         return TextResult(remaining: current.remaining,
                           value: count,
-                          valueLocation: input)
+                          valueLocation: input,
+                          valueTextRange: TextRange(start: input, end: current.remaining.retreat()))
     }
     
     func previousCharacter(_ count: TextResult<Int>) -> (isWhitespace: Bool, isPunctuation: Bool) {
