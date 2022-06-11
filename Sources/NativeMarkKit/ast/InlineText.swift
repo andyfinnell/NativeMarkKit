@@ -8,6 +8,7 @@ indirect enum InlineText: Equatable {
     case image(InlineImage)
     case emphasis(InlineEmphasis)
     case strong(InlineStrong)
+    case strikethrough(InlineStrikethrough)
     case softbreak(InlineSoftbreak)
 }
 
@@ -21,6 +22,7 @@ extension InlineText {
         case let .image(image): return image.range
         case let .emphasis(emphasis): return emphasis.range
         case let .strong(strong): return strong.range
+        case let .strikethrough(strikethrough): return strikethrough.range
         case let .softbreak(softbreak): return softbreak.range
         }
     }
@@ -36,6 +38,7 @@ extension InlineText: CustomStringConvertible {
         case let .image(image): return image.description
         case let .emphasis(emphasis): return emphasis.description
         case let .strong(strong): return strong.description
+        case let .strikethrough(strikethrough): return strikethrough.description
         case let .softbreak(softbreak): return softbreak.description
         }
     }
@@ -103,6 +106,15 @@ struct InlineStrong: Equatable {
 
 extension InlineStrong: CustomStringConvertible {
     var description: String { "strong { \(text); \(String(optional: range)) }" }
+}
+
+struct InlineStrikethrough: Equatable {
+    let text: [InlineText]
+    let range: TextRange?
+}
+
+extension InlineStrikethrough: CustomStringConvertible {
+    var description: String { "strikethrough { \(text); \(String(optional: range)) }" }
 }
 
 struct InlineSoftbreak: Equatable {

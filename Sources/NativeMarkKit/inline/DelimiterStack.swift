@@ -105,6 +105,8 @@ final class DelimiterStack {
             switch closer.character {
             case "*", "_":
                 currentIndex = processStarAndUnderline(for: closer, at: currentIndex, opener: opener)
+            case "~":
+                currentIndex = processTilde(for: closer, at: currentIndex, opener: opener)
             case "''":
                 currentIndex = processSingleQuote(for: closer, at: currentIndex, opener: opener)
             case "\"":
@@ -219,7 +221,43 @@ private extension DelimiterStack {
         
         return updatedCloserIndex
     }
-    
+
+    func processTilde(for closer: Delimiter, at closerIndex: Int, opener: Delimiter?) -> Int {
+        guard let opener = opener else {
+            return closerIndex + 1
+        }
+        
+        var openerEndCursor = opener.endCursor
+        var closerStartCursor = closer.startCursor
+        
+        let usedDelimitersCount = closer.count >= 2 && opener.count >= 2 ? 2 : 1
+        closer.usedCloserCount(usedDelimitersCount)
+        opener.usedOpenerCount(usedDelimitersCount)
+        
+        if usedDelimitersCount > 1 {
+            openerEndCursor = openerEndCursor.retreat()
+            closerStartCursor = closerStartCursor.advance()
+        }
+        let range = TextRange(start: openerEndCursor, end: closerStartCursor)
+        
+        let content = extract(opener, until: closer)
+        opener.after = [InlineText.strikethrough(InlineStrikethrough(text: content, range: range))]
+        
+        if opener.count == 0 {
+            demoteDelimiter(opener)
+        }
+        
+        guard let updatedCloserIndex = delimiters.firstIndex(where: { $0 === closer }) else {
+            return 0
+        }
+        
+        if closer.count == 0 {
+            demoteDelimiter(closer)
+        }
+        
+        return updatedCloserIndex
+    }
+
     func extract(_ start: Delimiter, until end: Delimiter) -> [InlineText] {
         guard let startIndex = delimiters.firstIndex(where: { $0 === start }),
             let endIndex = delimiters.firstIndex(where: { $0 === end }) else {

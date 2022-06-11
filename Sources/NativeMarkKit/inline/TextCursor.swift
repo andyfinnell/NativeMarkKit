@@ -42,7 +42,12 @@ struct TextCursor: Equatable {
     }
     
     var isPunctuation: Bool {
-        character?.isPunctuation ?? false
+        guard let ch = character else {
+            return false
+        }
+        // We're treating "~" as a punctuation so if they surround quotes, they
+        //  still become smart quotes
+        return ch.isPunctuation || ch == "~"
     }
     
     func advance() -> TextCursor {

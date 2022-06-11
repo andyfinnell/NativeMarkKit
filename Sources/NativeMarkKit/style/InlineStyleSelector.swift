@@ -6,4 +6,5 @@ public enum InlineStyleSelector: Hashable {
     case image
     case emphasis
     case strong
+    case strikethrough
 }

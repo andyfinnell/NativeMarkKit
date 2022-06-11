@@ -9,7 +9,8 @@ struct DelimiterParser {
     
     func parse(_ input: TextCursor) -> TextResult<Delimiter?> {
         let countResult = count(input)
-        guard countResult.value > 0 else {
+        let hasCorrectCount = (delimiter == "~" && countResult.value == 2) || (delimiter != "~" && countResult.value > 0)
+        guard hasCorrectCount else {
             return input.noMatch(nil)
         }
         

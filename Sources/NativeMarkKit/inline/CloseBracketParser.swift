@@ -120,6 +120,8 @@ private extension CloseBracketParser {
                 return sum + plainText(t.text)
             case let .strong(t):
                 return sum + plainText(t.text)
+            case let .strikethrough(t):
+                return sum + plainText(t.text)
             }
         }
     }

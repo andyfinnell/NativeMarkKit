@@ -7,7 +7,7 @@ import AppKit
 import UIKit
 #endif
 
-#if false // TODO: have to turn these off because GitHub actions are stuck on Catalina
+#if true // TODO: have to turn these off because GitHub actions are stuck on Catalina
 final class BasicRenderTest: XCTestCase {
     override func setUp() {
         super.setUp()
@@ -35,7 +35,15 @@ final class BasicRenderTest: XCTestCase {
                                       width: 320)
         XCTAssert(testCase.isPassing(for: self))
     }
-    
+
+    func testHelloUniverse() {
+        let testCase = RenderTestCase(name: "HelloUniverse",
+                                      nativeMark: "**Hello**, ~~world~~_universe_!",
+                                      styleSheet: .default,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
     func testHelloWorldWithCustomFont() {
         let style = StyleSheet.default.duplicate().mutate(
                 block: [
