@@ -7,7 +7,7 @@ import AppKit
 import UIKit
 #endif
 
-#if true // TODO: have to turn these off because GitHub actions are stuck on Catalina
+#if false // TODO: have to turn these off because GitHub actions are stuck on Catalina
 final class NativeMarkStringDrawTest: XCTestCase {
     override func setUp() {
         super.setUp()
