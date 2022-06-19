@@ -129,25 +129,36 @@ private extension Renderer {
         }
     }
     
-    func renderListItemMarker(_ index: Int, info: ListInfo, indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        switch info.kind {
-        case .bulleted:
-            let format = styleStack.attributes()[.unorderedListMarkerFormat] as? UnorderedListMarkerFormatValue ?? UnorderedListMarkerFormatValue(format: .bullet)
-            let baseString = format.render()
+    func renderListItemMarker(_ index: Int, item: ListItem, info: ListInfo, indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
+        if case .paragraph(let p) = item.elements.first, let taskListItemMark = p.taskListItemMark {
+            let isChecked = taskListItemMark.contentText != " "
+            let attachment = TaskItemTextAttachment(isChecked: isChecked)
             let startLocation = result.length
-            result.append(baseString)
+            result.append(NSAttributedString(attachment: attachment))
             result.addAttributes(styleStack.attributes(),
                                  range: NSRange(location: startLocation, length: result.length - startLocation))
-        case let .ordered(start: start):
-            let format = styleStack.attributes()[.orderedListMarkerFormat] as? OrderedListMarkerFormatValue
+
+        } else {
+            switch info.kind {
+            case .bulleted:
+                let format = styleStack.attributes()[.unorderedListMarkerFormat] as? UnorderedListMarkerFormatValue ?? UnorderedListMarkerFormatValue(format: .bullet)
+                let baseString = format.render()
+                let startLocation = result.length
+                result.append(baseString)
+                result.addAttributes(styleStack.attributes(),
+                                     range: NSRange(location: startLocation, length: result.length - startLocation))
+            case let .ordered(start: start):
+                let format = styleStack.attributes()[.orderedListMarkerFormat] as? OrderedListMarkerFormatValue
                 ?? OrderedListMarkerFormatValue(format: .arabicNumeral, prefix: "", suffix: ".")
-            let rawText = format.render(start + index)
-            result.append(NSAttributedString(string: rawText, attributes: styleStack.attributes()))
+                let rawText = format.render(start + index)
+                result.append(NSAttributedString(string: rawText, attributes: styleStack.attributes()))
+                
+            }
         }
     }
     
     func render(_ item: ListItem, info: ListInfo, index: Int, indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        renderListItemMarker(index, info: info, indent: indent, with: styleStack, into: result)
+        renderListItemMarker(index, item: item, info: info, indent: indent, with: styleStack, into: result)
                 
         styleStack.push(.item, rawAttributes: [.leadingMarginIndent: indent + 1])
         defer {

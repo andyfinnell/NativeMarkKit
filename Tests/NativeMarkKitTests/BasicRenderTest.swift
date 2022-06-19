@@ -44,6 +44,21 @@ final class BasicRenderTest: XCTestCase {
         XCTAssert(testCase.isPassing(for: self))
     }
 
+    func testSimpleTaskList() {
+        let style = StyleSheet.default.duplicate().mutate(
+                block: [
+                    .document: [
+                        .textStyle(.body),
+                    ],
+                ])
+
+        let testCase = RenderTestCase(name: "SimpleTaskList",
+                                      nativeMark: "- [ ] absolutely\n- [x] bananas\n- [X] cream\n",
+                                      styleSheet: style,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
     func testHelloWorldWithCustomFont() {
         let style = StyleSheet.default.duplicate().mutate(
                 block: [
