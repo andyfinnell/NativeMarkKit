@@ -77,6 +77,14 @@ public extension NativeColor {
     static var adaptableImagePlaceholderColor: NativeColor {
         makeAdaptiveColor(light: .imagePlaceholder, dark: .imagePlaceholderDark)
     }
+    
+    static var adaptableCheckmarkDisabledColor: NativeColor {
+        makeAdaptiveColor(light: .checkmarkDisabled, dark: .checkmarkDisabledDark)
+    }
+
+    static var adaptableCheckmarkDisabledBorderColor: NativeColor {
+        makeAdaptiveColor(light: .checkmarkDisabledBorder, dark: .checkmarkDisabledBorderDark)
+    }
 }
 
 private extension NativeColor {
@@ -86,6 +94,10 @@ private extension NativeColor {
     static let codeBackgroundDark = NativeColor(red: 0.05, green: 0.05, blue: 0.05, alpha: 1.0)
     static let imagePlaceholder = NativeColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
     static let imagePlaceholderDark = NativeColor(red: 0.05, green: 0.05, blue: 0.05, alpha: 1.0)
+    static let checkmarkDisabledBorder = NativeColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)
+    static let checkmarkDisabledBorderDark = NativeColor(red: 0.25, green: 0.25, blue: 0.25, alpha: 1.0)
+    static let checkmarkDisabled = NativeColor(red: 0.7, green: 0.7, blue: 0.7, alpha: 1.0)
+    static let checkmarkDisabledDark = NativeColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1.0)
 
     #if canImport(AppKit)
     static func makeAdaptiveColor(_ name: String = #function, light: NativeColor, dark: NativeColor) -> NativeColor {

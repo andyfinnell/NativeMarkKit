@@ -1,20 +1,31 @@
 import Foundation
 
 struct InlineBlockParser {
-    func parse(_ block: Block, using linkDefs: [LinkLabel: BlockLinkDefinition]) -> [InlineText] {
-        let delimiterStack = DelimiterStack()
-        let trimmedLines = block.textLines
-            .enumerated()
-            .map { i, line -> Line in
-                var newLine = line
-                if i == 0 {
+    struct Result {
+        let taskListItemMark: TaskListItemMark?
+        let text: [InlineText]
+    }
+    
+    func parse(_ block: Block, using linkDefs: [LinkLabel: BlockLinkDefinition], canHaveTaskItem: Bool) -> Result {
+        var trimmedLines = [Line]()
+        var taskListItemMark: TaskListItemMark?
+        for (i, line) in block.textLines.enumerated() {
+            var newLine = line
+            if i == 0 {
+                newLine = newLine.trimStartWhitespace()
+                if let result = parseTaskListItemMark(newLine, canHaveTaskItem: canHaveTaskItem) {
+                    taskListItemMark = result.value
+                    newLine = result.remainingLine
                     newLine = newLine.trimStartWhitespace()
                 }
-                if i == (block.textLines.count - 1) {
-                    newLine = newLine.trimEndWhitespace()
-                }
-                return newLine
             }
+            if i == (block.textLines.count - 1) {
+                newLine = newLine.trimEndWhitespace()
+            }
+            trimmedLines.append(newLine)
+        }
+        
+        let delimiterStack = DelimiterStack()
         var current = parseInline(TextCursor(lines: trimmedLines), into: delimiterStack, using: linkDefs)
 
         while current.value {
@@ -23,11 +34,41 @@ struct InlineBlockParser {
         
         delimiterStack.processEmphasis()
         
-        return delimiterStack.inlineText
+        return Result(taskListItemMark: taskListItemMark, text: delimiterStack.inlineText)
     }
 }
 
 private extension InlineBlockParser {
+    static let startTaskRegex = try! NSRegularExpression(pattern: "^\\[([\\sxX])\\]", options: [])
+
+    func parseTaskListItemMark(_ line: Line, canHaveTaskItem: Bool) -> LineResult<TaskListItemMark>? {
+        guard canHaveTaskItem else {
+            return nil
+        }
+        
+        guard let match = line.firstMatch(Self.startTaskRegex) else {
+            return nil
+        }
+        let remainingLine = line.skip(match)
+        
+        // Has to be at least one whitespace character after
+        guard remainingLine.text.first?.isWhitespace == true else {
+            return nil
+        }
+        
+        let outerText = line.matchedText(match, at: 0)
+        let innerText = line.matchedText(match, at: 1)
+        let textRange = TextRange(start: line.startPosition,
+                                  end: remainingLine.startPosition.retreatColumn(by: 1))
+            
+        let taskItem = TaskListItemMark(text: String(outerText),
+                                        contentText: String(innerText),
+                                        range: textRange)
+        
+        return LineResult(remainingLine: remainingLine,
+                          value: taskItem)
+    }
+    
     func parseInline(_ input: TextCursor, into delimiterStack: DelimiterStack, using linkDefs: [LinkLabel: BlockLinkDefinition]) -> TextResult<Bool> {
         guard let char = input.character else {
             return input.noMatch(false)

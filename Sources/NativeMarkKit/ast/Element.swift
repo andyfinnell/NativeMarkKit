@@ -23,12 +23,27 @@ extension Element: CustomStringConvertible {
 }
 
 struct Paragraph: Equatable {
+    let taskListItemMark: TaskListItemMark?
     let text: [InlineText]
     let range: TextRange?
+    
+    init(taskListItemMark: TaskListItemMark? = nil,
+         text: [InlineText],
+         range: TextRange?) {
+        self.taskListItemMark = taskListItemMark
+        self.text = text
+        self.range = range
+    }
 }
 
 extension Paragraph: CustomStringConvertible {
-    var description: String { "paragraph { \(text); \(String(optional: range)) }" }
+    var description: String {
+        var taskItem = ""
+        if let mark = taskListItemMark {
+            taskItem = "\(mark); "
+        }
+        return "paragraph { \(taskItem)\(text); \(String(optional: range)) }"
+    }
 }
 
 struct ThematicBreak: Equatable {
