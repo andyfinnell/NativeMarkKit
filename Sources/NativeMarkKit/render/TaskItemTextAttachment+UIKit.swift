@@ -43,8 +43,8 @@ final class TaskItemTextAttachment: NSTextAttachment {
     }
 
     override func attachmentBounds(for textContainer: NSTextContainer?, proposedLineFragment lineFrag: CGRect, glyphPosition position: CGPoint, characterIndex charIndex: Int) -> CGRect {
-        let yOffset = CGFloat(4) // (lineFrag.height - 16.0) / 2.0
-        return CGRect(x: 0, y: -yOffset, width: 16, height: 16)
+        let baselineToBottom = CGFloat(-4)
+        return CGRect(x: 0, y: baselineToBottom, width: 16, height: 16)
     }
 
 }

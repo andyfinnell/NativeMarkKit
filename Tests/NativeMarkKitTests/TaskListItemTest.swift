@@ -120,8 +120,4 @@ final class TaskListItemTest: XCTestCase {
                         ]))
                        ]))
     }
-
-    // verify only looks in first paragraph
-    // verify can interleave with non-task list items
-    // verify works for numbered list items
 }
