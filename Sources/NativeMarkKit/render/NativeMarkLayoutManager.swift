@@ -74,6 +74,10 @@ public final class NativeMarkLayoutManager: NSObject {
         layoutManager.glyphRange(for: container.container)
     }
     
+    func characterRange(forGlyphRange glyphRange: NSRange) -> NSRange {
+        layoutManager.characterRange(forGlyphRange: glyphRange, actualGlyphRange: nil)
+    }
+    
     public func textContainerChangedGeometry(_ textContainer: NativeMarkTextContainer) {
         layoutManager.textContainerChangedGeometry(textContainer.container)
     }
@@ -82,16 +86,20 @@ public final class NativeMarkLayoutManager: NSObject {
         layoutManager.usedRect(for: container.container)
     }
     
-    public func accessibilityFrame(for characterRange: NSRange, in container: NativeMarkTextContainer) -> CGRect {
+    public func accessibilityFrame(for characterRange: NSRange) -> CGRect {
         let glyphRange = layoutManager.glyphRange(forCharacterRange: characterRange, actualCharacterRange: nil)
-        var rangeBounds = layoutManager.boundingRect(forGlyphRange: glyphRange, in: container.container)
+        guard let container = layoutManager.textContainer(forGlyphAt: glyphRange.location, effectiveRange: nil) as? TextContainer else {
+            return .zero
+        }
+
+        var rangeBounds = layoutManager.boundingRect(forGlyphRange: glyphRange, in: container)
         layoutManager.enumerateEnclosingRects(forGlyphRange: glyphRange,
                                               withinSelectedGlyphRange: NSRange(location: NSNotFound, length: 0),
-                                              in: container.container) { rect, stop in
+                                              in: container) { rect, stop in
             rangeBounds = rect
             stop.pointee = true
         }
-        return rangeBounds
+        return rangeBounds + container.origin
     }
     
     public func characterIndex(for location: CGPoint, in container: NativeMarkTextContainer, fractionOfDistanceBetweenInsertionPoints partialFraction: UnsafeMutablePointer<CGFloat>?) -> Int {
@@ -124,13 +132,6 @@ extension NativeMarkLayoutManager {
                 delegate?.layoutManager(self, invalidateFrame: bounds, inContainer: wrappedContainer)
             }
         }
-    }
-        
-    func horizontalLocation(for characterIndex: Int) -> CGFloat {
-        let glyphIndex = layoutManager.glyphIndexForCharacter(at: characterIndex)
-        let lineFragmentRect = layoutManager.lineFragmentRect(forGlyphAt: glyphIndex, effectiveRange: nil)
-        let locationInsideLineFragmentRect = layoutManager.location(forGlyphAt: glyphIndex)
-        return lineFragmentRect.minX + locationInsideLineFragmentRect.x
     }
 }
 
@@ -183,8 +184,51 @@ extension NativeMarkLayoutManager: NSLayoutManagerDelegate {
         let ch = storage?.character(at: charIndex)
         if ch == 13 /* \r */ {
             return .lineBreak
+        } else if action.contains(.containerBreak),
+                  let containerBreakValue = storage?.attribute(.containerBreak, at: charIndex, effectiveRange: nil) as? ContainerBreakValue {
+            return containerBreakValue.shouldContainerBreak ? .containerBreak : .zeroAdvancement
+        } else if action.contains(.lineBreak) {
+            // If we're about to actually break to a new container, don't also do a line break
+            let isAboutToContainerBreak = areAnyOfNextCharactersContainerBreaks(startingAt: charIndex + 1)
+            return isAboutToContainerBreak ? .zeroAdvancement : action
         } else {
             return action
+        }
+    }
+}
+
+private extension NativeMarkLayoutManager {
+    func areAnyOfNextCharactersContainerBreaks(startingAt charIndex: Int) -> Bool {
+        var current = charIndex
+        var result = isContainerBreak(at: current)
+        while result != .notContainerBreak {
+            switch result {
+            case .notContainerBreak:
+                return false // stop entire process
+            case .isContainerBreakButDoesNotBreak:
+                break // go to the next character
+            case .isContainerBreak:
+                return true // we have one, so stop process
+            }
+            current += 1
+            result = isContainerBreak(at: current)
+        }
+        
+        return false
+    }
+    
+    enum Break {
+        case notContainerBreak
+        case isContainerBreakButDoesNotBreak
+        case isContainerBreak
+    }
+    
+    func isContainerBreak(at charIndex: Int) -> Break {
+        let length = storage?.length ?? 0
+        if charIndex < length, let containerBreakValue = storage?.attribute(.containerBreak, at: charIndex, effectiveRange: nil) as? ContainerBreakValue {
+            return containerBreakValue.shouldContainerBreak ? .isContainerBreak : .isContainerBreakButDoesNotBreak
+        } else {
+            return .notContainerBreak
         }
     }
 }

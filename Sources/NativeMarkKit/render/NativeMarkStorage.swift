@@ -74,6 +74,17 @@ extension NativeMarkStorage {
         }
         return storage.attribute(attributeKey, at: characterIndex, effectiveRange: effectiveRange)
     }
+    
+    func containerBreaks() -> [ContainerBreakValue] {
+        var breaks = [ContainerBreakValue]()
+        storage.enumerateAttribute(.containerBreak, in: NSRange(location: 0, length: storage.length)) { attributeValue, _, _ in
+            guard let breakValue = attributeValue as? ContainerBreakValue else {
+                return
+            }
+            breaks.append(breakValue)
+        }
+        return breaks
+    }
 }
 
 private extension NativeMarkStorage {

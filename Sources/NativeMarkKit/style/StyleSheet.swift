@@ -108,18 +108,17 @@ public extension StyleSheet {
                 .textColor(.adaptableBlockQuoteTextColor),
                 .paragraphSpacingBefore(0.5.em),
                 .paragraphSpacingAfter(0.5.em),
-                .tailIndent(-1.em),
-                .backgroundBorder(width: 8, color: .adaptableBlockQuoteMarginColor, sides: .left)
+                .blockQuote()
             ],
             .list(isTight: true): [
-                .firstLineHeadIndent(0.5.em),
+                .list(paragraphSpacingBefore: 0.0.em, paragraphSpacingAfter: 0.0.em),
                 .orderedListMarker(.lowercaseRoman),
                 .unorderedListMarker(.check),
                 .paragraphSpacingBefore(0.0.em),
                 .paragraphSpacingAfter(0.0.em),
             ],
             .list(isTight: false): [
-                .firstLineHeadIndent(0.5.em),
+                .list(),
                 .orderedListMarker(.lowercaseRoman),
                 .unorderedListMarker(.check),
                 .paragraphSpacingBefore(0.5.em),

@@ -12,12 +12,12 @@ struct Renderer {
     
     func render(_ document: Document, with stylesheet: StyleSheet) -> NSAttributedString {        
         let result = NSMutableAttributedString()
-        let styleStack = StyleStack(stylesheet: stylesheet)
-        styleStack.push(.document)
+        let state = State(stylesheet: stylesheet)
+        state.push(.document)
         defer {
-            styleStack.pop()
+            state.pop()
         }
-        render(document.elements, indent: 0, with: styleStack, into: result)
+        render(document.elements, indent: 0, with: state, into: result)
         
         if result.string.hasSuffix("\n") {
             result.deleteCharacters(in: NSRange(location: result.length - 1, length: 1))
@@ -30,6 +30,92 @@ struct Renderer {
 }
 
 private extension Renderer {
+
+    final class State {
+        var path = [ContainerKind]()
+        var hasRenderedFirstContainerBreak = false
+        let styleStack: StyleStack
+        
+        init(stylesheet: StyleSheet) {
+            styleStack = StyleStack(stylesheet: stylesheet)
+        }
+        
+        func push(_ blockSelector: BlockStyleSelector, rawAttributes: [NSAttributedString.Key: Any] = [:]) {
+            styleStack.push(blockSelector, rawAttributes: rawAttributes)
+        }
+        
+        func push(_ inlineSelector: InlineStyleSelector, rawAttributes: [NSAttributedString.Key: Any] = [:]) {
+            styleStack.push(inlineSelector, rawAttributes: rawAttributes)
+        }
+        
+        func pop() {
+            styleStack.pop()
+        }
+        
+        func attributes() -> [NSAttributedString.Key: Any] {
+            styleStack.attributes()
+        }
+    }
+    
+    func enterContainer(_ containerKind: ContainerKind, with state: State, in result: NSMutableAttributedString) {
+        switch containerKind {
+        case .leaf:
+            // Leafs are rendered text content. If we already have one open, keep
+            //  using it. Only create a new one if we don't already have one.
+            if state.path.last != .leaf {
+                state.path.append(.leaf)
+                renderContainerBreak(true, with: state, in: result)
+            }
+            
+        case .listItemMarker:
+            // An item market needs its own container, so special case it
+            if state.path.last == .leaf {
+                state.path.removeLast()
+            }
+            state.path.append(containerKind)
+            renderContainerBreak(true, with: state, in: result)
+
+        case .blockQuote,
+                .list,
+                .listItem,
+                .listItemContent:
+            // These will create new layouts, but don't have any direct content
+            //  themselves. Therefore, they don't create container breaks.
+            if state.path.last == .leaf {
+                state.path.removeLast()
+            }
+            state.path.append(containerKind)
+            renderContainerBreak(false, with: state, in: result)
+        }
+    }
+
+    func exitContainer(_ containerKind: ContainerKind, with state: State, in result: NSMutableAttributedString) {
+        switch containerKind {
+        case .leaf:
+            break // nop, since we want to coalesce these
+        case .blockQuote,
+                .list,
+                .listItem,
+                .listItemMarker,
+                .listItemContent:
+            if let index = state.path.lastIndex(of: containerKind) {
+                state.path.removeSubrange(index..<state.path.endIndex)
+            }
+        }
+    }
+
+    func renderContainerBreak(_ needsRealContainerBreak: Bool, with state: State, in result: NSMutableAttributedString) {
+        let pageBreakString = String(UnicodeScalar(12))
+        let shouldContainerBreak = state.hasRenderedFirstContainerBreak && needsRealContainerBreak
+        if needsRealContainerBreak {
+            state.hasRenderedFirstContainerBreak = true
+        }
+        let attributeValue = ContainerBreakValue(path: state.path, shouldContainerBreak: shouldContainerBreak)
+        var attributes = state.attributes()
+        attributes[.containerBreak] = attributeValue
+        result.append(NSAttributedString(string: pageBreakString, attributes: attributes))
+    }
+    
     func fixInlineBackgroundSpacing(in result: NSMutableAttributedString) {
         result.enumerateAttribute(.inlineBackground, in: NSRange(location: 0, length: result.length), options: .reverse) { value, characterRange, _ in
             guard let background = value as? BackgroundValue else { return }
@@ -39,193 +125,227 @@ private extension Renderer {
         }
     }
     
-    func render(_ elements: [Element], indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
+    func render(_ elements: [Element], indent: Int, with state: State, into result: NSMutableAttributedString) {
         for element in elements {
-            render(element, indent: indent, with: styleStack, into: result)
+            render(element, indent: indent, with: state, into: result)
         }
     }
     
-    func render(_ element: Element, indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
+    func render(_ element: Element, indent: Int, with state: State, into result: NSMutableAttributedString) {
         switch element {
         case let .paragraph(paragraph):
-            renderParagraph(paragraph.text, indent: indent, with: styleStack, into: result)
+            renderParagraph(paragraph.text, indent: indent, with: state, into: result)
         case .thematicBreak:
-            renderThematicBreak(with: styleStack, into: result)
+            renderThematicBreak(with: state, into: result)
         case let .heading(heading):
-            renderHeading(level: heading.level, text: heading.text, indent: indent, with: styleStack, into: result)
+            renderHeading(level: heading.level, text: heading.text, indent: indent, with: state, into: result)
         case let .blockQuote(blockQuote):
-            renderBlockQuote(blockQuote.blocks, indent: indent, with: styleStack, into: result)
+            renderBlockQuote(blockQuote.blocks, indent: indent, with: state, into: result)
         case let .codeBlock(codeBlock):
-            renderCodeBlock(info: codeBlock.infoString, text: codeBlock.content, indent: indent, with: styleStack, into: result)
+            renderCodeBlock(info: codeBlock.infoString, text: codeBlock.content, indent: indent, with: state, into: result)
         case let .list(list):
-            renderList(list.info, items: list.items, indent: indent, with: styleStack, into: result)
+            renderList(list.info, items: list.items, indent: indent, with: state, into: result)
         }
     }
     
-    func renderParagraph(_ text: [InlineText], indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        styleStack.push(.paragraph)
+    func renderParagraph(_ text: [InlineText], indent: Int, with state: State, into result: NSMutableAttributedString) {
+        state.push(.paragraph)
         defer {
-            styleStack.pop()
+            state.pop()
         }
         
-        render(text, with: styleStack, into: result)
-        renderNewline(with: styleStack, into: result)
+        enterContainer(.leaf, with: state, in: result)
+        
+        render(text, with: state, into: result)
+        renderNewline(with: state, into: result)
+        
+        exitContainer(.leaf, with: state, in: result)
     }
     
-    func renderThematicBreak(with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        styleStack.push(.thematicBreak)
+    func renderThematicBreak(with state: State, into result: NSMutableAttributedString) {
+        state.push(.thematicBreak)
         defer {
-            styleStack.pop()
+            state.pop()
         }
         
-        let attributes = styleStack.attributes()
+        let attributes = state.attributes()
         let thickness = attributes[.thematicBreakThickness] as? CGFloat ?? 1.0
         let color = attributes[.thematicBreakColor] as? NativeColor ?? .adaptableSeparatorColor
         let attachment = ThematicBreakAttachment(thickness: thickness, color: color)
         
-        renderTextAttachment(attachment, with: styleStack, into: result)
-        renderNewline(with: styleStack, into: result)
+        enterContainer(.leaf, with: state, in: result)
+
+        renderTextAttachment(attachment, with: state, into: result)
+        renderNewline(with: state, into: result)
+        
+        exitContainer(.leaf, with: state, in: result)
     }
     
-    func renderHeading(level: Int, text: [InlineText], indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        styleStack.push(.heading(level: level))
+    func renderHeading(level: Int, text: [InlineText], indent: Int, with state: State, into result: NSMutableAttributedString) {
+        state.push(.heading(level: level))
         defer {
-            styleStack.pop()
+            state.pop()
         }
 
-        render(text, with: styleStack, into: result)
-        renderNewline(with: styleStack, into: result)
+        enterContainer(.leaf, with: state, in: result)
+
+        render(text, with: state, into: result)
+        renderNewline(with: state, into: result)
+        
+        exitContainer(.leaf, with: state, in: result)
     }
         
-    func renderBlockQuote(_ elements: [Element], indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        styleStack.push(.blockQuote, rawAttributes: [.leadingMarginIndent: indent + 1])
+    func renderBlockQuote(_ elements: [Element], indent: Int, with state: State, into result: NSMutableAttributedString) {
+        state.push(.blockQuote)
         defer {
-            styleStack.pop()
+            state.pop()
         }
         
-        result.append(NSAttributedString(string: "\t", attributes: styleStack.attributes()))
+        let blockQuoteValue = state.attributes()[.blockQuote] as? BlockQuoteValue ?? BlockQuoteValue()
 
-        render(elements, indent: indent + 1, with: styleStack, into: result)
+        enterContainer(.blockQuote(blockQuoteValue), with: state, in: result)
+
+        render(elements, indent: indent + 1, with: state, into: result)
+        
+        exitContainer(.blockQuote(blockQuoteValue), with: state, in: result)
     }
 
-    func renderCodeBlock(info: String, text: String, indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
+    func renderCodeBlock(info: String, text: String, indent: Int, with state: State, into result: NSMutableAttributedString) {
         // TODO: delegate out so let a more sophisticated renderer do syntax highlighting
-        styleStack.push(.codeBlock)
+        state.push(.codeBlock)
         defer {
-            styleStack.pop()
+            state.pop()
         }
 
-        result.append(NSAttributedString(string: text, attributes: styleStack.attributes()))
+        enterContainer(.leaf, with: state, in: result)
+
+        result.append(NSAttributedString(string: text, attributes: state.attributes()))
+        
+        exitContainer(.leaf, with: state, in: result)
     }
     
-    func renderList(_ info: ListInfo, items: [ListItem], indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        styleStack.push(.list(isTight: info.isTight))
+    func renderList(_ info: ListInfo, items: [ListItem], indent: Int, with state: State, into result: NSMutableAttributedString) {
+        state.push(.list(isTight: info.isTight))
         defer {
-            styleStack.pop()
+            state.pop()
         }
         
+        let listValue = state.attributes()[.list] as? ListValue ?? ListValue()
+
+        enterContainer(.list(listValue), with: state, in: result)
+
         for (index, item) in items.enumerated() {
-            render(item, info: info, index: index, indent: indent, with: styleStack, into: result)
+            render(item, info: info, index: index, indent: indent, with: state, into: result)
         }
+        
+        exitContainer(.list(listValue), with: state, in: result)
     }
     
-    func renderListItemMarker(_ index: Int, item: ListItem, info: ListInfo, indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
+    func renderListItemMarker(_ index: Int, item: ListItem, info: ListInfo, indent: Int, with state: State, into result: NSMutableAttributedString) {
+        enterContainer(.listItemMarker, with: state, in: result)
+        
         if case .paragraph(let p) = item.elements.first, let taskListItemMark = p.taskListItemMark {
             let isChecked = taskListItemMark.contentText != " "
             let attachment = TaskItemTextAttachment(isChecked: isChecked)
             let startLocation = result.length
             result.append(NSAttributedString(attachment: attachment))
-            result.addAttributes(styleStack.attributes(),
+            result.addAttributes(state.attributes(),
                                  range: NSRange(location: startLocation, length: result.length - startLocation))
 
         } else {
             switch info.kind {
             case .bulleted:
-                let format = styleStack.attributes()[.unorderedListMarkerFormat] as? UnorderedListMarkerFormatValue ?? UnorderedListMarkerFormatValue(format: .bullet)
+                let format = state.attributes()[.unorderedListMarkerFormat] as? UnorderedListMarkerFormatValue ?? UnorderedListMarkerFormatValue(format: .bullet)
                 let baseString = format.render()
                 let startLocation = result.length
                 result.append(baseString)
-                result.addAttributes(styleStack.attributes(),
+                result.addAttributes(state.attributes(),
                                      range: NSRange(location: startLocation, length: result.length - startLocation))
             case let .ordered(start: start):
-                let format = styleStack.attributes()[.orderedListMarkerFormat] as? OrderedListMarkerFormatValue
+                let format = state.attributes()[.orderedListMarkerFormat] as? OrderedListMarkerFormatValue
                 ?? OrderedListMarkerFormatValue(format: .arabicNumeral, prefix: "", suffix: ".")
                 let rawText = format.render(start + index)
-                result.append(NSAttributedString(string: rawText, attributes: styleStack.attributes()))
+                result.append(NSAttributedString(string: rawText, attributes: state.attributes()))
                 
             }
         }
+        
+        exitContainer(.listItemMarker, with: state, in: result)
     }
     
-    func render(_ item: ListItem, info: ListInfo, index: Int, indent: Int, with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        renderListItemMarker(index, item: item, info: info, indent: indent, with: styleStack, into: result)
+    func render(_ item: ListItem, info: ListInfo, index: Int, indent: Int, with state: State, into result: NSMutableAttributedString) {
+        enterContainer(.listItem, with: state, in: result)
+        
+        renderListItemMarker(index, item: item, info: info, indent: indent, with: state, into: result)
                 
-        styleStack.push(.item, rawAttributes: [.leadingMarginIndent: indent + 1])
+        state.push(.item)
         defer {
-            styleStack.pop()
+            state.pop()
         }
         
-        result.append(NSAttributedString(string: "\t", attributes: styleStack.attributes()))
+        enterContainer(.listItemContent, with: state, in: result)
         
         for element in item.elements {
-            render(element, indent: indent + 1, with: styleStack, into: result)
+            render(element, indent: indent + 1, with: state, into: result)
         }
+        exitContainer(.listItemContent, with: state, in: result)
+        exitContainer(.listItem, with: state, in: result)
     }
     
-    func render(_ text: [InlineText], with styleStack: StyleStack, into result: NSMutableAttributedString) {
+    func render(_ text: [InlineText], with state: State, into result: NSMutableAttributedString) {
         for element in text {
-            render(element, with: styleStack, into: result)
+            render(element, with: state, into: result)
         }
     }
 
-    func render(_ text: InlineText, with styleStack: StyleStack, into result: NSMutableAttributedString) {
+    func render(_ text: InlineText, with state: State, into result: NSMutableAttributedString) {
         switch text {
         case let .code(code):
-            renderCode(code.code.text, with: styleStack, into: result)
+            renderCode(code.code.text, with: state, into: result)
         case let .text(text):
-            renderText(text.text, with: styleStack, into: result)
+            renderText(text.text, with: state, into: result)
         case .linebreak:
-            renderLinebreak(with: styleStack, into: result)
+            renderLinebreak(with: state, into: result)
         case let .link(link):
-            renderLink(link.link, text: link.text, with: styleStack, into: result)
+            renderLink(link.link, text: link.text, with: state, into: result)
         case let .image(image):
-            renderImage(image.link, altText: image.alt.text, with: styleStack, into: result)
+            renderImage(image.link, altText: image.alt.text, with: state, into: result)
         case let .emphasis(text):
-            renderEmphasis(text.text, with: styleStack, into: result)
+            renderEmphasis(text.text, with: state, into: result)
         case let .strong(text):
-            renderStrong(text.text, with: styleStack, into: result)
+            renderStrong(text.text, with: state, into: result)
         case let .strikethrough(text):
-            renderStrikethrough(text.text, with: styleStack, into: result)
+            renderStrikethrough(text.text, with: state, into: result)
         case .softbreak:
-            renderSoftbreak(with: styleStack, into: result)
+            renderSoftbreak(with: state, into: result)
         }
     }
     
-    func renderCode(_ text: String, with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        styleStack.push(.code)
+    func renderCode(_ text: String, with state: State, into result: NSMutableAttributedString) {
+        state.push(.code)
         defer {
-            styleStack.pop()
+            state.pop()
         }
         
-        result.append(NSAttributedString(string: text, attributes: styleStack.attributes()))
+        result.append(NSAttributedString(string: text, attributes: state.attributes()))
     }
     
-    func renderText(_ text: String, with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        result.append(NSAttributedString(string: text, attributes: styleStack.attributes()))
+    func renderText(_ text: String, with state: State, into result: NSMutableAttributedString) {
+        result.append(NSAttributedString(string: text, attributes: state.attributes()))
     }
 
-    func renderLinebreak(with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        result.append(NSAttributedString(string: "\r", attributes: styleStack.attributes()))
+    func renderLinebreak(with state: State, into result: NSMutableAttributedString) {
+        result.append(NSAttributedString(string: "\r", attributes: state.attributes()))
     }
 
-    func renderSoftbreak(with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        result.append(NSAttributedString(string: " ", attributes: styleStack.attributes()))
+    func renderSoftbreak(with state: State, into result: NSMutableAttributedString) {
+        result.append(NSAttributedString(string: " ", attributes: state.attributes()))
     }
 
-    func renderLink(_ link: Link?, text: [InlineText], with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        styleStack.push(.link)
+    func renderLink(_ link: Link?, text: [InlineText], with state: State, into result: NSMutableAttributedString) {
+        state.push(.link)
         defer {
-            styleStack.pop()
+            state.pop()
         }
         
         var attributes = [NSAttributedString.Key: Any]()
@@ -239,60 +359,60 @@ private extension Renderer {
         }
 
         let startLocation = result.length
-        render(text, with: styleStack, into: result)
+        render(text, with: state, into: result)
         result.addAttributes(attributes, range: NSRange(location: startLocation, length: result.length - startLocation))
     }
     
-    func renderImage(_ link: Link?, altText: String, with styleStack: StyleStack, into result: NSMutableAttributedString) {
+    func renderImage(_ link: Link?, altText: String, with state: State, into result: NSMutableAttributedString) {
         var attributes = [NSAttributedString.Key: Any]()
         #if os(macOS)
         attributes[.toolTip] = altText
         #endif
 
-        styleStack.push(.image, rawAttributes: attributes)
+        state.push(.image, rawAttributes: attributes)
         defer {
-            styleStack.pop()
+            state.pop()
         }
 
-        let attachment = ImageTextAttachment(imageUrl: link?.url?.text, delegate: styleStack.stylesheet)
-        renderTextAttachment(attachment, with: styleStack, into: result)
+        let attachment = ImageTextAttachment(imageUrl: link?.url?.text, delegate: state.styleStack.stylesheet)
+        renderTextAttachment(attachment, with: state, into: result)
     }
 
-    func renderEmphasis(_ text: [InlineText], with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        styleStack.push(.emphasis)
+    func renderEmphasis(_ text: [InlineText], with state: State, into result: NSMutableAttributedString) {
+        state.push(.emphasis)
         defer {
-            styleStack.pop()
+            state.pop()
         }
 
-        render(text, with: styleStack, into: result)
+        render(text, with: state, into: result)
     }
 
-    func renderStrong(_ text: [InlineText], with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        styleStack.push(.strong)
+    func renderStrong(_ text: [InlineText], with state: State, into result: NSMutableAttributedString) {
+        state.push(.strong)
         defer {
-            styleStack.pop()
+            state.pop()
         }
 
-        render(text, with: styleStack, into: result)
+        render(text, with: state, into: result)
     }
 
-    func renderStrikethrough(_ text: [InlineText], with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        styleStack.push(.strikethrough)
+    func renderStrikethrough(_ text: [InlineText], with state: State, into result: NSMutableAttributedString) {
+        state.push(.strikethrough)
         defer {
-            styleStack.pop()
+            state.pop()
         }
 
-        render(text, with: styleStack, into: result)
+        render(text, with: state, into: result)
     }
 
-    func renderNewline(with styleStack: StyleStack, into result: NSMutableAttributedString) {
-        result.append(NSAttributedString(string: "\n", attributes: styleStack.attributes()))
+    func renderNewline(with state: State, into result: NSMutableAttributedString) {
+        result.append(NSAttributedString(string: "\n", attributes: state.attributes()))
     }
     
-    func renderTextAttachment(_ textAttachment: NSTextAttachment, with styleStack: StyleStack, into result: NSMutableAttributedString) {
+    func renderTextAttachment(_ textAttachment: NSTextAttachment, with state: State, into result: NSMutableAttributedString) {
         let startLocation = result.length
         result.append(NSAttributedString(attachment: textAttachment))
-        result.addAttributes(styleStack.attributes(), range: NSRange(location: startLocation, length: result.length - startLocation))
+        result.addAttributes(state.attributes(), range: NSRange(location: startLocation, length: result.length - startLocation))
     }
     
     func insertSpacer(_ length: Length, at characterIndex: Int, in result: NSMutableAttributedString) {

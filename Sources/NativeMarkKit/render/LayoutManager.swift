@@ -32,10 +32,10 @@ private extension LayoutManager {
     
     func drawBlockBackground(_ blockBackground: BackgroundValue, forCharacterRange characterRange: NSRange) {
         let glyphRange = self.glyphRange(forCharacterRange: characterRange, actualCharacterRange: nil)
-        guard let container = textContainer(forGlyphAt: glyphRange.location, effectiveRange: nil) else {
+        guard let container = textContainer(forGlyphAt: glyphRange.location, effectiveRange: nil) as? TextContainer else {
             return
         }
-        let frame = boundingRect(forGlyphRange: glyphRange, in: container)
+        let frame = boundingRect(forGlyphRange: glyphRange, in: container) + container.origin
         let defaultFont = textStorage?.attribute(.font, at: characterRange.location, effectiveRange: nil) as? NativeFont ?? TextStyle.body.makeFont()
         blockBackground.render(in: frame, defaultFont: defaultFont)
     }
@@ -54,10 +54,10 @@ private extension LayoutManager {
     
     func drawBackgroundBorder(_ backgroundBorder: BackgroundBorderValue, forCharacterRange characterRange: NSRange) {
         let glyphRange = self.glyphRange(forCharacterRange: characterRange, actualCharacterRange: nil)
-        guard let container = textContainer(forGlyphAt: glyphRange.location, effectiveRange: nil) else {
+        guard let container = textContainer(forGlyphAt: glyphRange.location, effectiveRange: nil) as? TextContainer else {
             return
         }
-        let frame = boundingRect(forGlyphRange: glyphRange, in: container)
+        let frame = boundingRect(forGlyphRange: glyphRange, in: container) + container.origin
         backgroundBorder.render(with: frame)
     }
     
@@ -76,12 +76,15 @@ private extension LayoutManager {
     func drawInlineBackground(_ inlineBackground: BackgroundValue, forCharacterRange characterRange: NSRange) {
         let defaultFont = textStorage?.attribute(.font, at: characterRange.location, effectiveRange: nil) as? NativeFont ?? TextStyle.body.makeFont()
 
-        enumerateTypographicBounds(forCharacterRange: characterRange) { glyphRange, lineFrame in
-            inlineBackground.render(in: lineFrame, defaultFont: defaultFont)
+        enumerateTypographicBounds(forCharacterRange: characterRange) { glyphRange, lineFrame, container in
+            guard let textContainer = container as? TextContainer else {
+                return
+            }
+            inlineBackground.render(in: lineFrame + textContainer.origin, defaultFont: defaultFont)
         }
     }
     
-    func enumerateTypographicBounds(forCharacterRange characterRange: NSRange, with block: @escaping (NSRange, CGRect) -> Void) {
+    func enumerateTypographicBounds(forCharacterRange characterRange: NSRange, with block: @escaping (NSRange, CGRect, NSTextContainer) -> Void) {
         let glyphRange = self.glyphRange(forCharacterRange: characterRange, actualCharacterRange: nil)
 
         enumerateLineFragments(forGlyphRange: glyphRange) { lineFrame, usedRect, container, lineRange, _ in
@@ -90,7 +93,7 @@ private extension LayoutManager {
             let totalFrame = self.typographicBounds(ofGlyphRange: intersectingRange, onLineFragment: lineFrame, container: container)
             
             if let theFrame = totalFrame {
-                block(intersectingRange, theFrame)
+                block(intersectingRange, theFrame, container)
             }
         }
     }

@@ -12,6 +12,8 @@ protocol TextContainerDelegate: AnyObject {
 }
 
 final class TextContainer: NSTextContainer {
+    var origin: CGPoint = .zero
+    
     weak var delegate: TextContainerDelegate?
     
     override func lineFragmentRect(forProposedRect proposedRect: CGRect, at characterIndex: Int, writingDirection baseWritingDirection: NSWritingDirection, remaining remainingRect: UnsafeMutablePointer<CGRect>?) -> CGRect {
