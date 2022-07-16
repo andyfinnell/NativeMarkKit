@@ -12,6 +12,7 @@ protocol AbstractViewDelegate: AnyObject {
 final class AbstractView: NSObject {
     private let storage: NSTextStorage
     private let layoutManager = LayoutManager()
+    private let environment: Environment
     private var layout = CompositeTextContainerLayout(parentPath: [])
     private var hasSetIntrinsicWidth = false
     private var currentlyTrackingUrl: URL?
@@ -34,9 +35,10 @@ final class AbstractView: NSObject {
     
     var onOpenLink: ((URL) -> Void)? = URLOpener.open
     
-    init(document: Document, styleSheet: StyleSheet) {
+    init(document: Document, styleSheet: StyleSheet, environment: Environment) {
         self.document = document
         self.styleSheet = styleSheet
+        self.environment = environment
         
         self.storage = NSTextStorage()
         super.init()
@@ -136,7 +138,7 @@ private extension AbstractView {
     
     func resetStorage() {
         let renderer = Renderer()
-        let attributedString = NSAttributedString(attributedString: renderer.render(document, with: styleSheet))
+        let attributedString = NSAttributedString(attributedString: renderer.render(document, with: styleSheet, environment: environment))
         storage.setAttributedString(attributedString)
         storage.setDelegateForImageAttachments()
     }

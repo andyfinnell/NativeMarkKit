@@ -5,11 +5,6 @@ import AppKit
 import UIKit
 #endif
 
-protocol ImageTextAttachmentDelegate: AnyObject {
-    func imageTextAttachmentLoadImage(_ urlString: String, completion: @escaping (NativeImage?) -> Void)
-    func imageTextAttachmentResize(_ urlString: String?, image: NativeImage, lineFragment: CGRect) -> CGSize
-}
-
 protocol ImageTextAttachmentLayoutDelegate: AnyObject {
     func imageTextAttachmentDidLoadImage(atCharacterIndex characterIndex: Int)
 }
@@ -22,12 +17,12 @@ final class ImageTextAttachment: NativeTextAttachment {
     }
     private let imageUrl: String?
     private var status = Status.idle
-    private weak var delegate: ImageTextAttachmentDelegate?
+    private let environment: Environment
     weak var layoutDelegate: ImageTextAttachmentLayoutDelegate?
     
-    init(imageUrl: String?, delegate: ImageTextAttachmentDelegate) {
+    init(imageUrl: String?, environment: Environment) {
         self.imageUrl = imageUrl
-        self.delegate = delegate
+        self.environment = environment
         super.init()
     }
     
@@ -46,11 +41,8 @@ final class ImageTextAttachment: NativeTextAttachment {
     
     override func lineFragment(for textContainer: NSTextContainer?, proposedLineFragment lineFrag: CGRect) -> CGRect {
         if let image = loadImage() {
-            if let resized = delegate?.imageTextAttachmentResize(imageUrl, image: image, lineFragment: lineFrag) {
-                return CGRect(origin: .zero, size: resized)
-            } else {
-                return CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-            }
+            let resized = environment.imageSizer.imageSize(imageUrl, image: image, lineFragment: lineFrag)
+            return CGRect(origin: .zero, size: resized)
         } else {
             return CGRect(x: 0, y: 0, width: lineFrag.height, height: lineFrag.height)
         }
@@ -76,7 +68,7 @@ private extension ImageTextAttachment {
         }
         
         status = .loading
-        delegate?.imageTextAttachmentLoadImage(urlString) { [weak self] image in
+        environment.imageLoader.loadImage(urlString) { [weak self] image in
             guard let image = image else { return }
             self?.status = .loaded(image)
             

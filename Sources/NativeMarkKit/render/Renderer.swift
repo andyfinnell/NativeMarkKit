@@ -10,9 +10,9 @@ import UIKit
 struct Renderer {
     init() {}
     
-    func render(_ document: Document, with stylesheet: StyleSheet) -> NSAttributedString {        
+    func render(_ document: Document, with stylesheet: StyleSheet, environment: Environment) -> NSAttributedString {
         let result = NSMutableAttributedString()
-        let state = State(stylesheet: stylesheet)
+        let state = State(stylesheet: stylesheet, environment: environment)
         state.push(.document)
         defer {
             state.pop()
@@ -35,9 +35,11 @@ private extension Renderer {
         var path = [ContainerKind]()
         var hasRenderedFirstContainerBreak = false
         let styleStack: StyleStack
+        let environment: Environment
         
-        init(stylesheet: StyleSheet) {
+        init(stylesheet: StyleSheet, environment: Environment) {
             styleStack = StyleStack(stylesheet: stylesheet)
+            self.environment = environment
         }
         
         func push(_ blockSelector: BlockStyleSelector, rawAttributes: [NSAttributedString.Key: Any] = [:]) {
@@ -374,7 +376,7 @@ private extension Renderer {
             state.pop()
         }
 
-        let attachment = ImageTextAttachment(imageUrl: link?.url?.text, delegate: state.styleStack.stylesheet)
+        let attachment = ImageTextAttachment(imageUrl: link?.url?.text, environment: state.environment)
         renderTextAttachment(attachment, with: state, into: result)
     }
 

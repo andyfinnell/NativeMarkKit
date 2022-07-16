@@ -26,9 +26,9 @@ public final class NativeMarkLabel: UIControl {
     var onIntrinsicSizeInvalidated: (() -> Void)?
     var isMultiline: Bool { abstractView.isMultiline }
 
-    public init(nativeMark: String, styleSheet: StyleSheet = .default) {
+    public init(nativeMark: String, styleSheet: StyleSheet = .default, environment: Environment) {
         self.nativeMark = nativeMark
-        abstractView = AbstractView(document: RenderParser.parse(nativeMark), styleSheet: styleSheet)
+        abstractView = AbstractView(document: RenderParser.parse(nativeMark), styleSheet: styleSheet, environment: environment)
         super.init(frame: .zero)
         if styleSheet.backgroundColor() == nil {
             backgroundColor = .clear
@@ -40,7 +40,7 @@ public final class NativeMarkLabel: UIControl {
     public required init?(coder: NSCoder) {
         let styleSheet = StyleSheet.default
         nativeMark = ""
-        abstractView = AbstractView(document: RenderParser.parse(""), styleSheet: styleSheet)
+        abstractView = AbstractView(document: RenderParser.parse(""), styleSheet: styleSheet, environment: Environment())
         super.init(frame: .zero)
         if styleSheet.backgroundColor() == nil {
             backgroundColor = .clear

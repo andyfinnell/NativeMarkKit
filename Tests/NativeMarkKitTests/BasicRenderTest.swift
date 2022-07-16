@@ -837,10 +837,11 @@ This is a hard break.
 """
         let imageLoader = FakeImageLoader()
         imageLoader.loadImage_stub["http://placekitten.com/g/20/20"] = NativeImage.fixture(size: CGSize(width: 22, height: 22))
-        let styleSheet = StyleSheet.default.duplicate().mutate(imageLoader: imageLoader)
+        let environment = Environment(imageLoader: imageLoader)
         let testCase = RenderTestCase(name: "ImagesAndLinks",
                                       nativeMark: nativeMark,
-                                      styleSheet: styleSheet,
+                                      styleSheet: .default,
+                                      environment: environment,
                                       width: 320)
         XCTAssert(testCase.isPassing(for: self))
 
