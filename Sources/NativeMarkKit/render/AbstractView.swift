@@ -10,8 +10,8 @@ protocol AbstractViewDelegate: AnyObject {
 }
 
 final class AbstractView: NSObject {
-    private let storage: NativeMarkStorage
-    private let layoutManager = NativeMarkLayoutManager()
+    private let storage: NSTextStorage
+    private let layoutManager = LayoutManager()
     private var layout = CompositeTextContainerLayout(parentPath: [])
     private var hasSetIntrinsicWidth = false
     private var currentlyTrackingUrl: URL?
@@ -25,19 +25,26 @@ final class AbstractView: NSObject {
             nativeMarkDidChange()
         }
     }
+    var styleSheet: StyleSheet {
+        didSet {
+            styleSheetDidChange()
+        }
+    }
     weak var delegate: AbstractViewDelegate?
     
     var onOpenLink: ((URL) -> Void)? = URLOpener.open
     
     init(nativeMark: String, styleSheet: StyleSheet) {
         self.nativeMark = nativeMark
-        let nativeMarkString = NativeMarkString(nativeMark: nativeMark, styleSheet: styleSheet)
-        self.storage = NativeMarkStorage(nativeMarkString: nativeMarkString)
+        self.styleSheet = styleSheet
+        
+        self.storage = NSTextStorage()
         super.init()
         
+        resetStorage()
         storage.addLayoutManager(layoutManager)
         
-        layoutManager.delegate = self
+        layoutManager.invalidationDelegate = self
         
         buildLayout()
     }
@@ -54,7 +61,7 @@ final class AbstractView: NSObject {
     }
     
     func draw() {
-        layoutManager.drawBackground(in: bounds)
+        layoutManager.drawBackground(in: bounds, using: styleSheet)
         layout.draw(at: .zero)
     }
     
@@ -93,12 +100,12 @@ final class AbstractView: NSObject {
     }
     
     var isMultiline: Bool {
-        storage.nativeMarkString.isMultiline
+        storage.isMultiline
     }
 }
 
-extension AbstractView: NativeMarkLayoutManagerDelegate {
-    func layoutManager(_ layoutManager: NativeMarkLayoutManager, invalidateFrame frame: CGRect, inContainer container: NativeMarkTextContainer) {
+extension AbstractView: LayoutManagerDelegate {
+    func layoutManager(_ layoutManager: LayoutManager, invalidateFrame frame: CGRect, inContainer container: TextContainer) {
         delegate?.abstractViewDidInvalidateRect(frame)
     }
 }
@@ -107,10 +114,13 @@ private extension AbstractView {
     func boundsDidChange() {
         layout.size = bounds.size
     }
-                
+    
+    func styleSheetDidChange() {
+        nativeMarkDidChange() // for now, treat it the same as the source changing
+    }
+    
     func nativeMarkDidChange() {
-        let nativeMarkString = NativeMarkString(nativeMark: nativeMark, styleSheet: storage.nativeMarkString.styleSheet)
-        storage.nativeMarkString = nativeMarkString
+        resetStorage()
         buildLayout()
         hasSetIntrinsicWidth = false
     }
@@ -122,5 +132,12 @@ private extension AbstractView {
         layout.build(builder)
         builder.removeUnusedTextContainers()
         layout.size = bounds.size
+    }
+    
+    func resetStorage() {
+        let attributedString = (try? NSAttributedString(nativeMark: nativeMark, styleSheet: styleSheet))
+            ?? NSAttributedString(string: nativeMark)
+        storage.setAttributedString(attributedString)
+        storage.setDelegateForImageAttachments()
     }
 }

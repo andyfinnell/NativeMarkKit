@@ -6,7 +6,7 @@ import UIKit
 #endif
 
 final class LeafTextContainerLayout: TextContainerLayout {
-    private let textContainer: NativeMarkTextContainer
+    private let textContainer: TextContainer
     private let path: [ContainerKind]
     weak var superLayout: TextContainerLayout?
     var origin: CGPoint = .zero {
@@ -19,23 +19,23 @@ final class LeafTextContainerLayout: TextContainerLayout {
             sizeDidChange()
         }
     }
-
-    init(path: [ContainerKind], textContainer: NativeMarkTextContainer) {
+    
+    init(path: [ContainerKind], textContainer: TextContainer) {
         self.path = path
         self.textContainer = textContainer
     }
-
+    
     var paragraphSpacingAfter: CGFloat {
         guard let layoutManager = layoutManager, let storage = layoutManager.storage else {
             return 0.0
         }
         
         let glyphRange = layoutManager.glyphRange(for: textContainer)
-        let characterRange = layoutManager.characterRange(forGlyphRange: glyphRange)
+        let characterRange = layoutManager.characterRange(forGlyphRange: glyphRange, actualGlyphRange: nil)
         let characterIndex = lastNonContainerBreakIndex(characterRange) // last valid index
         if let characterIndex = characterIndex,
-           let paragraphStyle = storage.attribute(.paragraphStyle,
-                                               at: characterIndex,
+           let paragraphStyle = storage.safeAttribute(.paragraphStyle,
+                                                  at: characterIndex,
                                                   effectiveRange: nil) as? NSParagraphStyle {
             return paragraphStyle.paragraphSpacing
         }
@@ -48,25 +48,25 @@ final class LeafTextContainerLayout: TextContainerLayout {
         }
         
         let glyphRange = layoutManager.glyphRange(for: textContainer)
-        let characterRange = layoutManager.characterRange(forGlyphRange: glyphRange)
+        let characterRange = layoutManager.characterRange(forGlyphRange: glyphRange, actualGlyphRange: nil)
         let characterIndex = characterRange.lowerBound // first valid index
         if characterIndex < storage.length, characterIndex >= 0,
-           let paragraphStyle = storage.attribute(.paragraphStyle,
-                                               at: characterIndex,
+           let paragraphStyle = storage.safeAttribute(.paragraphStyle,
+                                                  at: characterIndex,
                                                   effectiveRange: nil) as? NSParagraphStyle {
-
+            
             return paragraphStyle.paragraphSpacingBefore
         }
         return 0.0
     }
-
+    
     func measure(maxWidth: CGFloat) -> CGSize {
         setContainerSize(CGSize(width: maxWidth, height: .largestMeasurableNumber))
         
         let usedSize = usedSize()
-
+        
         setContainerSize(size)
-
+        
         return usedSize
     }
     
@@ -91,29 +91,29 @@ final class LeafTextContainerLayout: TextContainerLayout {
                                                           in: textContainer,
                                                           fractionOfDistanceBetweenInsertionPoints: nil)
         guard characterIndex >= 0 && characterIndex < storage.length,
-            let url = storage.attribute(.nativeMarkLink, at: characterIndex, effectiveRange: nil) as? NSURL else {
+              let url = storage.safeAttribute(.nativeMarkLink, at: characterIndex, effectiveRange: nil) as? NSURL else {
             return nil
         }
         
         return url as URL
     }
-
+    
 }
 
 private extension LeafTextContainerLayout {
-    var layoutManager: NativeMarkLayoutManager? {
-        textContainer.layoutManager
+    var layoutManager: LayoutManager? {
+        textContainer.layoutManager as? LayoutManager
     }
     
-    var storage: NativeMarkStorage? {
-        layoutManager?.storage
+    var storage: NSTextStorage? {
+        layoutManager?.textStorage
     }
     
     func setContainerSize(_ size: CGSize) {
         textContainer.size = size
         layoutManager?.textContainerChangedGeometry(textContainer)
     }
-            
+    
     func usedSize() -> CGSize {
         _ = layoutManager?.glyphRange(for: textContainer)
         
@@ -127,7 +127,7 @@ private extension LeafTextContainerLayout {
             absoluteOrigin += l.origin
             layout = l.superLayout
         }
-        textContainer.container.origin = absoluteOrigin
+        textContainer.origin = absoluteOrigin
     }
     
     func sizeDidChange() {

@@ -6,7 +6,7 @@ import UIKit
 #endif
 
 final class ListItemMarkerContainerLayout: TextContainerLayout {
-    private let textContainer: NativeMarkTextContainer
+    private let textContainer: TextContainer
     private let path: [ContainerKind]
     weak var superLayout: TextContainerLayout?
     var origin: CGPoint = .zero {
@@ -19,23 +19,23 @@ final class ListItemMarkerContainerLayout: TextContainerLayout {
             sizeDidChange()
         }
     }
-
-    init(path: [ContainerKind], textContainer: NativeMarkTextContainer) {
+    
+    init(path: [ContainerKind], textContainer: TextContainer) {
         self.path = path
         self.textContainer = textContainer
     }
-
+    
     var paragraphSpacingAfter: CGFloat {
         guard let layoutManager = layoutManager, let storage = layoutManager.storage else {
             return 0.0
         }
         
         let glyphRange = layoutManager.glyphRange(for: textContainer)
-        let characterRange = layoutManager.characterRange(forGlyphRange: glyphRange)
+        let characterRange = layoutManager.characterRange(forGlyphRange: glyphRange, actualGlyphRange: nil)
         let characterIndex = characterRange.upperBound - 1 // last valid index
         if characterIndex < storage.length,
-           let paragraphStyle = storage.attribute(.paragraphStyle,
-                                               at: characterIndex,
+           let paragraphStyle = storage.safeAttribute(.paragraphStyle,
+                                                  at: characterIndex,
                                                   effectiveRange: nil) as? NSParagraphStyle {
             return paragraphStyle.paragraphSpacing
         }
@@ -48,27 +48,27 @@ final class ListItemMarkerContainerLayout: TextContainerLayout {
         }
         
         let glyphRange = layoutManager.glyphRange(for: textContainer)
-        let characterRange = layoutManager.characterRange(forGlyphRange: glyphRange)
+        let characterRange = layoutManager.characterRange(forGlyphRange: glyphRange, actualGlyphRange: nil)
         let characterIndex = characterRange.lowerBound // first valid index
         if characterIndex < storage.length, characterIndex >= 0,
-           let paragraphStyle = storage.attribute(.paragraphStyle,
-                                               at: characterIndex,
+           let paragraphStyle = storage.safeAttribute(.paragraphStyle,
+                                                  at: characterIndex,
                                                   effectiveRange: nil) as? NSParagraphStyle {
             return paragraphStyle.paragraphSpacingBefore
         }
         return 0.0
     }
-
+    
     func measure(maxWidth: CGFloat) -> CGSize {
         setContainerSize(CGSize(width: maxWidth, height: .largestMeasurableNumber))
         
         let usedSize = usedSize()
-                
+        
         setContainerSize(size)
-
+        
         return usedSize
     }
-        
+    
     func draw(at point: CGPoint) {
         guard let layoutManager = layoutManager else {
             return
@@ -90,40 +90,40 @@ final class ListItemMarkerContainerLayout: TextContainerLayout {
                                                           in: textContainer,
                                                           fractionOfDistanceBetweenInsertionPoints: nil)
         guard characterIndex >= 0 && characterIndex < storage.length,
-            let url = storage.attribute(.nativeMarkLink, at: characterIndex, effectiveRange: nil) as? NSURL else {
+              let url = storage.safeAttribute(.nativeMarkLink, at: characterIndex, effectiveRange: nil) as? NSURL else {
             return nil
         }
         
         return url as URL
     }
-
+    
 }
 
 private extension ListItemMarkerContainerLayout {
-    var layoutManager: NativeMarkLayoutManager? {
-        textContainer.layoutManager
+    var layoutManager: LayoutManager? {
+        textContainer.layoutManager as? LayoutManager
     }
     
-    var storage: NativeMarkStorage? {
-        layoutManager?.storage
+    var storage: NSTextStorage? {
+        layoutManager?.textStorage
     }
-
+    
     func setContainerSize(_ size: CGSize) {
         textContainer.size = size
         layoutManager?.textContainerChangedGeometry(textContainer)
     }
-            
+    
     func usedSize() -> CGSize {
         guard let layoutManager = layoutManager,
               let storage = layoutManager.storage else {
             return .zero
         }
-
+        
         let glyphRange = layoutManager.glyphRange(for: textContainer)
-        let characterRange = layoutManager.characterRange(forGlyphRange: glyphRange)
+        let characterRange = layoutManager.characterRange(forGlyphRange: glyphRange, actualGlyphRange: nil)
         
         var rawRect = layoutManager.usedRect(for: textContainer)
-        if let paragraphStyle = storage.attribute(.paragraphStyle, at: characterRange.location, effectiveRange: nil) as? NSParagraphStyle {
+        if let paragraphStyle = storage.safeAttribute(.paragraphStyle, at: characterRange.location, effectiveRange: nil) as? NSParagraphStyle {
             if paragraphStyle.tailIndent < 0 {
                 rawRect.size.width -= paragraphStyle.tailIndent
             }
@@ -131,7 +131,7 @@ private extension ListItemMarkerContainerLayout {
                 rawRect.size.width -= paragraphStyle.firstLineHeadIndent
             }
         }
-
+        
         return rawRect.integral.size
     }
     
@@ -142,9 +142,9 @@ private extension ListItemMarkerContainerLayout {
             absoluteOrigin += l.origin
             layout = l.superLayout
         }
-        textContainer.container.origin = absoluteOrigin
+        textContainer.origin = absoluteOrigin
     }
-
+    
     func sizeDidChange() {
         setContainerSize(size)
     }

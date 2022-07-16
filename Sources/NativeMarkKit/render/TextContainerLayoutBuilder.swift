@@ -1,11 +1,16 @@
 import Foundation
+#if canImport(AppKit)
+import AppKit
+#elseif canImport(UIKit)
+import UIKit
+#endif
 
 final class TextContainerLayoutBuilder {
     private var containerBreaks: [ContainerBreakValue]
     private var nextTextContainerToUse = 0
-    private let layoutManager: NativeMarkLayoutManager
+    private let layoutManager: LayoutManager
     
-    init(storage: NativeMarkStorage, layoutManager: NativeMarkLayoutManager) {
+    init(storage: NSTextStorage, layoutManager: LayoutManager) {
         self.layoutManager = layoutManager
         self.containerBreaks = storage.containerBreaks()
     }
@@ -18,13 +23,13 @@ final class TextContainerLayoutBuilder {
         containerBreaks.removeFirst()
     }
     
-    func makeTextContainer() -> NativeMarkTextContainer {
-        if let textContainer = layoutManager.textContainers.at(nextTextContainerToUse) {
-            textContainer.container.origin = .zero
+    func makeTextContainer() -> TextContainer {
+        if let textContainer = layoutManager.textContainers.at(nextTextContainerToUse) as? TextContainer {
+            textContainer.origin = .zero
             nextTextContainerToUse += 1 // nice, reuse
             return textContainer
         } else {
-            let textContainer = NativeMarkTextContainer()
+            let textContainer = TextContainer()
             layoutManager.addTextContainer(textContainer)
             nextTextContainerToUse += 1 // can't use this one, so skip it
             return textContainer
