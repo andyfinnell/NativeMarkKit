@@ -20,9 +20,9 @@ final class AbstractView: NSObject {
             boundsDidChange()
         }
     }
-    var nativeMark: String {
+    var document: Document {
         didSet {
-            nativeMarkDidChange()
+            documentDidChange()
         }
     }
     var styleSheet: StyleSheet {
@@ -34,8 +34,8 @@ final class AbstractView: NSObject {
     
     var onOpenLink: ((URL) -> Void)? = URLOpener.open
     
-    init(nativeMark: String, styleSheet: StyleSheet) {
-        self.nativeMark = nativeMark
+    init(document: Document, styleSheet: StyleSheet) {
+        self.document = document
         self.styleSheet = styleSheet
         
         self.storage = NSTextStorage()
@@ -116,10 +116,10 @@ private extension AbstractView {
     }
     
     func styleSheetDidChange() {
-        nativeMarkDidChange() // for now, treat it the same as the source changing
+        documentDidChange() // for now, treat it the same as the source changing
     }
     
-    func nativeMarkDidChange() {
+    func documentDidChange() {
         resetStorage()
         buildLayout()
         hasSetIntrinsicWidth = false
@@ -135,8 +135,8 @@ private extension AbstractView {
     }
     
     func resetStorage() {
-        let attributedString = (try? NSAttributedString(nativeMark: nativeMark, styleSheet: styleSheet))
-            ?? NSAttributedString(string: nativeMark)
+        let renderer = Renderer()
+        let attributedString = NSAttributedString(attributedString: renderer.render(document, with: styleSheet))
         storage.setAttributedString(attributedString)
         storage.setDelegateForImageAttachments()
     }

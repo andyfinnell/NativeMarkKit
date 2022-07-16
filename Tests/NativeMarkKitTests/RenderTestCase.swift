@@ -22,7 +22,8 @@ final class RenderTestCase: BaseRenderTestCase {
     }
     
     override func render() -> NativeImage {
-        let view = AbstractView(nativeMark: nativeMark, styleSheet: styleSheet)
+        let document = RenderParser.parse(nativeMark)
+        let view = AbstractView(document: document, styleSheet: styleSheet)
         _ = view.intrinsicSize() // it'll assume it has infinite width
         view.bounds = CGRect(x: 0, y: 0, width: width, height: .greatestFiniteMagnitude)
         let sizeWithRealHeight = view.intrinsicSize()

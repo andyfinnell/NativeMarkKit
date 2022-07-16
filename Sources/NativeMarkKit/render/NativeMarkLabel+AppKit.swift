@@ -13,12 +13,11 @@ public final class NativeMarkLabel: NSView {
     }
     
     public var nativeMark: String {
-        get { abstractView.nativeMark }
-        set {
-            guard abstractView.nativeMark != newValue else {
+        didSet {
+            guard nativeMark != oldValue else {
                 return
             }
-            abstractView.nativeMark = newValue
+            abstractView.document = RenderParser.parse(nativeMark)
             invalidateIntrinsicContentSize()
             setNeedsDisplay(bounds)
             updateAccessibility()
@@ -30,14 +29,16 @@ public final class NativeMarkLabel: NSView {
     var isMultiline: Bool { abstractView.isMultiline }
     
     public init(nativeMark: String, styleSheet: StyleSheet = .default) {
-        abstractView = AbstractView(nativeMark: nativeMark, styleSheet: styleSheet)
+        self.nativeMark = nativeMark
+        abstractView = AbstractView(document: RenderParser.parse(nativeMark), styleSheet: styleSheet)
         super.init(frame: .zero)
         abstractView.delegate = self
         updateAccessibility()
     }
     
     required init?(coder: NSCoder) {
-        abstractView = AbstractView(nativeMark: "", styleSheet: .default)
+        nativeMark = ""
+        abstractView = AbstractView(document: RenderParser.parse(""), styleSheet: .default)
         super.init(frame: .zero)
         abstractView.delegate = self
         updateAccessibility()
