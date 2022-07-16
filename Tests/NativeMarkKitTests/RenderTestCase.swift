@@ -15,7 +15,7 @@ final class RenderTestCase: BaseRenderTestCase {
     let environment: Environment
     let width: CGFloat
     
-    init(name: String, nativeMark: String, styleSheet: StyleSheet, environment: Environment = Environment(), width: CGFloat) {
+    init(name: String, nativeMark: String, styleSheet: StyleSheet, environment: Environment = .default, width: CGFloat) {
         self.nativeMark = nativeMark
         self.styleSheet = styleSheet
         self.environment = environment

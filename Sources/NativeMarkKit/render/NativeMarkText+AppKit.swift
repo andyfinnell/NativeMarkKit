@@ -11,7 +11,7 @@ public struct NativeMarkText: View {
     let styleSheet: StyleSheet
     let environment: Environment
     
-    public init(_ nativeMark: String, styleSheet: StyleSheet = .default, environment: Environment = Environment(), onOpenLink: ((URL) -> Void)? = URLOpener.open) {
+    public init(_ nativeMark: String, styleSheet: StyleSheet = .default, environment: Environment = .default, onOpenLink: ((URL) -> Void)? = URLOpener.open) {
         self.nativeMark = nativeMark
         self.onOpenLink = onOpenLink
         self.styleSheet = styleSheet

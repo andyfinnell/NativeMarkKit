@@ -837,7 +837,7 @@ This is a hard break.
 """
         let imageLoader = FakeImageLoader()
         imageLoader.loadImage_stub["http://placekitten.com/g/20/20"] = NativeImage.fixture(size: CGSize(width: 22, height: 22))
-        let environment = Environment(imageLoader: imageLoader)
+        let environment = Environment(imageLoader: imageLoader, imageSizer: DefaultImageSizer())
         let testCase = RenderTestCase(name: "ImagesAndLinks",
                                       nativeMark: nativeMark,
                                       styleSheet: .default,

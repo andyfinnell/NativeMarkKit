@@ -9,9 +9,12 @@ public struct Environment {
     let imageLoader: ImageLoader
     let imageSizer: ImageSizer
     
-    public init(imageLoader: ImageLoader = DefaultImageLoader(),
-                imageSizer: ImageSizer = DefaultImageSizer()) {
+    public init(imageLoader: ImageLoader,
+                imageSizer: ImageSizer) {
         self.imageLoader = imageLoader
         self.imageSizer = imageSizer
     }
+    
+    public static var `default` = Environment(imageLoader: DefaultImageLoader(),
+                                              imageSizer: DefaultImageSizer())
 }

@@ -28,7 +28,7 @@ public final class NativeMarkLabel: NSView {
     var onIntrinsicSizeInvalidated: (() -> Void)?
     var isMultiline: Bool { abstractView.isMultiline }
     
-    public init(nativeMark: String, styleSheet: StyleSheet = .default, environment: Environment = Environment()) {
+    public init(nativeMark: String, styleSheet: StyleSheet = .default, environment: Environment = .default) {
         self.nativeMark = nativeMark
         abstractView = AbstractView(document: RenderParser.parse(nativeMark), styleSheet: styleSheet, environment: environment)
         super.init(frame: .zero)
@@ -38,7 +38,7 @@ public final class NativeMarkLabel: NSView {
     
     required init?(coder: NSCoder) {
         nativeMark = ""
-        abstractView = AbstractView(document: RenderParser.parse(""), styleSheet: .default, environment: Environment())
+        abstractView = AbstractView(document: RenderParser.parse(""), styleSheet: .default, environment: .default)
         super.init(frame: .zero)
         abstractView.delegate = self
         updateAccessibility()

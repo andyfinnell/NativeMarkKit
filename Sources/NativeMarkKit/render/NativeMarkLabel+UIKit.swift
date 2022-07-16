@@ -40,7 +40,7 @@ public final class NativeMarkLabel: UIControl {
     public required init?(coder: NSCoder) {
         let styleSheet = StyleSheet.default
         nativeMark = ""
-        abstractView = AbstractView(document: RenderParser.parse(""), styleSheet: styleSheet, environment: Environment())
+        abstractView = AbstractView(document: RenderParser.parse(""), styleSheet: styleSheet, environment: .default)
         super.init(frame: .zero)
         if styleSheet.backgroundColor() == nil {
             backgroundColor = .clear
