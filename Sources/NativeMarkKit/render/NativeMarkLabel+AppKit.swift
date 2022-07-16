@@ -13,12 +13,11 @@ public final class NativeMarkLabel: NSView {
     }
     
     public var nativeMark: String {
-        get { abstractView.nativeMark }
-        set {
-            guard abstractView.nativeMark != newValue else {
+        didSet {
+            guard nativeMark != oldValue else {
                 return
             }
-            abstractView.nativeMark = newValue
+            abstractView.document = RenderParser.parse(nativeMark)
             invalidateIntrinsicContentSize()
             setNeedsDisplay(bounds)
             updateAccessibility()
@@ -29,15 +28,17 @@ public final class NativeMarkLabel: NSView {
     var onIntrinsicSizeInvalidated: (() -> Void)?
     var isMultiline: Bool { abstractView.isMultiline }
     
-    public init(nativeMark: String, styleSheet: StyleSheet = .default) {
-        abstractView = AbstractView(nativeMark: nativeMark, styleSheet: styleSheet)
+    public init(nativeMark: String, styleSheet: StyleSheet = .default, environment: Environment = .default) {
+        self.nativeMark = nativeMark
+        abstractView = AbstractView(document: RenderParser.parse(nativeMark), styleSheet: styleSheet, environment: environment)
         super.init(frame: .zero)
         abstractView.delegate = self
         updateAccessibility()
     }
     
     required init?(coder: NSCoder) {
-        abstractView = AbstractView(nativeMark: "", styleSheet: .default)
+        nativeMark = ""
+        abstractView = AbstractView(document: RenderParser.parse(""), styleSheet: .default, environment: .default)
         super.init(frame: .zero)
         abstractView.delegate = self
         updateAccessibility()
@@ -97,9 +98,9 @@ final class URLAcccessibilityElement: NSAccessibilityElement {
         setAccessibilityRole(.link)
         setAccessibilityLabel(url.label)
         setAccessibilityURL(url.url)
-        setAccessibilityParent(parent)
         let screenFrame = parent.window?.convertToScreen(parent.convert(url.frame, to: nil)) ?? url.frame
         setAccessibilityFrame(screenFrame)
+        setAccessibilityParent(parent)
         setAccessibilityFrameInParentSpace(url.frame)
     }
     

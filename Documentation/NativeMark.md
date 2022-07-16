@@ -49,6 +49,14 @@ a new paragraph.
 1. Read
 ```
 
+## Task lists
+
+```Markdown
+- [ ] One
+- [x] Two
+- [ ] Three
+```
+
 ## Text styling
 
 ```Markdown

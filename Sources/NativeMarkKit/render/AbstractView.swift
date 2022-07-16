@@ -10,9 +10,10 @@ protocol AbstractViewDelegate: AnyObject {
 }
 
 final class AbstractView: NSObject {
-    private let storage: NativeMarkStorage
-    private let layoutManager = NativeMarkLayoutManager()
-    private let container = NativeMarkTextContainer()
+    private let storage: NSTextStorage
+    private let layoutManager = LayoutManager()
+    private let environment: Environment
+    private var layout = CompositeTextContainerLayout(parentPath: [])
     private var hasSetIntrinsicWidth = false
     private var currentlyTrackingUrl: URL?
     var bounds: CGRect = .zero {
@@ -20,46 +21,54 @@ final class AbstractView: NSObject {
             boundsDidChange()
         }
     }
-    var nativeMark: String {
+    var document: Document {
         didSet {
-            nativeMarkDidChange()
+            documentDidChange()
+        }
+    }
+    var styleSheet: StyleSheet {
+        didSet {
+            styleSheetDidChange()
         }
     }
     weak var delegate: AbstractViewDelegate?
     
     var onOpenLink: ((URL) -> Void)? = URLOpener.open
     
-    init(nativeMark: String, styleSheet: StyleSheet) {
-        self.nativeMark = nativeMark
-        let nativeMarkString = NativeMarkString(nativeMark: nativeMark, styleSheet: styleSheet)
-        self.storage = NativeMarkStorage(nativeMarkString: nativeMarkString)
+    init(document: Document, styleSheet: StyleSheet, environment: Environment) {
+        self.document = document
+        self.styleSheet = styleSheet
+        self.environment = environment
+        
+        self.storage = NSTextStorage()
         super.init()
         
-        layoutManager.addTextContainer(container)
+        resetStorage()
         storage.addLayoutManager(layoutManager)
         
-        layoutManager.delegate = self
+        layoutManager.invalidationDelegate = self
+        
+        buildLayout()
     }
     
     func intrinsicSize() -> CGSize {
-        let width = hasSetIntrinsicWidth ? bounds.width : .greatestFiniteMagnitude
+        let width = hasSetIntrinsicWidth ? bounds.width : .largestMeasurableNumber
         
-        let computedSize = measure(maxWidth: width)
+        let computedSize = layout.measure(maxWidth: width)
         
         hasSetIntrinsicWidth = true
         
-        return computedSize
+        return CGSize(width: computedSize.width.rounded(.up),
+                      height: computedSize.height.rounded(.up))
     }
     
     func draw() {
-        layoutManager.drawBackground(in: bounds)
-        let glyphRange = layoutManager.glyphRange(for: container)
-        layoutManager.drawBackground(forGlyphRange: glyphRange, at: .zero)
-        layoutManager.drawGlyphs(forGlyphRange: glyphRange, at: .zero)
+        layoutManager.drawBackground(in: bounds, using: styleSheet)
+        layout.draw(at: .zero)
     }
     
     func beginTracking(at location: CGPoint) -> Bool {
-        currentlyTrackingUrl = url(under: location)
+        currentlyTrackingUrl = layout.url(under: location)
         
         return currentlyTrackingUrl != nil
     }
@@ -69,7 +78,7 @@ final class AbstractView: NSObject {
     }
     
     func finishTracking(at location: CGPoint) {
-        if let currentUrl = url(under: location), currentUrl == currentlyTrackingUrl {
+        if let currentUrl = layout.url(under: location), currentUrl == currentlyTrackingUrl {
             onOpenLink?(currentUrl)
         }
         
@@ -87,62 +96,50 @@ final class AbstractView: NSObject {
     func accessibleUrls() -> [AccessibileURL] {
         storage.links().map { url, labelRange, attributeRange in
             let label = String(storage.string[labelRange])
-            let frame = self.layoutManager.accessibilityFrame(for: attributeRange, in: container)
+            let frame = self.layoutManager.accessibilityFrame(for: attributeRange)
             return AccessibileURL(label: label, url: url, frame: frame)
         }
     }
     
     var isMultiline: Bool {
-        storage.nativeMarkString.isMultiline
+        storage.isMultiline
     }
 }
 
-extension AbstractView: NativeMarkLayoutManagerDelegate {
-    func layoutManager(_ layoutManager: NativeMarkLayoutManager, invalidateFrame frame: CGRect, inContainer container: NativeMarkTextContainer) {
+extension AbstractView: LayoutManagerDelegate {
+    func layoutManager(_ layoutManager: LayoutManager, invalidateFrame frame: CGRect, inContainer container: TextContainer) {
         delegate?.abstractViewDidInvalidateRect(frame)
     }
 }
 
 private extension AbstractView {
-    func measure(maxWidth: CGFloat) -> CGSize {
-        setContainerSize(CGSize(width: maxWidth, height: .greatestFiniteMagnitude))
-        
-        let size = usedSize()
-        
-        setContainerSize(bounds.size)
-
-        return size
-    }
-    
-    func setContainerSize(_ size: CGSize) {
-        container.size = size
-        layoutManager.textContainerChangedGeometry(container)
-    }
-        
     func boundsDidChange() {
-        setContainerSize(bounds.size)
+        layout.size = bounds.size
     }
     
-    func usedSize() -> CGSize {
-        _ = layoutManager.glyphRange(for: container)
-        return layoutManager.usedRect(for: container).integral.size
+    func styleSheetDidChange() {
+        documentDidChange() // for now, treat it the same as the source changing
     }
     
-    func url(under point: CGPoint) -> URL? {
-        let characterIndex = layoutManager.characterIndex(for: point,
-                                                          in: container,
-                                                          fractionOfDistanceBetweenInsertionPoints: nil)
-        guard characterIndex >= 0 && characterIndex < storage.length,
-            let url = storage.attribute(.nativeMarkLink, at: characterIndex, effectiveRange: nil) as? NSURL else {
-            return nil
-        }
-        
-        return url as URL
-    }
-        
-    func nativeMarkDidChange() {
-        let nativeMarkString = NativeMarkString(nativeMark: nativeMark, styleSheet: storage.nativeMarkString.styleSheet)
-        storage.nativeMarkString = nativeMarkString
+    func documentDidChange() {
+        resetStorage()
+        buildLayout()
         hasSetIntrinsicWidth = false
+    }
+    
+    func buildLayout() {
+        let builder = TextContainerLayoutBuilder(storage: storage,
+                                                 layoutManager: layoutManager)
+        layout = CompositeTextContainerLayout(parentPath: [])
+        layout.build(builder)
+        builder.removeUnusedTextContainers()
+        layout.size = bounds.size
+    }
+    
+    func resetStorage() {
+        let renderer = Renderer()
+        let attributedString = NSAttributedString(attributedString: renderer.render(document, with: styleSheet, environment: environment))
+        storage.setAttributedString(attributedString)
+        storage.setDelegateForImageAttachments()
     }
 }

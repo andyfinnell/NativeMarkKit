@@ -10,17 +10,11 @@ import UIKit
 public final class StyleSheet {
     private var blockStyles: [BlockStyleSelector: [BlockStyle]]
     private var inlineStyles: [InlineStyleSelector: [InlineStyle]]
-    private var imageLoader: ImageLoader
-    private var imageSizer: ImageSizer
     
     public init(_ blockStyles: [BlockStyleSelector: [BlockStyle]],
-                _ inlineStyles: [InlineStyleSelector: [InlineStyle]],
-                imageLoader: ImageLoader = DefaultImageLoader(),
-                imageSizer: ImageSizer = DefaultImageSizer()) {
+                _ inlineStyles: [InlineStyleSelector: [InlineStyle]]) {
         self.blockStyles = blockStyles
         self.inlineStyles = inlineStyles
-        self.imageLoader = imageLoader
-        self.imageSizer = imageSizer
     }
     
     func styles(for blockSelector: BlockStyleSelector) -> [BlockStyle] {
@@ -32,13 +26,11 @@ public final class StyleSheet {
     }
     
     public func duplicate() -> StyleSheet {
-        StyleSheet(blockStyles, inlineStyles, imageLoader: imageLoader)
+        StyleSheet(blockStyles, inlineStyles)
     }
     
     public func mutate(block overrideBlockStyles: [BlockStyleSelector: [BlockStyle]] = [:],
-                       inline overrideInlineStyles: [InlineStyleSelector: [InlineStyle]] = [:],
-                       imageLoader: ImageLoader? = nil,
-                       imageSizer: ImageSizer? = nil) -> StyleSheet {
+                       inline overrideInlineStyles: [InlineStyleSelector: [InlineStyle]] = [:]) -> StyleSheet {
         for (blockSelector, blockStylesForSelector) in overrideBlockStyles {
             let existingStyles = blockStyles[blockSelector] ?? []
             blockStyles[blockSelector] = existingStyles + blockStylesForSelector
@@ -48,15 +40,7 @@ public final class StyleSheet {
             let existingStyles = inlineStyles[inlineSelector] ?? []
             inlineStyles[inlineSelector] = existingStyles + inlineStylesForSelector
         }
-        
-        if let imageLoader = imageLoader {
-            self.imageLoader = imageLoader
-        }
-        
-        if let imageSizer = imageSizer {
-            self.imageSizer = imageSizer
-        }
-        
+                
         return self
     }
 }
@@ -108,18 +92,17 @@ public extension StyleSheet {
                 .textColor(.adaptableBlockQuoteTextColor),
                 .paragraphSpacingBefore(0.5.em),
                 .paragraphSpacingAfter(0.5.em),
-                .tailIndent(-1.em),
-                .backgroundBorder(width: 8, color: .adaptableBlockQuoteMarginColor, sides: .left)
+                .blockQuote()
             ],
             .list(isTight: true): [
-                .firstLineHeadIndent(0.5.em),
+                .list(paragraphSpacingBefore: 0.0.em, paragraphSpacingAfter: 0.0.em),
                 .orderedListMarker(.lowercaseRoman),
                 .unorderedListMarker(.check),
                 .paragraphSpacingBefore(0.0.em),
                 .paragraphSpacingAfter(0.0.em),
             ],
             .list(isTight: false): [
-                .firstLineHeadIndent(0.5.em),
+                .list(),
                 .orderedListMarker(.lowercaseRoman),
                 .unorderedListMarker(.check),
                 .paragraphSpacingBefore(0.5.em),
@@ -149,14 +132,4 @@ public extension StyleSheet {
             ]
         ]
     )
-}
-
-extension StyleSheet: ImageTextAttachmentDelegate {
-    func imageTextAttachmentResize(_ urlString: String?, image: NativeImage, lineFragment: CGRect) -> CGSize {
-        imageSizer.imageSize(urlString, image: image, lineFragment: lineFragment)
-    }
-    
-    func imageTextAttachmentLoadImage(_ urlString: String, completion: @escaping (NativeImage?) -> Void) {
-        imageLoader.loadImage(urlString, completion: completion)
-    }
 }

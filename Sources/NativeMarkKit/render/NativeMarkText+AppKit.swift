@@ -9,17 +9,20 @@ public struct NativeMarkText: View {
     let nativeMark: String
     let onOpenLink: ((URL) -> Void)?
     let styleSheet: StyleSheet
-
-    public init(_ nativeMark: String, styleSheet: StyleSheet = .default, onOpenLink: ((URL) -> Void)? = URLOpener.open) {
+    let environment: Environment
+    
+    public init(_ nativeMark: String, styleSheet: StyleSheet = .default, environment: Environment = .default, onOpenLink: ((URL) -> Void)? = URLOpener.open) {
         self.nativeMark = nativeMark
         self.onOpenLink = onOpenLink
         self.styleSheet = styleSheet
+        self.environment = environment
     }
 
     public var body: some View {
         NativeMarkViewRepresentable(nativeMark: nativeMark,
                                     onOpenLink: onOpenLink,
                                     styleSheet: styleSheet,
+                                    environment: environment,
                                     intrinsicContentSize: $intrinsicContentSize)
             .frame(height: intrinsicContentSize.height)
     }
@@ -30,10 +33,11 @@ public struct NativeMarkText: View {
         let nativeMark: String
         let onOpenLink: ((URL) -> Void)?
         let styleSheet: StyleSheet
+        let environment: Environment
         @Binding var intrinsicContentSize: CGSize
         
         func makeNSView(context: Context) -> NativeMarkLabel {
-            let label = NativeMarkLabel(nativeMark: nativeMark, styleSheet: styleSheet)
+            let label = NativeMarkLabel(nativeMark: nativeMark, styleSheet: styleSheet, environment: environment)
             label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             label.onOpenLink = onOpenLink
             

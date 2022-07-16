@@ -12,17 +12,20 @@ import UIKit
 final class RenderTestCase: BaseRenderTestCase {
     let nativeMark: String
     let styleSheet: StyleSheet
+    let environment: Environment
     let width: CGFloat
     
-    init(name: String, nativeMark: String, styleSheet: StyleSheet, width: CGFloat) {
+    init(name: String, nativeMark: String, styleSheet: StyleSheet, environment: Environment = .default, width: CGFloat) {
         self.nativeMark = nativeMark
         self.styleSheet = styleSheet
+        self.environment = environment
         self.width = width
         super.init(name: name)
     }
     
     override func render() -> NativeImage {
-        let view = AbstractView(nativeMark: nativeMark, styleSheet: styleSheet)
+        let document = RenderParser.parse(nativeMark)
+        let view = AbstractView(document: document, styleSheet: styleSheet, environment: environment)
         _ = view.intrinsicSize() // it'll assume it has infinite width
         view.bounds = CGRect(x: 0, y: 0, width: width, height: .greatestFiniteMagnitude)
         let sizeWithRealHeight = view.intrinsicSize()

@@ -2,7 +2,9 @@
 
 NativeMarkKit can render inline images. By default, it provides a simple downloader to fetch these images. However, integrating apps might want to provide an alternative image downloader, either for testing purposes or to implement image caching.
 
-The image downloader is attached to the `StyleSheet`, and can be overridden there. To provide a custom image loader, the app needs to implement the `ImageLoader` protocol, then mutate any `StyleSheet`s it wants to use its custom image loader.
+The image downloader is contained in the `Environment` type,  and can be overridden there. To provide a custom image loader, the app needs to implement the `ImageLoader` protocol, then inject that into a `Environment`. From there, the app can either overwrite the `default` `Environment` global, or it can pass the `Environment` into each `NativeMarkLabel` or `NativeMarkText` it wants to use the environment.
+
+Both options start by defining the image loader:
 
 ```Swift
 import NativeMarkKit // pulls in ImageLoader protocol
@@ -15,18 +17,33 @@ final class MyImageLoader: ImageLoader {
         // completion MUST BE called on the main thread
     }
 }
+```
 
-// In app startup have our custom loader be used by default
-StyleSheet.default.mutate(imageLoader: MyImageLoader())
+To effect the entire app, overwrite the global default during app startup:
+
+```Swift
+import NativeMarkKit
+
+// ...in applicationDidFinishLaunching or the like...
+Environment.default = Environment(imageLoader: MyImageLoader(), imageSizer: DefaultImageSizer())
+```
+
+If you want to specify which views use the new image loader, or are averse to mutating globals, you can pass the `Environment` into the `init` method of `NativeMarkLabel` or `NativeMarkText`:
+
+```Swift
+let label = NativeMarkLabel(nativeMark: "Here's a tiny kitten: ![Tiny kitten](http://placekitten.com/g/20/20)", 
+                            environment: Environment(imageLoader: MyImageLoader(), imageSizer: DefaultImageSizer()))
 ```
 
 The `ImageLoader` protocol only requires one method. The `completion` method must be invoked, even if the loading fails. It also must be invoked on the main thread.
 
 # Scaling images
 
-By default, NativeMarkKit will not resize the images it downloads, but render them at their natural size. This isn't always desirable, so nativeMarkKit provides a customization point to allow whatever kind of scaling the app wants.
+By default, NativeMarkKit will not resize the images it downloads, but render them at their natural size. This isn't always desirable, so NativeMarkKit provides a customization point to allow whatever kind of scaling the app wants.
 
-The image sizing behavior is attached to the `StyleSheet`, and can be overridden there. To provide a custom image sizer, the app needs to implement the `ImageSizer` protocol (or use a built-in implementation), then mutate any `StyleSheet`s it wants to use its custom image sizer.
+The image sizing behavior is contained in the `Environment`, and can be overridden there. To provide a custom image sizer, the app needs to implement the `ImageSizer` protocol (or use a built-in implementation), then inject that into a `Environment`. From there, the app can either overwrite the `default` `Environment` global, or it can pass the `Environment` into each `NativeMarkLabel` or `NativeMarkText` it wants to use the environment.
+
+Start by defining the custom image sizer:
 
 ```Swift
 import NativeMarkKit
@@ -36,9 +53,22 @@ struct MyImageSizer: ImageSizer {
         // Implement whatever scaling you wish here. Return the new image size
     }
 }
+```
 
-// In app startup have our custom loader be used by default
-StyleSheet.default.mutate(imageSizer: MyImageSizer())
+To effect the entire app, overwrite the global default during app startup:
+
+```Swift
+import NativeMarkKit
+
+// ...in applicationDidFinishLaunching or the like...
+Environment.default = Environment(imageLoader: DefaultImageLoader(), imageSizer: MyImageSizer())
+```
+
+If you want to specify which views use the new image sizer, or are averse to mutating globals, you can pass the `Environment` into the `init` method of `NativeMarkLabel` or `NativeMarkText`:
+
+```Swift
+let label = NativeMarkLabel(nativeMark: "Here's a tiny kitten: ![Tiny kitten](http://placekitten.com/g/20/20)", 
+                            environment: Environment(imageLoader: DefaultImageLoader(), imageSizer: MyImageSizer()))
 ```
 
 ## Built-in image sizers

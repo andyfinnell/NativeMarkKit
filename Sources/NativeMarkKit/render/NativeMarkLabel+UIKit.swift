@@ -11,12 +11,11 @@ public final class NativeMarkLabel: UIControl {
     }
     
     public var nativeMark: String {
-        get { abstractView.nativeMark }
-        set {
-            guard abstractView.nativeMark != newValue else {
+        didSet {
+            guard nativeMark != oldValue else {
                 return
             }
-            abstractView.nativeMark = newValue
+            abstractView.document = RenderParser.parse(nativeMark)
             invalidateIntrinsicContentSize()
             setNeedsDisplay()
             updateAccessibility()
@@ -27,8 +26,9 @@ public final class NativeMarkLabel: UIControl {
     var onIntrinsicSizeInvalidated: (() -> Void)?
     var isMultiline: Bool { abstractView.isMultiline }
 
-    public init(nativeMark: String, styleSheet: StyleSheet = .default) {
-        abstractView = AbstractView(nativeMark: nativeMark, styleSheet: styleSheet)
+    public init(nativeMark: String, styleSheet: StyleSheet = .default, environment: Environment) {
+        self.nativeMark = nativeMark
+        abstractView = AbstractView(document: RenderParser.parse(nativeMark), styleSheet: styleSheet, environment: environment)
         super.init(frame: .zero)
         if styleSheet.backgroundColor() == nil {
             backgroundColor = .clear
@@ -39,7 +39,8 @@ public final class NativeMarkLabel: UIControl {
     
     public required init?(coder: NSCoder) {
         let styleSheet = StyleSheet.default
-        abstractView = AbstractView(nativeMark: "", styleSheet: styleSheet)
+        nativeMark = ""
+        abstractView = AbstractView(document: RenderParser.parse(""), styleSheet: styleSheet, environment: .default)
         super.init(frame: .zero)
         if styleSheet.backgroundColor() == nil {
             backgroundColor = .clear
