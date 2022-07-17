@@ -20,9 +20,12 @@ public enum BlockStyle {
     case orderedListMarker(OrderedListMarkerFormat, prefix: String = "", suffix: String = ".")
     case unorderedListMarker(UnorderedListMarkerFormat)
     case thematicBreak(thickness: CGFloat, color: NativeColor = .adaptableSeparatorColor)
-    case blockQuote(padding: Padding = Padding(left: 2.em, right: 1.em), borderWidth: CGFloat = 8, borderColor: NativeColor = .adaptableBlockQuoteMarginColor, borderSides: BorderSides = .left)
-    case list(padding: Padding = Padding(left: 0.5.em), markerToContentIndent: Length = 1.5.em, paragraphSpacingBefore: Length = 0.5.em, paragraphSpacingAfter: Length = 0.5.em)
-    case blockBackground(fillColor: NativeColor = .adaptableCodeBackgroundColor, strokeColor: NativeColor = .adaptableCodeBorderColor, strokeWidth: CGFloat = 1, cornerRadius: CGFloat = 3, topMargin: Length = 1.em, bottomMargin: Length = 1.em, leftMargin: Length = 1.em, rightMargin: Length = 1.em)
+    case blockBorder(Border = Border(shape: .rectangle(sides: .all), width: 1, color: .adaptableCodeBorderColor))
+    case blockMargin(Margin)
+    case blockPadding(Padding)
+    case blockBackground(NativeColor)
+    case list(padding: Padding = Padding(left: 0.5.em, right: 0.em, top: 0.em, bottom: 0.em), markerToContentIndent: Length = 1.5.em, paragraphSpacingBefore: Length = 0.5.em, paragraphSpacingAfter: Length = 0.5.em)
+    case codeBlockBackground(fillColor: NativeColor = .adaptableCodeBackgroundColor, strokeColor: NativeColor = .adaptableCodeBorderColor, strokeWidth: CGFloat = 1, cornerRadius: CGFloat = 3, topMargin: Length = 1.em, bottomMargin: Length = 1.em, leftMargin: Length = 1.em, rightMargin: Length = 1.em)
     case inlineStyle(InlineStyle)
 }
 
@@ -78,7 +81,8 @@ extension BlockStyle: ExpressibleAsParagraphStyle {
         case let .lineBreak(lineBreak):
             paragraphStyle.lineBreakMode = lineBreak
         case .inlineStyle, .orderedListMarker, .unorderedListMarker, .thematicBreak,
-                .blockBackground, .blockQuote, .list:
+                .codeBlockBackground, .list, .blockBorder, .blockMargin,
+                .blockPadding, .blockBackground:
             break // handled elsewhere
         }
     }
@@ -96,8 +100,8 @@ extension BlockStyle: ExpressibleAsAttributes {
         case let .thematicBreak(thickness: thickness, color: color):
             attributes[.thematicBreakThickness] = thickness
             attributes[.thematicBreakColor] = color
-        case let .blockBackground(fillColor: fillColor, strokeColor: strokeColor, strokeWidth: strokeWidth, cornerRadius: cornerRadius, topMargin: topMargin, bottomMargin: bottomMargin, leftMargin: leftMargin, rightMargin: rightMargin):
-            let value = BackgroundValue(fillColor: fillColor,
+        case let .codeBlockBackground(fillColor: fillColor, strokeColor: strokeColor, strokeWidth: strokeWidth, cornerRadius: cornerRadius, topMargin: topMargin, bottomMargin: bottomMargin, leftMargin: leftMargin, rightMargin: rightMargin):
+            let value = CodeBlockBackgroundValue(fillColor: fillColor,
                                              strokeColor: strokeColor,
                                              strokeWidth: strokeWidth,
                                              cornerRadius: cornerRadius,
@@ -105,17 +109,7 @@ extension BlockStyle: ExpressibleAsAttributes {
                                              bottomMargin: bottomMargin,
                                              leftMargin: leftMargin,
                                              rightMargin: rightMargin)
-            attributes[.blockBackground] = value
-        case let .blockQuote(padding: padding, borderWidth: borderWidth, borderColor: borderColor, borderSides: borderSides):
-            let defaultFont = (attributes[.font] as? NativeFont) ?? TextStyle.body.makeFont()
-            let value = BlockQuoteValue(leftPadding: padding.left.asRawPoints(for: defaultFont.pointSize),
-                                        rightPadding: padding.right.asRawPoints(for: defaultFont.pointSize),
-                                        topPadding: padding.top.asRawPoints(for: defaultFont.pointSize),
-                                        bottomPadding: padding.bottom.asRawPoints(for: defaultFont.pointSize),
-                                        borderWidth: borderWidth,
-                                        borderColor: borderColor,
-                                        borderSides: borderSides)
-            attributes[.blockQuote] = value
+            attributes[.codeBlockBackground] = value
         case let .list(padding: padding, markerToContentIndent: markerToContentIndent, paragraphSpacingBefore: paragraphSpacingBefore, paragraphSpacingAfter: paragraphSpacingAfter):
             let defaultFont = (attributes[.font] as? NativeFont) ?? TextStyle.body.makeFont()
             let value = ListValue(leftPadding: padding.left.asRawPoints(for: defaultFont.pointSize),
@@ -126,7 +120,27 @@ extension BlockStyle: ExpressibleAsAttributes {
                                   paragraphSpacingBefore: paragraphSpacingBefore.asRawPoints(for: defaultFont.pointSize),
                                   paragraphSpacingAfter: paragraphSpacingAfter.asRawPoints(for: defaultFont.pointSize))
             attributes[.list] = value
-        default:
+        
+        case let .blockBorder(border):
+            attributes[.blockBorder] = BorderValue(border: border)
+        case let .blockMargin(margin):
+            let defaultFont = (attributes[.font] as? NativeFont) ?? TextStyle.body.makeFont()
+            attributes[.blockMargin] = MarginValue(margin: margin.asRawPoints(for: defaultFont.pointSize))
+        case let .blockPadding(padding):
+            let defaultFont = (attributes[.font] as? NativeFont) ?? TextStyle.body.makeFont()
+            attributes[.blockPadding] = PaddingValue(padding: padding.asRawPoints(for: defaultFont.pointSize))
+        case let .blockBackground(color):
+            attributes[.blockBackground] = color
+            
+        case .alignment,
+         .firstLineHeadIndent,
+         .headIndent,
+         .tailIndent,
+         .lineHeightMultiple,
+         .lineSpacing,
+         .paragraphSpacingAfter,
+         .paragraphSpacingBefore,
+        .lineBreak:
             break
         }
     }

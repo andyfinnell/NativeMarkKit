@@ -58,7 +58,7 @@ extension InlineStyle: ExpressibleAsAttributes {
             let backgroundBorder = BackgroundBorderValue(width: width, color: color, sides: sides)
             attributes[.backgroundBorder] = backgroundBorder
         case let .inlineBackground(fillColor: fillColor, strokeColor: strokeColor, strokeWidth: strokeWidth, cornerRadius: cornerRadius, topMargin: topMargin, bottomMargin: bottomMargin, leftMargin: leftMargin, rightMargin: rightMargin):
-            let value = BackgroundValue(fillColor: fillColor,
+            let value = CodeBlockBackgroundValue(fillColor: fillColor,
                                               strokeColor: strokeColor,
                                               strokeWidth: strokeWidth,
                                               cornerRadius: cornerRadius,

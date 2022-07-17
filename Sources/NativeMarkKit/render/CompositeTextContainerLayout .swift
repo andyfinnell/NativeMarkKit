@@ -41,8 +41,8 @@ final class CompositeTextContainerLayout: TextContainerLayout {
                 layouts.append(layout)
                 // Can't have any children, so don't try
                 
-            case let .blockQuote(blockQuoteValue):
-                let layout = BlockQuoteTextContainerLayout(path: containerBreak.path, value: blockQuoteValue)
+            case let .blockQuote(style):
+                let layout = BlockQuoteTextContainerLayout(path: containerBreak.path, style: style)
                 layout.superLayout = self
                 layouts.append(layout)
                 layout.build(builder)

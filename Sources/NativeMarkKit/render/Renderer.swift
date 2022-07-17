@@ -120,7 +120,7 @@ private extension Renderer {
     
     func fixInlineBackgroundSpacing(in result: NSMutableAttributedString) {
         result.enumerateAttribute(.inlineBackground, in: NSRange(location: 0, length: result.length), options: .reverse) { value, characterRange, _ in
-            guard let background = value as? BackgroundValue else { return }
+            guard let background = value as? CodeBlockBackgroundValue else { return }
             
             insertSpacer(background.rightMargin, at: characterRange.upperBound, in: result)
             insertSpacer(background.leftMargin, at: characterRange.lowerBound, in: result)
@@ -203,15 +203,27 @@ private extension Renderer {
             state.pop()
         }
         
-        let blockQuoteValue = state.attributes()[.blockQuote] as? BlockQuoteValue ?? BlockQuoteValue()
+        let style = textContainerStyle(from: state)
 
-        enterContainer(.blockQuote(blockQuoteValue), with: state, in: result)
+        enterContainer(.blockQuote(style), with: state, in: result)
 
         render(elements, indent: indent + 1, with: state, into: result)
         
-        exitContainer(.blockQuote(blockQuoteValue), with: state, in: result)
+        exitContainer(.blockQuote(style), with: state, in: result)
     }
 
+    func textContainerStyle(from state: State) -> TextContainerStyle {
+        let attrs = state.attributes()
+        let marginValue = attrs[.blockMargin] as? MarginValue
+        let borderValue = attrs[.blockBorder] as? BorderValue
+        let paddingValue = attrs[.blockPadding] as? PaddingValue
+        let backgroundValue = attrs[.blockBackground] as? NativeColor
+        return TextContainerStyle(margin: marginValue?.margin,
+                                  border: borderValue?.border,
+                                  padding: paddingValue?.padding,
+                                  backgroundColor: backgroundValue)
+    }
+    
     func renderCodeBlock(info: String, text: String, indent: Int, with state: State, into result: NSMutableAttributedString) {
         // TODO: delegate out so let a more sophisticated renderer do syntax highlighting
         state.push(.codeBlock)

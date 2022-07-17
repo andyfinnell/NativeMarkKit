@@ -94,13 +94,13 @@ extension LayoutManager: NSLayoutManagerDelegate {
         let characterRange = layoutManager.characterRange(forGlyphRange: glyphRange, actualGlyphRange: nil)
         
         var effectiveRange = characterRange
-        if let blockBackground = storage?.safeAttribute(.blockBackground, at: characterRange.location, effectiveRange: &effectiveRange) as? BackgroundValue {
+        if let codeBlockBackground = storage?.safeAttribute(.codeBlockBackground, at: characterRange.location, effectiveRange: &effectiveRange) as? CodeBlockBackgroundValue {
             let isAtStart = characterRange.location == effectiveRange.location
             let isAtEnd = characterRange.upperBound == effectiveRange.upperBound
             let defaultFont = storage?.safeAttribute(.font, at: characterRange.location, effectiveRange: nil) as? NativeFont ?? TextStyle.body.makeFont()
             
-            let topMargin = isAtStart ? blockBackground.topMargin.asRawPoints(for: defaultFont.pointSize) : 0
-            let bottomMargin = isAtEnd ? blockBackground.bottomMargin.asRawPoints(for: defaultFont.pointSize) : 0
+            let topMargin = isAtStart ? codeBlockBackground.topMargin.asRawPoints(for: defaultFont.pointSize) : 0
+            let bottomMargin = isAtEnd ? codeBlockBackground.bottomMargin.asRawPoints(for: defaultFont.pointSize) : 0
             
             let originalLineFragmentRect = lineFragmentRect.pointee
             let updatedLineFragmentRect = CGRect(x: originalLineFragmentRect.minX,
@@ -159,20 +159,20 @@ private extension LayoutManager {
         }
         
         let characterRange = self.characterRange(forGlyphRange: glyphsToShow, actualGlyphRange: nil)
-        storage.enumerateAttribute(.blockBackground, in: characterRange, options: []) { value, range, stop in
-            guard let blockBackground = value as? BackgroundValue else { return }
-            drawBlockBackground(blockBackground, forCharacterRange: range)
+        storage.enumerateAttribute(.codeBlockBackground, in: characterRange, options: []) { value, range, stop in
+            guard let codeBlockBackground = value as? CodeBlockBackgroundValue else { return }
+            drawBlockBackground(codeBlockBackground, forCharacterRange: range)
         }
     }
     
-    func drawBlockBackground(_ blockBackground: BackgroundValue, forCharacterRange characterRange: NSRange) {
+    func drawBlockBackground(_ codeBlockBackground: CodeBlockBackgroundValue, forCharacterRange characterRange: NSRange) {
         let glyphRange = self.glyphRange(forCharacterRange: characterRange, actualCharacterRange: nil)
         guard let container = textContainer(forGlyphAt: glyphRange.location, effectiveRange: nil) as? TextContainer else {
             return
         }
         let frame = boundingRect(forGlyphRange: glyphRange, in: container) + container.origin
         let defaultFont = textStorage?.safeAttribute(.font, at: characterRange.location, effectiveRange: nil) as? NativeFont ?? TextStyle.body.makeFont()
-        blockBackground.render(in: frame, defaultFont: defaultFont)
+        codeBlockBackground.render(in: frame, defaultFont: defaultFont)
     }
     
     func drawBackgroundBorders(forGlyphRange glyphsToShow: NSRange) {
@@ -203,12 +203,12 @@ private extension LayoutManager {
         
         let characterRange = self.characterRange(forGlyphRange: glyphsToShow, actualGlyphRange: nil)
         storage.enumerateAttribute(.inlineBackground, in: characterRange, options: []) { value, range, stop in
-            guard let inlineBackground = value as? BackgroundValue else { return }
+            guard let inlineBackground = value as? CodeBlockBackgroundValue else { return }
             drawInlineBackground(inlineBackground, forCharacterRange: range)
         }
     }
     
-    func drawInlineBackground(_ inlineBackground: BackgroundValue, forCharacterRange characterRange: NSRange) {
+    func drawInlineBackground(_ inlineBackground: CodeBlockBackgroundValue, forCharacterRange characterRange: NSRange) {
         let defaultFont = textStorage?.safeAttribute(.font, at: characterRange.location, effectiveRange: nil) as? NativeFont ?? TextStyle.body.makeFont()
         
         enumerateTypographicBounds(forCharacterRange: characterRange) { glyphRange, lineFrame, container in

@@ -20,16 +20,16 @@ final class BackgroundBorderValue: NSObject {
         color.set()
         
         if sides.contains(.left) {
-            leftFrame(for: backgroundFrame).fill()
+            backgroundFrame.leftFrame(for: width).fill()
         }
         if sides.contains(.top) {
-            topFrame(for: backgroundFrame).fill()
+            backgroundFrame.topFrame(for: width).fill()
         }
         if sides.contains(.right) {
-            rightFrame(for: backgroundFrame).fill()
+            backgroundFrame.rightFrame(for: width).fill()
         }
         if sides.contains(.bottom) {
-            bottomFrame(for: backgroundFrame).fill()
+            backgroundFrame.bottomFrame(for: width).fill()
         }
     }
     
@@ -38,35 +38,5 @@ final class BackgroundBorderValue: NSObject {
             return false
         }
         return width == rhs.width && color == rhs.color && sides == rhs.sides
-    }
-}
-
-private extension BackgroundBorderValue {
-    func leftFrame(for backgroundFrame: CGRect) -> CGRect {
-        CGRect(x: backgroundFrame.minX,
-               y: backgroundFrame.minY,
-               width: width,
-               height: backgroundFrame.height)
-    }
-    
-    func rightFrame(for backgroundFrame: CGRect) -> CGRect {
-        CGRect(x: backgroundFrame.maxX - width,
-               y: backgroundFrame.minY,
-               width: width,
-               height: backgroundFrame.height)
-    }
-
-    func topFrame(for backgroundFrame: CGRect) -> CGRect {
-        CGRect(x: backgroundFrame.minX,
-               y: backgroundFrame.minY,
-               width: backgroundFrame.width,
-               height: width)
-    }
-
-    func bottomFrame(for backgroundFrame: CGRect) -> CGRect {
-        CGRect(x: backgroundFrame.minX,
-               y: backgroundFrame.maxY - width,
-               width: backgroundFrame.width,
-               height: width)
     }
 }

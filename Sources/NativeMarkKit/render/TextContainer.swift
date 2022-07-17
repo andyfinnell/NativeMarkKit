@@ -45,13 +45,13 @@ private extension TextContainer {
     }
     
     func marginsForBlockBackground(at characterIndex: Int) -> (leading: CGFloat, trailing: CGFloat) {
-        guard let blockBackground = storage?.safeAttribute(.blockBackground, at: characterIndex, effectiveRange: nil) as? BackgroundValue else {
+        guard let codeBlockBackground = storage?.safeAttribute(.codeBlockBackground, at: characterIndex, effectiveRange: nil) as? CodeBlockBackgroundValue else {
             return (leading: 0, trailing: 0)
         }
         
         let defaultFont = storage?.safeAttribute(.font, at: characterIndex, effectiveRange: nil) as? NativeFont ?? TextStyle.body.makeFont()
-        return (leading: blockBackground.leftMargin.asRawPoints(for: defaultFont.pointSize),
-                trailing: blockBackground.rightMargin.asRawPoints(for: defaultFont.pointSize))
+        return (leading: codeBlockBackground.leftMargin.asRawPoints(for: defaultFont.pointSize),
+                trailing: codeBlockBackground.rightMargin.asRawPoints(for: defaultFont.pointSize))
     }
     
     func textContainerMarginsAt(_ characterIndex: Int) -> (leading: CGFloat, trailing: CGFloat) {

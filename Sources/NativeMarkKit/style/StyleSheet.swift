@@ -86,13 +86,14 @@ public extension StyleSheet {
                 .textStyle(.code),
                 .paragraphSpacingBefore(0.pt),
                 .paragraphSpacingAfter(0.pt),
-                .blockBackground(fillColor: .adaptableCodeBackgroundColor, strokeColor: .adaptableCodeBorderColor, strokeWidth: 1, cornerRadius: 3)
+                .codeBlockBackground(fillColor: .adaptableCodeBackgroundColor, strokeColor: .adaptableCodeBorderColor, strokeWidth: 1, cornerRadius: 3)
             ],
             .blockQuote: [
                 .textColor(.adaptableBlockQuoteTextColor),
                 .paragraphSpacingBefore(0.5.em),
                 .paragraphSpacingAfter(0.5.em),
-                .blockQuote()
+                .blockPadding(Padding(left: 1.35.em, right: 1.em, top: 0.em, bottom: 0.em)),
+                .blockBorder(Border(shape: .rectangle(sides: .left), width: 8, color: .adaptableBlockQuoteMarginColor))
             ],
             .list(isTight: true): [
                 .list(paragraphSpacingBefore: 0.0.em, paragraphSpacingAfter: 0.0.em),
