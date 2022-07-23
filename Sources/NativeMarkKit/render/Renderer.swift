@@ -257,14 +257,15 @@ private extension Renderer {
         }
         
         let listValue = state.attributes()[.list] as? ListValue ?? ListValue()
+        let style = textContainerStyle(from: state)
 
-        enterContainer(.list(listValue), with: state, in: result)
+        enterContainer(.list(listValue, style: style), with: state, in: result)
 
         for (index, item) in items.enumerated() {
             render(item, info: info, index: index, indent: indent, with: state, into: result)
         }
         
-        exitContainer(.list(listValue), with: state, in: result)
+        exitContainer(.list(listValue, style: style), with: state, in: result)
     }
     
     func renderListItemMarker(_ index: Int, item: ListItem, info: ListInfo, indent: Int, with state: State, into result: NSMutableAttributedString) {

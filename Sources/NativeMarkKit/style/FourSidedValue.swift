@@ -25,6 +25,8 @@ public struct FourSidedValue<Value> {
 }
 
 extension FourSidedValue where Value == Length {
+    static let zero = FourSidedValue(left: 0.pt, right: 0.pt, top: 0.pt, bottom: 0.pt)
+    
     func asRawPoints(for fontSize: CGFloat) -> FourSidedValue<CGFloat> {
         FourSidedValue<CGFloat>(left: left.asRawPoints(for: fontSize),
                                 right: right.asRawPoints(for: fontSize),

@@ -23,6 +23,8 @@ public struct Border: Equatable {
 }
 
 extension Border {
+    static let none = Border(shape: .rectangle(sides: []), width: 0, color: .clear)
+    
     var leftOffset: CGFloat {
         shape.offsetMultipler(for: .left) * width
     }

@@ -9,6 +9,7 @@ final class ListTextContainerLayout: TextContainerLayout {
     private let path: [ContainerKind]
     private var itemLayouts = [ListItemTextContainerLayout]()
     private let value: ListValue
+    private let style: TextContainerStyle
     weak var superLayout: TextContainerLayout?
     var origin: CGPoint = .zero
     var size: CGSize = .zero {
@@ -17,9 +18,11 @@ final class ListTextContainerLayout: TextContainerLayout {
         }
     }
     
-    init(path: [ContainerKind], value: ListValue) {
+    init(path: [ContainerKind], value: ListValue, style: TextContainerStyle) {
         self.path = path
         self.value = value
+        self.style = style
+        // TODO: apply style
     }
     
     func build(_ builder: TextContainerLayoutBuilder) {
@@ -56,33 +59,35 @@ final class ListTextContainerLayout: TextContainerLayout {
     }
 
     func measure(maxWidth: CGFloat) -> CGSize {
-        let contentMaxWidth = maxWidth - value.leftPadding - value.rightPadding
-        var relativeOrigin = CGPoint.zero
-        var previousBottomSpacing: CGFloat = 0.0
-        var hadPrevious = false
-        var relativeWidth: CGFloat = 0.0
-        
-        for layout in itemLayouts {
-            let layoutSize = layout.measure(maxWidth: contentMaxWidth)
-            relativeWidth = max(layoutSize.width, relativeWidth)
+        style.measure(maxWidth: maxWidth) { contentMaxWidth in
+            var relativeOrigin = CGPoint.zero
+            var previousBottomSpacing: CGFloat = 0.0
+            var hadPrevious = false
+            var relativeWidth: CGFloat = 0.0
             
-            if hadPrevious {
-                relativeOrigin.y += previousBottomSpacing + layout.paragraphSpacingBefore
+            for layout in itemLayouts {
+                let layoutSize = layout.measure(maxWidth: contentMaxWidth)
+                relativeWidth = max(layoutSize.width, relativeWidth)
+                
+                if hadPrevious {
+                    relativeOrigin.y += previousBottomSpacing + layout.paragraphSpacingBefore
+                }
+                
+                relativeOrigin.y += layoutSize.height
+                
+                previousBottomSpacing = layout.paragraphSpacingAfter
+                hadPrevious = true
             }
-            
-            relativeOrigin.y += layoutSize.height
-            
-            previousBottomSpacing = layout.paragraphSpacingAfter
-            hadPrevious = true
+
+            return CGSize(width: relativeWidth,
+                          height: relativeOrigin.y)
+
         }
-
-        return CGSize(width: relativeWidth + value.leftPadding + value.rightPadding,
-                      height: relativeOrigin.y + value.topPadding + value.bottomPadding)
-
     }
     
     func draw(at point: CGPoint) {
         let offset = point + origin
+        style.draw(in: CGRect(origin: offset, size: size))
         for layout in itemLayouts {
             layout.draw(at: offset)
         }
@@ -106,14 +111,14 @@ final class ListTextContainerLayout: TextContainerLayout {
 
 private extension ListTextContainerLayout {
     func sizeDidChange() {
-        let contentMaxWidth = size.width - value.leftPadding - value.rightPadding
-        var relativeOrigin = CGPoint(x: value.leftPadding, y: value.topPadding)
+        let contentFrame = style.contentFrame(for: size)
+        var relativeOrigin = contentFrame.origin
         var previousBottomSpacing: CGFloat = 0.0
         var hadPrevious = false
 
         for layout in itemLayouts {
-            let layoutSize = layout.measure(maxWidth: contentMaxWidth)
-            layout.size = CGSize(width: contentMaxWidth, height: layoutSize.height)
+            let layoutSize = layout.measure(maxWidth: contentFrame.width)
+            layout.size = CGSize(width: contentFrame.width, height: layoutSize.height)
             
             if hadPrevious {
                 relativeOrigin.y += previousBottomSpacing + layout.paragraphSpacingBefore

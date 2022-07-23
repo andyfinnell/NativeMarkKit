@@ -3,7 +3,7 @@ import Foundation
 enum ContainerKind: Equatable {
     case leaf // paragraph, thematicBreak, heading, codeBlock
     case blockQuote(TextContainerStyle)
-    case list(ListValue)
+    case list(ListValue, style: TextContainerStyle)
     case listItem
     case listItemMarker
     case listItemContent

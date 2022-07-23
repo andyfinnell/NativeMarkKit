@@ -28,8 +28,10 @@ final class CompositeTextContainerLayout: TextContainerLayout {
             builder.removeNextContainerBreak()
             
             switch containerBreak.path.last {
-            case let .list(listValue):
-                let layout = ListTextContainerLayout(path: containerBreak.path, value: listValue)
+            case let .list(listValue, style: style):
+                let layout = ListTextContainerLayout(path: containerBreak.path,
+                                                     value: listValue,
+                                                     style: style)
                 layout.superLayout = self
                 layouts.append(layout)
                 layout.build(builder)

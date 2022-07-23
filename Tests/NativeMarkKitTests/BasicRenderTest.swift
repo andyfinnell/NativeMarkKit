@@ -368,6 +368,43 @@ what it looks like.
 
     }
     
+    func testTightOrderedListWithCustomStyling() {
+        let nativeMark = """
+# Ordered lists
+
+Let's see if we can make tight ordered lists
+look correct.
+
+1. First things, first
+1. Then the second
+1. Third should be here, and I need one that will wrap lines so I can see how that looks.
+Can I make this wrap even more? The world may never know. I'm not sure how to make
+tab stops work cross lines.
+    - One
+    - Two
+    - The third one is always the longest. I don't know why, but there you have it
+    - Four
+1. And done.
+
+Add a paragraph after the list just to see
+what it looks like.
+"""
+        let styleSheet = StyleSheet.default.duplicate().mutate(block: [
+            .list(isTight: true): [
+                .blockMargin(Margin(left: 0.25.em, right: 0.25.em, top: 0.25.em, bottom: 0.25.em)),
+                .blockPadding(Padding(left: 0.5.em, right: 0.5.em, top: 0.5.em, bottom: 0.5.em)),
+                .blockBorder(Border(shape: .roundedRect(cornerRadius: 3), width: 1, color: .adaptableTextColor)),
+                .blockBackground(.adaptableCodeBackgroundColor),
+                .backgroundColor(.adaptableCodeBackgroundColor)
+            ]
+        ])
+        let testCase = RenderTestCase(name: "TightOrderedListWithCustomStyling",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
     func testLowercaseAlphaOrderedList() {
         let nativeMark = """
 Let's see if we can make ordered lists

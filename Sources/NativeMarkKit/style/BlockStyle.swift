@@ -24,7 +24,7 @@ public enum BlockStyle {
     case blockMargin(Margin)
     case blockPadding(Padding)
     case blockBackground(NativeColor?)
-    case list(padding: Padding = Padding(left: 0.5.em, right: 0.em, top: 0.em, bottom: 0.em), markerToContentIndent: Length = 1.5.em, paragraphSpacingBefore: Length = 0.5.em, paragraphSpacingAfter: Length = 0.5.em)
+    case list(markerToContentIndent: Length = 1.5.em)
     case inlineStyle(InlineStyle)
 }
 
@@ -98,15 +98,9 @@ extension BlockStyle: ExpressibleAsAttributes {
         case let .thematicBreak(thickness: thickness, color: color):
             attributes[.thematicBreakThickness] = thickness
             attributes[.thematicBreakColor] = color
-        case let .list(padding: padding, markerToContentIndent: markerToContentIndent, paragraphSpacingBefore: paragraphSpacingBefore, paragraphSpacingAfter: paragraphSpacingAfter):
+        case let .list(markerToContentIndent: markerToContentIndent):
             let defaultFont = (attributes[.font] as? NativeFont) ?? TextStyle.body.makeFont()
-            let value = ListValue(leftPadding: padding.left.asRawPoints(for: defaultFont.pointSize),
-                                  rightPadding: padding.right.asRawPoints(for: defaultFont.pointSize),
-                                  topPadding: padding.top.asRawPoints(for: defaultFont.pointSize),
-                                  bottomPadding: padding.bottom.asRawPoints(for: defaultFont.pointSize),
-                                  markerToContentIndent: markerToContentIndent.asRawPoints(for: defaultFont.pointSize),
-                                  paragraphSpacingBefore: paragraphSpacingBefore.asRawPoints(for: defaultFont.pointSize),
-                                  paragraphSpacingAfter: paragraphSpacingAfter.asRawPoints(for: defaultFont.pointSize))
+            let value = ListValue(markerToContentIndent: markerToContentIndent.asRawPoints(for: defaultFont.pointSize))
             attributes[.list] = value
         
         case let .blockBorder(border):
