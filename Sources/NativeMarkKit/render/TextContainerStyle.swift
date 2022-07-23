@@ -5,7 +5,7 @@ import AppKit
 import UIKit
 #endif
 
-struct TextContainerStyle {
+struct TextContainerStyle: Equatable {
     let margin: PointMargin?
     let border: Border?
     let padding: PointPadding?
@@ -23,9 +23,13 @@ extension TextContainerStyle {
     }
 
     func draw(in frame: CGRect) {
-        let borderFrame = margin.map { frame.inset(by: $0) } ?? frame
+        var borderFrame = margin.map { frame.inset(by: $0) } ?? frame
         let paddingFrame = border.map { borderFrame.inset(by: $0) } ?? borderFrame
         if let border = border {
+            if border.width == 1.0 {
+                borderFrame = borderFrame.integral
+            }
+
             border.draw(in: borderFrame, background: drawBackground(in:))
         } else {
             drawBackground(in: paddingFrame)
@@ -37,16 +41,6 @@ extension TextContainerStyle {
                y: topOffset,
                width: size.width - leftOffset - rightOffset,
                height: size.height - topOffset - bottomOffset)
-    }
-}
-
-private extension TextContainerStyle {
-    func drawBackground(in frame: CGRect) {
-        guard let color = backgroundColor else {
-            return
-        }
-        color.setFill()
-        NativeBezierPath(rect: frame).fill()
     }
     
     var leftOffset: CGFloat {
@@ -62,7 +56,7 @@ private extension TextContainerStyle {
         let paddingOffset = padding?.right ?? 0
         return marginOffset + borderOffset + paddingOffset
     }
-
+    
     var topOffset: CGFloat {
         let marginOffset = margin?.top ?? 0
         let borderOffset = border?.topOffset ?? 0
@@ -76,5 +70,14 @@ private extension TextContainerStyle {
         let paddingOffset = padding?.bottom ?? 0
         return marginOffset + borderOffset + paddingOffset
     }
+}
 
+private extension TextContainerStyle {
+    func drawBackground(in frame: CGRect) {
+        guard let color = backgroundColor else {
+            return
+        }
+        color.setFill()
+        NativeBezierPath(rect: frame).fill()
+    }
 }

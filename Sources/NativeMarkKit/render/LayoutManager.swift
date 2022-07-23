@@ -31,7 +31,6 @@ final class LayoutManager: NSLayoutManager {
     override func drawBackground(forGlyphRange glyphsToShow: NSRange, at origin: CGPoint) {
         super.drawBackground(forGlyphRange: glyphsToShow, at: origin)
         
-        drawBackgroundBorders(forGlyphRange: glyphsToShow)
         drawInlineBackgrounds(forGlyphRange: glyphsToShow)
     }
     
@@ -120,28 +119,6 @@ extension LayoutManager: NSLayoutManagerDelegate {
 }
 
 private extension LayoutManager {
-        
-    func drawBackgroundBorders(forGlyphRange glyphsToShow: NSRange) {
-        guard let storage = textStorage else {
-            return
-        }
-        
-        let characterRange = self.characterRange(forGlyphRange: glyphsToShow, actualGlyphRange: nil)
-        storage.enumerateAttribute(.backgroundBorder, in: characterRange, options: []) { value, range, stop in
-            guard let backgroundBorder = value as? BackgroundBorderValue else { return }
-            drawBackgroundBorder(backgroundBorder, forCharacterRange: range)
-        }
-    }
-    
-    func drawBackgroundBorder(_ backgroundBorder: BackgroundBorderValue, forCharacterRange characterRange: NSRange) {
-        let glyphRange = self.glyphRange(forCharacterRange: characterRange, actualCharacterRange: nil)
-        guard let container = textContainer(forGlyphAt: glyphRange.location, effectiveRange: nil) as? TextContainer else {
-            return
-        }
-        let frame = boundingRect(forGlyphRange: glyphRange, in: container) + container.origin
-        backgroundBorder.render(with: frame)
-    }
-    
     func drawInlineBackgrounds(forGlyphRange glyphsToShow: NSRange) {
         guard let storage = textStorage else {
             return
@@ -149,19 +126,17 @@ private extension LayoutManager {
         
         let characterRange = self.characterRange(forGlyphRange: glyphsToShow, actualGlyphRange: nil)
         storage.enumerateAttribute(.inlineBackground, in: characterRange, options: []) { value, range, stop in
-            guard let inlineBackground = value as? InlineBackgroundValue else { return }
+            guard let inlineBackground = value as? InlineContainerStyleValue else { return }
             drawInlineBackground(inlineBackground, forCharacterRange: range)
         }
     }
     
-    func drawInlineBackground(_ inlineBackground: InlineBackgroundValue, forCharacterRange characterRange: NSRange) {
-        let defaultFont = textStorage?.safeAttribute(.font, at: characterRange.location, effectiveRange: nil) as? NativeFont ?? TextStyle.body.makeFont()
-        
+    func drawInlineBackground(_ inlineBackground: InlineContainerStyleValue, forCharacterRange characterRange: NSRange) {        
         enumerateTypographicBounds(forCharacterRange: characterRange) { glyphRange, lineFrame, container in
             guard let textContainer = container as? TextContainer else {
                 return
             }
-            inlineBackground.render(in: lineFrame + textContainer.origin, defaultFont: defaultFont)
+            inlineBackground.draw(in: lineFrame + textContainer.origin)
         }
     }
     

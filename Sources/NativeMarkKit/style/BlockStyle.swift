@@ -52,10 +52,6 @@ public extension BlockStyle {
     static func underline(_ style: NSUnderlineStyle, color: NativeColor? = nil) -> BlockStyle {
         .inlineStyle(.underline(style, color: color))
     }
-    
-    static func backgroundBorder(width: CGFloat = 1, color: NativeColor = .lightGray, sides: BorderSides = .all) -> BlockStyle {
-        .inlineStyle(.backgroundBorder(width: width, color: color, sides: sides))
-    }
 }
 
 extension BlockStyle: ExpressibleAsParagraphStyle {

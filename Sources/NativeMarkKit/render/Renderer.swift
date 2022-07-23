@@ -128,10 +128,10 @@ private extension Renderer {
     
     func fixInlineBackgroundSpacing(in result: NSMutableAttributedString) {
         result.enumerateAttribute(.inlineBackground, in: NSRange(location: 0, length: result.length), options: .reverse) { value, characterRange, _ in
-            guard let background = value as? InlineBackgroundValue else { return }
+            guard let background = value as? InlineContainerStyleValue else { return }
             
-            insertSpacer(background.rightMargin, at: characterRange.upperBound, in: result)
-            insertSpacer(background.leftMargin, at: characterRange.lowerBound, in: result)
+            insertSpacer(background.leftOffset, at: characterRange.upperBound, in: result)
+            insertSpacer(background.rightOffset, at: characterRange.lowerBound, in: result)
         }
     }
     
@@ -451,9 +451,7 @@ private extension Renderer {
         result.addAttributes(state.attributes(), range: NSRange(location: startLocation, length: result.length - startLocation))
     }
     
-    func insertSpacer(_ length: Length, at characterIndex: Int, in result: NSMutableAttributedString) {
-        let defaultFont = self.defaultFont(at: characterIndex, in: result)
-        let lengthInPoints = length.asRawPoints(for: defaultFont.pointSize)
+    func insertSpacer(_ lengthInPoints: CGFloat, at characterIndex: Int, in result: NSMutableAttributedString) {
         let attachment = SpacerAttachment(lengthInPoints: lengthInPoints)
         result.insert(NSAttributedString(attachment: attachment), at: characterIndex)
     }

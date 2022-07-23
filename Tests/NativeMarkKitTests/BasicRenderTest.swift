@@ -299,7 +299,47 @@ to have the desired effect.
         XCTAssert(testCase.isPassing(for: self))
     }
     
-    
+    func testAlternativedInlineStyles() {
+        let styleSheet = StyleSheet.default.duplicate().mutate(inline: [
+            .emphasis: [
+                .inlineBackground(margin: Margin(left: 3.pt, right: 3.pt, top: 0.pt, bottom: 0.pt),
+                                  border: Border(shape: .roundedRect(cornerRadius: 3), width: 1, color: .adaptableTextColor),
+                                  padding: Margin(left: 5.pt, right: 5.pt, top: 1.pt, bottom: 1.pt),
+                                  backgroundColor: nil)
+            ],
+            .strong: [
+                .inlineBackground(margin: Margin(left: 3.pt, right: 3.pt, top: 0.pt, bottom: 0.pt),
+                                  border: Border(shape: .roundedRect(cornerRadius: 3), width: 1, color: .adaptableTextColor),
+                                  padding: Margin(left: 5.pt, right: 5.pt, top: 1.pt, bottom: 1.pt),
+                                  backgroundColor: .red),
+                .backgroundColor(.red),
+                .textColor(.white),
+                .kerning(0.2.em)
+            ],
+            .code: [
+                .inlineBackground(margin: .zero,
+                                  border: Border(shape: .rectangle(sides: [.bottom, .right]), width: 2, color: .purple),
+                                  padding: Margin(left: 5.pt, right: 5.pt, top: 1.pt, bottom: 1.pt),
+                                  backgroundColor: .lightGray),
+                .backgroundColor(.lightGray),
+                .textColor(.purple)
+            ]
+        ])
+        let nativeMark = """
+        This is the first paragraph.
+        
+        It's **the** second `paragraph` that _gets_ interesting.
+        
+        But not the third.
+        """
+        
+        let testCase = RenderTestCase(name: "AlternativeInlineStyles",
+                                      nativeMark: nativeMark,
+                                      styleSheet: styleSheet,
+                                      width: 320)
+        XCTAssert(testCase.isPassing(for: self))
+    }
+
     func testHeadersAndParagraphs() {
         let nativeMark = """
 # My Document
