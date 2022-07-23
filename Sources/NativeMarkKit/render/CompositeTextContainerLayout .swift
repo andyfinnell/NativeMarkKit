@@ -28,25 +28,36 @@ final class CompositeTextContainerLayout: TextContainerLayout {
             builder.removeNextContainerBreak()
             
             switch containerBreak.path.last {
-            case let .list(listValue):
-                let layout = ListTextContainerLayout(path: containerBreak.path, value: listValue)
+            case let .list(listValue, style: style):
+                let layout = ListTextContainerLayout(path: containerBreak.path,
+                                                     value: listValue,
+                                                     style: style)
                 layout.superLayout = self
                 layouts.append(layout)
                 layout.build(builder)
                 
             case .leaf:
                 let layout = LeafTextContainerLayout(path: containerBreak.path,
-                                                     textContainer: builder.makeTextContainer())
+                                                     textContainer: builder.makeTextContainer(),
+                                                     style: .none)
                 layout.superLayout = self
                 layouts.append(layout)
                 // Can't have any children, so don't try
                 
-            case let .blockQuote(blockQuoteValue):
-                let layout = BlockQuoteTextContainerLayout(path: containerBreak.path, value: blockQuoteValue)
+            case let .blockQuote(style):
+                let layout = BlockQuoteTextContainerLayout(path: containerBreak.path, style: style)
                 layout.superLayout = self
                 layouts.append(layout)
                 layout.build(builder)
                 
+            case let .codeBlock(style):
+                let layout = LeafTextContainerLayout(path: containerBreak.path,
+                                                     textContainer: builder.makeTextContainer(),
+                                                     style: style)
+                layout.superLayout = self
+                layouts.append(layout)
+                // Can't have any children, so don't try
+
             case .listItem,
                     .listItemContent,
                     .listItemMarker,

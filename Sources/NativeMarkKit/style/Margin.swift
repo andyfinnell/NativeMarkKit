@@ -5,5 +5,5 @@ import AppKit
 import UIKit
 #endif
 
-public typealias Padding = FourSidedValue<Length>
-typealias PointPadding = FourSidedValue<CGFloat>
+public typealias Margin = FourSidedValue<Length>
+typealias PointMargin = FourSidedValue<CGFloat>

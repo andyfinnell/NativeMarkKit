@@ -69,7 +69,8 @@ private extension Renderer {
                 renderContainerBreak(true, with: state, in: result)
             }
             
-        case .listItemMarker:
+        case .listItemMarker,
+                .codeBlock:
             // An item market needs its own container, so special case it
             if state.path.last == .leaf {
                 state.path.removeLast()
@@ -99,7 +100,8 @@ private extension Renderer {
                 .list,
                 .listItem,
                 .listItemMarker,
-                .listItemContent:
+                .listItemContent,
+                .codeBlock:
             if let index = state.path.lastIndex(of: containerKind) {
                 state.path.removeSubrange(index..<state.path.endIndex)
             }
@@ -113,17 +115,23 @@ private extension Renderer {
             state.hasRenderedFirstContainerBreak = true
         }
         let attributeValue = ContainerBreakValue(path: state.path, shouldContainerBreak: shouldContainerBreak)
-        var attributes = state.attributes()
+        
+        var attributes: [NSAttributedString.Key: Any]
+        if result.length == 0 {
+            attributes = state.attributes()
+        } else {
+             attributes = result.attributes(at: result.length - 1, effectiveRange: nil)
+        }
         attributes[.containerBreak] = attributeValue
         result.append(NSAttributedString(string: pageBreakString, attributes: attributes))
     }
     
     func fixInlineBackgroundSpacing(in result: NSMutableAttributedString) {
         result.enumerateAttribute(.inlineBackground, in: NSRange(location: 0, length: result.length), options: .reverse) { value, characterRange, _ in
-            guard let background = value as? BackgroundValue else { return }
+            guard let background = value as? InlineContainerStyleValue else { return }
             
-            insertSpacer(background.rightMargin, at: characterRange.upperBound, in: result)
-            insertSpacer(background.leftMargin, at: characterRange.lowerBound, in: result)
+            insertSpacer(background.leftOffset, at: characterRange.upperBound, in: result)
+            insertSpacer(background.rightOffset, at: characterRange.lowerBound, in: result)
         }
     }
     
@@ -203,15 +211,35 @@ private extension Renderer {
             state.pop()
         }
         
-        let blockQuoteValue = state.attributes()[.blockQuote] as? BlockQuoteValue ?? BlockQuoteValue()
+        let style = textContainerStyle(from: state)
 
-        enterContainer(.blockQuote(blockQuoteValue), with: state, in: result)
+        enterContainer(.blockQuote(style), with: state, in: result)
 
         render(elements, indent: indent + 1, with: state, into: result)
         
-        exitContainer(.blockQuote(blockQuoteValue), with: state, in: result)
+        exitContainer(.blockQuote(style), with: state, in: result)
     }
 
+    func textContainerStyle(from state: State) -> TextContainerStyle {
+        let attrs = state.attributes()
+        let marginValue = attrs[.blockMargin] as? MarginValue
+        let borderValue = attrs[.blockBorder] as? BorderValue
+        let paddingValue = attrs[.blockPadding] as? PaddingValue
+        let backgroundValue = attrs[.blockBackground] as? NativeColor
+        return TextContainerStyle(margin: marginValue?.margin,
+                                  border: borderValue?.border,
+                                  padding: paddingValue?.padding,
+                                  backgroundColor: backgroundValue)
+    }
+    
+    func textContainerStyle(from state: State, for blockSelector: BlockStyleSelector) -> TextContainerStyle {
+        state.push(blockSelector)
+        defer {
+            state.pop()
+        }
+        return textContainerStyle(from: state)
+    }
+    
     func renderCodeBlock(info: String, text: String, indent: Int, with state: State, into result: NSMutableAttributedString) {
         // TODO: delegate out so let a more sophisticated renderer do syntax highlighting
         state.push(.codeBlock)
@@ -219,11 +247,13 @@ private extension Renderer {
             state.pop()
         }
 
-        enterContainer(.leaf, with: state, in: result)
+        let style = textContainerStyle(from: state)
+
+        enterContainer(.codeBlock(style), with: state, in: result)
 
         result.append(NSAttributedString(string: text, attributes: state.attributes()))
         
-        exitContainer(.leaf, with: state, in: result)
+        exitContainer(.codeBlock(style), with: state, in: result)
     }
     
     func renderList(_ info: ListInfo, items: [ListItem], indent: Int, with state: State, into result: NSMutableAttributedString) {
@@ -233,14 +263,15 @@ private extension Renderer {
         }
         
         let listValue = state.attributes()[.list] as? ListValue ?? ListValue()
+        let style = textContainerStyle(from: state)
 
-        enterContainer(.list(listValue), with: state, in: result)
+        enterContainer(.list(listValue, style: style), with: state, in: result)
 
         for (index, item) in items.enumerated() {
             render(item, info: info, index: index, indent: indent, with: state, into: result)
         }
         
-        exitContainer(.list(listValue), with: state, in: result)
+        exitContainer(.list(listValue, style: style), with: state, in: result)
     }
     
     func renderListItemMarker(_ index: Int, item: ListItem, info: ListInfo, indent: Int, with state: State, into result: NSMutableAttributedString) {
@@ -276,14 +307,17 @@ private extension Renderer {
     }
     
     func render(_ item: ListItem, info: ListInfo, index: Int, indent: Int, with state: State, into result: NSMutableAttributedString) {
-        enterContainer(.listItem, with: state, in: result)
-        
-        renderListItemMarker(index, item: item, info: info, indent: indent, with: state, into: result)
-                
         state.push(.item)
         defer {
             state.pop()
         }
+
+        let style = textContainerStyle(from: state)
+
+        enterContainer(.listItem(style), with: state, in: result)
+        
+        renderListItemMarker(index, item: item, info: info, indent: indent, with: state, into: result)
+                
         
         enterContainer(.listItemContent, with: state, in: result)
         
@@ -291,7 +325,7 @@ private extension Renderer {
             render(element, indent: indent + 1, with: state, into: result)
         }
         exitContainer(.listItemContent, with: state, in: result)
-        exitContainer(.listItem, with: state, in: result)
+        exitContainer(.listItem(style), with: state, in: result)
     }
     
     func render(_ text: [InlineText], with state: State, into result: NSMutableAttributedString) {
@@ -417,9 +451,7 @@ private extension Renderer {
         result.addAttributes(state.attributes(), range: NSRange(location: startLocation, length: result.length - startLocation))
     }
     
-    func insertSpacer(_ length: Length, at characterIndex: Int, in result: NSMutableAttributedString) {
-        let defaultFont = self.defaultFont(at: characterIndex, in: result)
-        let lengthInPoints = length.asRawPoints(for: defaultFont.pointSize)
+    func insertSpacer(_ lengthInPoints: CGFloat, at characterIndex: Int, in result: NSMutableAttributedString) {
         let attachment = SpacerAttachment(lengthInPoints: lengthInPoints)
         result.insert(NSAttributedString(attachment: attachment), at: characterIndex)
     }

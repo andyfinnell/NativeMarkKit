@@ -8,7 +8,7 @@ import UIKit
 final class BlockQuoteTextContainerLayout: TextContainerLayout {
     private var layout: CompositeTextContainerLayout
     private let path: [ContainerKind]
-    private let value: BlockQuoteValue
+    private let style: TextContainerStyle
     weak var superLayout: TextContainerLayout?
     var origin: CGPoint = .zero
     var size: CGSize = .zero {
@@ -17,10 +17,10 @@ final class BlockQuoteTextContainerLayout: TextContainerLayout {
         }
     }
 
-    init(path: [ContainerKind], value: BlockQuoteValue) {
+    init(path: [ContainerKind], style: TextContainerStyle) {
         self.path = path
         self.layout = CompositeTextContainerLayout(parentPath: path)
-        self.value = value
+        self.style = style
     }
 
     func build(_ builder: TextContainerLayoutBuilder) {
@@ -32,18 +32,15 @@ final class BlockQuoteTextContainerLayout: TextContainerLayout {
     var paragraphSpacingBefore: CGFloat { layout.paragraphSpacingBefore }
 
     func measure(maxWidth: CGFloat) -> CGSize {
-        let contentMaxWidth = maxWidth - value.leftPadding - value.rightPadding
-        let contentSize = layout.measure(maxWidth: contentMaxWidth)
-        return CGSize(width: contentSize.width + value.leftPadding + value.rightPadding,
-                      height: contentSize.height + value.topPadding + value.bottomPadding)
+        style.measure(maxWidth: maxWidth) { contentMaxWidth in
+            layout.measure(maxWidth: contentMaxWidth)
+        }
     }
     
     func draw(at point: CGPoint) {
-        let borderValue = BackgroundBorderValue(width: value.borderWidth,
-                                               color: value.borderColor,
-                                               sides: value.borderSides)
-        borderValue.render(with: CGRect(origin: point + origin, size: size))
-        layout.draw(at: point + origin)
+        let offset = point + origin
+        style.draw(in: CGRect(origin: offset, size: size))
+        layout.draw(at: offset)
     }
     
     func url(under point: CGPoint) -> URL? {
@@ -57,9 +54,8 @@ final class BlockQuoteTextContainerLayout: TextContainerLayout {
 
 private extension BlockQuoteTextContainerLayout {
     func sizeDidChange() {
-        let contentSize = CGSize(width: size.width - value.leftPadding - value.rightPadding,
-                                 height: size.height - value.topPadding - value.bottomPadding)
-        layout.origin = CGPoint(x: value.leftPadding, y: value.topPadding)
-        layout.size = contentSize
+        let contentFrame = style.contentFrame(for: size)
+        layout.origin = contentFrame.origin
+        layout.size = contentFrame.size
     }
 }

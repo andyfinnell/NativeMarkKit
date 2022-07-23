@@ -2,11 +2,12 @@ import Foundation
 
 enum ContainerKind: Equatable {
     case leaf // paragraph, thematicBreak, heading, codeBlock
-    case blockQuote(BlockQuoteValue)
-    case list(ListValue)
-    case listItem
+    case blockQuote(TextContainerStyle)
+    case list(ListValue, style: TextContainerStyle)
+    case listItem(TextContainerStyle)
     case listItemMarker
     case listItemContent
+    case codeBlock(TextContainerStyle)
     
     static func==(lhs: ContainerKind, rhs: ContainerKind) -> Bool {
         switch (lhs, rhs) {
@@ -21,6 +22,8 @@ enum ContainerKind: Equatable {
         case (.listItemMarker, .listItemMarker):
             return true
         case (.listItemContent, .listItemContent):
+            return true
+        case (.codeBlock, .codeBlock):
             return true
         default:
             return false
@@ -37,6 +40,7 @@ extension ContainerKind: CustomStringConvertible {
         case .listItem: return "listItem"
         case .listItemMarker: return "itemMarker"
         case .listItemContent: return "itemContent"
+        case .codeBlock: return "codeBlock"
         }
     }
 }
@@ -48,5 +52,12 @@ final class ContainerBreakValue: NSObject {
     init(path: [ContainerKind], shouldContainerBreak: Bool) {
         self.path = path
         self.shouldContainerBreak = shouldContainerBreak
+    }
+    
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let other = object as? ContainerBreakValue else {
+            return false
+        }
+        return path == other.path && shouldContainerBreak == other.shouldContainerBreak
     }
 }

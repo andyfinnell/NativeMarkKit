@@ -86,16 +86,27 @@ public extension StyleSheet {
                 .textStyle(.code),
                 .paragraphSpacingBefore(0.pt),
                 .paragraphSpacingAfter(0.pt),
-                .blockBackground(fillColor: .adaptableCodeBackgroundColor, strokeColor: .adaptableCodeBorderColor, strokeWidth: 1, cornerRadius: 3)
+                .blockMargin(.zero),
+                .blockBorder(Border(shape: .roundedRect(cornerRadius: 3), width: 1, color: .adaptableCodeBorderColor)),
+                .blockPadding(Padding(left: 1.em, right: 1.em, top: 1.em, bottom: 1.em)),
+                .blockBackground(.adaptableCodeBackgroundColor),
+                .backgroundColor(.adaptableCodeBackgroundColor)
             ],
             .blockQuote: [
                 .textColor(.adaptableBlockQuoteTextColor),
                 .paragraphSpacingBefore(0.5.em),
                 .paragraphSpacingAfter(0.5.em),
-                .blockQuote()
+                .blockMargin(.zero),
+                .blockBorder(Border(shape: .rectangle(sides: .left), width: 8, color: .adaptableBlockQuoteMarginColor)),
+                .blockPadding(Padding(left: 1.35.em, right: 1.em, top: 0.em, bottom: 0.em)),
+                .blockBackground(nil)
             ],
             .list(isTight: true): [
-                .list(paragraphSpacingBefore: 0.0.em, paragraphSpacingAfter: 0.0.em),
+                .list(),
+                .blockMargin(.zero),
+                .blockBorder(.none),
+                .blockPadding(Padding(left: 0.5.em, right: 0.em, top: 0.em, bottom: 0.em)),
+                .blockBackground(nil),
                 .orderedListMarker(.lowercaseRoman),
                 .unorderedListMarker(.check),
                 .paragraphSpacingBefore(0.0.em),
@@ -103,10 +114,20 @@ public extension StyleSheet {
             ],
             .list(isTight: false): [
                 .list(),
+                .blockMargin(.zero),
+                .blockBorder(.none),
+                .blockPadding(Padding(left: 0.5.em, right: 0.em, top: 0.em, bottom: 0.em)),
+                .blockBackground(nil),
                 .orderedListMarker(.lowercaseRoman),
                 .unorderedListMarker(.check),
                 .paragraphSpacingBefore(0.5.em),
                 .paragraphSpacingAfter(0.5.em),
+            ],
+            .item: [
+                .blockMargin(.zero),
+                .blockBorder(.none),
+                .blockPadding(Padding(left: 0.em, right: 0.em, top: 0.em, bottom: 0.em)),
+                .blockBackground(nil),
             ],
             .thematicBreak: [
                 .thematicBreak(thickness: 1, color: .adaptableSeparatorColor),

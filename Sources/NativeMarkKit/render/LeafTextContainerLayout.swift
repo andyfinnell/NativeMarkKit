@@ -8,6 +8,7 @@ import UIKit
 final class LeafTextContainerLayout: TextContainerLayout {
     private let textContainer: TextContainer
     private let path: [ContainerKind]
+    private let style: TextContainerStyle
     weak var superLayout: TextContainerLayout?
     var origin: CGPoint = .zero {
         didSet {
@@ -20,9 +21,10 @@ final class LeafTextContainerLayout: TextContainerLayout {
         }
     }
     
-    init(path: [ContainerKind], textContainer: TextContainer) {
+    init(path: [ContainerKind], textContainer: TextContainer, style: TextContainerStyle) {
         self.path = path
         self.textContainer = textContainer
+        self.style = style
     }
     
     var paragraphSpacingAfter: CGFloat {
@@ -61,13 +63,15 @@ final class LeafTextContainerLayout: TextContainerLayout {
     }
     
     func measure(maxWidth: CGFloat) -> CGSize {
-        setContainerSize(CGSize(width: maxWidth, height: .largestMeasurableNumber))
-        
-        let usedSize = usedSize()
-        
-        setContainerSize(size)
-        
-        return usedSize
+        style.measure(maxWidth: maxWidth) { contentMaxWidth in
+            setContainerSize(CGSize(width: contentMaxWidth, height: .largestMeasurableNumber))
+            
+            let usedSize = usedSize()
+            
+            setContainerSize(size)
+            
+            return usedSize
+        }
     }
     
     func draw(at point: CGPoint) {
@@ -76,9 +80,12 @@ final class LeafTextContainerLayout: TextContainerLayout {
         }
         
         let offset = point + origin
+        
+        style.draw(in: CGRect(origin: offset, size: size))
+        
         let glyphRange = layoutManager.glyphRange(for: textContainer)
-        layoutManager.drawBackground(forGlyphRange: glyphRange, at: offset)
-        layoutManager.drawGlyphs(forGlyphRange: glyphRange, at: offset)
+        layoutManager.drawBackground(forGlyphRange: glyphRange, at: textContainer.origin)
+        layoutManager.drawGlyphs(forGlyphRange: glyphRange, at: textContainer.origin)
     }
     
     func url(under point: CGPoint) -> URL? {
@@ -86,7 +93,8 @@ final class LeafTextContainerLayout: TextContainerLayout {
             return nil
         }
         
-        let location = point - origin
+        let contentFrame = style.contentFrame(for: size)
+        let location = point - origin - contentFrame.origin
         let characterIndex = layoutManager.characterIndex(for: location,
                                                           in: textContainer,
                                                           fractionOfDistanceBetweenInsertionPoints: nil)
@@ -121,7 +129,8 @@ private extension LeafTextContainerLayout {
     }
     
     func originDidChange() {
-        var absoluteOrigin = origin
+        let contentFrame = style.contentFrame(for: size)
+        var absoluteOrigin = origin + contentFrame.origin
         var layout = superLayout
         while let l = layout {
             absoluteOrigin += l.origin
@@ -131,7 +140,8 @@ private extension LeafTextContainerLayout {
     }
     
     func sizeDidChange() {
-        setContainerSize(size)
+        let contentFrame = style.contentFrame(for: size)
+        setContainerSize(contentFrame.size)
     }
     
     func isContainerBreak(at charIndex: Int) -> Bool {

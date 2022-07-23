@@ -10,6 +10,7 @@ final class ListItemTextContainerLayout: TextContainerLayout {
     private var contentLayout: ListItemContentTextContainerLayout?
     private let path: [ContainerKind]
     private let value: ListValue
+    private let style: TextContainerStyle
     weak var superLayout: TextContainerLayout?
     var origin: CGPoint = .zero
     var size: CGSize = .zero {
@@ -18,9 +19,11 @@ final class ListItemTextContainerLayout: TextContainerLayout {
         }
     }
 
-    init(path: [ContainerKind], value: ListValue) {
+    init(path: [ContainerKind], value: ListValue, style: TextContainerStyle) {
         self.path = path
         self.value = value
+        self.style = style
+        // TODO: apply style
     }
     
     func build(_ builder: TextContainerLayoutBuilder) {
@@ -58,24 +61,27 @@ final class ListItemTextContainerLayout: TextContainerLayout {
     var paragraphSpacingBefore: CGFloat { contentLayout?.paragraphSpacingBefore ?? 0.0 }
 
     func measure(maxWidth: CGFloat) -> CGSize {
-        guard let markerLayout = markerLayout,
-              let contentLayout = contentLayout else {
-            return .zero
-        }
+        style.measure(maxWidth: maxWidth) { maxWidth in
+            guard let markerLayout = markerLayout,
+                  let contentLayout = contentLayout else {
+                return .zero
+            }
 
-        // The marker doesn't wrap
-        let markerSize = markerLayout.measure(maxWidth: .largestMeasurableNumber)
-        let offset = max(value.markerToContentIndent, markerSize.width)
-        
-        let contentMaxWidth = maxWidth - offset
-        let contentSize = contentLayout.measure(maxWidth: contentMaxWidth)
-        
-        return CGSize(width: contentSize.width + offset,
-                      height: max(markerSize.height, contentSize.height))
+            // The marker doesn't wrap
+            let markerSize = markerLayout.measure(maxWidth: .largestMeasurableNumber)
+            let offset = max(value.markerToContentIndent, markerSize.width)
+            
+            let contentMaxWidth = maxWidth - offset
+            let contentSize = contentLayout.measure(maxWidth: contentMaxWidth)
+            
+            return CGSize(width: contentSize.width + offset,
+                          height: max(markerSize.height, contentSize.height))
+        }
     }
     
     func draw(at point: CGPoint) {
         let offset = point + origin
+        style.draw(in: CGRect(origin: offset, size: size))
         markerLayout?.draw(at: offset)
         contentLayout?.draw(at: offset)
     }
@@ -104,20 +110,22 @@ private extension ListItemTextContainerLayout {
             return
         }
 
+        let contentFrame = style.contentFrame(for: size)
+        
         // The marker doesn't wrap
         let markerSize = markerLayout.measure(maxWidth: .largestMeasurableNumber)
         let offset = max(value.markerToContentIndent, markerSize.width)
         
-        markerLayout.origin = .zero
+        markerLayout.origin = contentFrame.origin
         markerLayout.size = CGSize(width: offset, height: markerSize.height)
         
-        let contentMaxWidth = max(size.width - offset, 0.0)
+        let contentMaxWidth = max(contentFrame.width - offset, 0.0)
         let contentSize = contentLayout.measure(maxWidth: contentMaxWidth)
         var contentY: CGFloat = 0.0
         if markerSize.height > contentSize.height {
             contentY = ceil((markerSize.height - contentSize.height) / 2.0)
         }
-        contentLayout.origin = CGPoint(x: offset, y: contentY)
+        contentLayout.origin = CGPoint(x: offset, y: contentY) + contentFrame.origin
         contentLayout.size = CGSize(width: contentMaxWidth, height: contentSize.height)
     }
 }

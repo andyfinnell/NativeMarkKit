@@ -16,8 +16,12 @@ public enum InlineStyle {
     case underline(NSUnderlineStyle, color: NativeColor? = nil)
     case fontSize(CGFloat)
     case fontTraits(FontTraits)
-    case backgroundBorder(width: CGFloat = 1, color: NativeColor = .adaptableBlockQuoteMarginColor, sides: BorderSides = .all)
-    case inlineBackground(fillColor: NativeColor = .adaptableCodeBackgroundColor, strokeColor: NativeColor = .adaptableCodeBorderColor, strokeWidth: CGFloat = 1, cornerRadius: CGFloat = 3, topMargin: Length = 1.pt, bottomMargin: Length = 1.pt, leftMargin: Length = 6.pt, rightMargin: Length = 6.pt)
+    case inlineBackground(margin: Margin = .zero,
+                          border: Border = Border(shape: .roundedRect(cornerRadius: 3), width: 1, color: .adaptableCodeBorderColor),
+                          padding: Padding = Padding(left: 5.pt, right: 5.pt, top: 0.pt, bottom: 0.pt),
+                          backgroundColor: NativeColor? = .adaptableCodeBackgroundColor)
+    
+
 }
 
 extension InlineStyle: ExpressibleAsParagraphStyle {
@@ -54,19 +58,13 @@ extension InlineStyle: ExpressibleAsAttributes {
         case let .fontTraits(traits):
             let currentFont = attributes[.font] as? NativeFont
             attributes[.font] = currentFont.withTraits(traits)
-        case let .backgroundBorder(width: width, color: color, sides: sides):
-            let backgroundBorder = BackgroundBorderValue(width: width, color: color, sides: sides)
-            attributes[.backgroundBorder] = backgroundBorder
-        case let .inlineBackground(fillColor: fillColor, strokeColor: strokeColor, strokeWidth: strokeWidth, cornerRadius: cornerRadius, topMargin: topMargin, bottomMargin: bottomMargin, leftMargin: leftMargin, rightMargin: rightMargin):
-            let value = BackgroundValue(fillColor: fillColor,
-                                              strokeColor: strokeColor,
-                                              strokeWidth: strokeWidth,
-                                              cornerRadius: cornerRadius,
-                                              topMargin: topMargin,
-                                              bottomMargin: bottomMargin,
-                                              leftMargin: leftMargin,
-                                              rightMargin: rightMargin)
-            attributes[.inlineBackground] = value
+        case let .inlineBackground(margin: margin, border: border, padding: padding, backgroundColor: backgroundColor):
+            let defaultFont = (attributes[.font] as? NativeFont) ?? TextStyle.body.makeFont()
+            let style = TextContainerStyle(margin: margin.asRawPoints(for: defaultFont.pointSize),
+                                           border: border,
+                                           padding: padding.asRawPoints(for: defaultFont.pointSize),
+                                           backgroundColor: backgroundColor)
+            attributes[.inlineBackground] = InlineContainerStyleValue(style: style)
         }
     }
 }
