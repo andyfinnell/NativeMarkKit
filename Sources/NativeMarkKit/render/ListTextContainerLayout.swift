@@ -22,7 +22,6 @@ final class ListTextContainerLayout: TextContainerLayout {
         self.path = path
         self.value = value
         self.style = style
-        // TODO: apply style
     }
     
     func build(_ builder: TextContainerLayoutBuilder) {
@@ -33,8 +32,10 @@ final class ListTextContainerLayout: TextContainerLayout {
             builder.removeNextContainerBreak()
             
             switch containerBreak.path.last {
-            case .listItem:
-                let layout = ListItemTextContainerLayout(path: containerBreak.path, value: value)
+            case let .listItem(style):
+                let layout = ListItemTextContainerLayout(path: containerBreak.path,
+                                                         value: value,
+                                                         style: style)
                 layout.superLayout = self
                 itemLayouts.append(layout)
                 layout.build(builder)

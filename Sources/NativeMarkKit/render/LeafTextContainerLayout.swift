@@ -25,8 +25,6 @@ final class LeafTextContainerLayout: TextContainerLayout {
         self.path = path
         self.textContainer = textContainer
         self.style = style
-        
-        // TODO: apply style
     }
     
     var paragraphSpacingAfter: CGFloat {

@@ -123,6 +123,12 @@ public extension StyleSheet {
                 .paragraphSpacingBefore(0.5.em),
                 .paragraphSpacingAfter(0.5.em),
             ],
+            .item: [
+                .blockMargin(.zero),
+                .blockBorder(.none),
+                .blockPadding(Padding(left: 0.em, right: 0.em, top: 0.em, bottom: 0.em)),
+                .blockBackground(nil),
+            ],
             .thematicBreak: [
                 .thematicBreak(thickness: 1, color: .adaptableSeparatorColor),
             ]

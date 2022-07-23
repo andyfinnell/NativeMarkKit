@@ -116,8 +116,6 @@ private extension Renderer {
         }
         let attributeValue = ContainerBreakValue(path: state.path, shouldContainerBreak: shouldContainerBreak)
         
-        // TODO: this is wrong. If not at index=0, then copy attributes from previous index
-        //  If at index=0, then what?
         var attributes: [NSAttributedString.Key: Any]
         if result.length == 0 {
             attributes = state.attributes()
@@ -234,6 +232,14 @@ private extension Renderer {
                                   backgroundColor: backgroundValue)
     }
     
+    func textContainerStyle(from state: State, for blockSelector: BlockStyleSelector) -> TextContainerStyle {
+        state.push(blockSelector)
+        defer {
+            state.pop()
+        }
+        return textContainerStyle(from: state)
+    }
+    
     func renderCodeBlock(info: String, text: String, indent: Int, with state: State, into result: NSMutableAttributedString) {
         // TODO: delegate out so let a more sophisticated renderer do syntax highlighting
         state.push(.codeBlock)
@@ -301,14 +307,17 @@ private extension Renderer {
     }
     
     func render(_ item: ListItem, info: ListInfo, index: Int, indent: Int, with state: State, into result: NSMutableAttributedString) {
-        enterContainer(.listItem, with: state, in: result)
-        
-        renderListItemMarker(index, item: item, info: info, indent: indent, with: state, into: result)
-                
         state.push(.item)
         defer {
             state.pop()
         }
+
+        let style = textContainerStyle(from: state)
+
+        enterContainer(.listItem(style), with: state, in: result)
+        
+        renderListItemMarker(index, item: item, info: info, indent: indent, with: state, into: result)
+                
         
         enterContainer(.listItemContent, with: state, in: result)
         
@@ -316,7 +325,7 @@ private extension Renderer {
             render(element, indent: indent + 1, with: state, into: result)
         }
         exitContainer(.listItemContent, with: state, in: result)
-        exitContainer(.listItem, with: state, in: result)
+        exitContainer(.listItem(style), with: state, in: result)
     }
     
     func render(_ text: [InlineText], with state: State, into result: NSMutableAttributedString) {

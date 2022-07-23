@@ -4,7 +4,7 @@ enum ContainerKind: Equatable {
     case leaf // paragraph, thematicBreak, heading, codeBlock
     case blockQuote(TextContainerStyle)
     case list(ListValue, style: TextContainerStyle)
-    case listItem
+    case listItem(TextContainerStyle)
     case listItemMarker
     case listItemContent
     case codeBlock(TextContainerStyle)
