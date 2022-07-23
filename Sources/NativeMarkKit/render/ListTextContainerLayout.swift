@@ -41,6 +41,7 @@ final class ListTextContainerLayout: TextContainerLayout {
                     .listItemMarker,
                     .listItemContent,
                     .leaf,
+                    .codeBlock,
                     .none:
                 break // should fail somehow as these should be unreachable
             }

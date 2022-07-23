@@ -5,12 +5,12 @@ import AppKit
 import UIKit
 #endif
 
-public enum BorderShape {
+public enum BorderShape: Equatable {
     case roundedRect(cornerRadius: CGFloat)
     case rectangle(sides: BorderSides)
 }
 
-public struct Border {
+public struct Border: Equatable {
     public let shape: BorderShape
     public let width: CGFloat
     public let color: NativeColor

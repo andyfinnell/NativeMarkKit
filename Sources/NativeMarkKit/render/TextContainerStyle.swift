@@ -13,6 +13,8 @@ struct TextContainerStyle {
 }
 
 extension TextContainerStyle {
+    static let none = TextContainerStyle(margin: nil, border: nil, padding: nil, backgroundColor: nil)
+    
     func measure(maxWidth: CGFloat, content: (CGFloat) -> CGSize) -> CGSize {
         let contentMaxWidth = maxWidth - leftOffset - rightOffset
         let contentSize = content(contentMaxWidth)

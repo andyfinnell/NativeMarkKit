@@ -36,7 +36,8 @@ final class CompositeTextContainerLayout: TextContainerLayout {
                 
             case .leaf:
                 let layout = LeafTextContainerLayout(path: containerBreak.path,
-                                                     textContainer: builder.makeTextContainer())
+                                                     textContainer: builder.makeTextContainer(),
+                                                     style: .none)
                 layout.superLayout = self
                 layouts.append(layout)
                 // Can't have any children, so don't try
@@ -47,6 +48,14 @@ final class CompositeTextContainerLayout: TextContainerLayout {
                 layouts.append(layout)
                 layout.build(builder)
                 
+            case let .codeBlock(style):
+                let layout = LeafTextContainerLayout(path: containerBreak.path,
+                                                     textContainer: builder.makeTextContainer(),
+                                                     style: style)
+                layout.superLayout = self
+                layouts.append(layout)
+                // Can't have any children, so don't try
+
             case .listItem,
                     .listItemContent,
                     .listItemMarker,

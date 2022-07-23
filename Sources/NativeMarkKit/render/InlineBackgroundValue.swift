@@ -5,7 +5,7 @@ import AppKit
 import UIKit
 #endif
 
-final class CodeBlockBackgroundValue: NSObject {
+final class InlineBackgroundValue: NSObject {
     let fillColor: NativeColor
     let strokeColor: NativeColor
     let strokeWidth: CGFloat
@@ -49,7 +49,7 @@ final class CodeBlockBackgroundValue: NSObject {
     }
     
     override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? CodeBlockBackgroundValue else {
+        guard let rhs = object as? InlineBackgroundValue else {
             return false
         }
         

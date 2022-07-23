@@ -23,9 +23,8 @@ public enum BlockStyle {
     case blockBorder(Border = Border(shape: .rectangle(sides: .all), width: 1, color: .adaptableCodeBorderColor))
     case blockMargin(Margin)
     case blockPadding(Padding)
-    case blockBackground(NativeColor)
+    case blockBackground(NativeColor?)
     case list(padding: Padding = Padding(left: 0.5.em, right: 0.em, top: 0.em, bottom: 0.em), markerToContentIndent: Length = 1.5.em, paragraphSpacingBefore: Length = 0.5.em, paragraphSpacingAfter: Length = 0.5.em)
-    case codeBlockBackground(fillColor: NativeColor = .adaptableCodeBackgroundColor, strokeColor: NativeColor = .adaptableCodeBorderColor, strokeWidth: CGFloat = 1, cornerRadius: CGFloat = 3, topMargin: Length = 1.em, bottomMargin: Length = 1.em, leftMargin: Length = 1.em, rightMargin: Length = 1.em)
     case inlineStyle(InlineStyle)
 }
 
@@ -80,8 +79,7 @@ extension BlockStyle: ExpressibleAsParagraphStyle {
             paragraphStyle.paragraphSpacingBefore = spacing.asRawPoints(for: defaultFont.pointSize)
         case let .lineBreak(lineBreak):
             paragraphStyle.lineBreakMode = lineBreak
-        case .inlineStyle, .orderedListMarker, .unorderedListMarker, .thematicBreak,
-                .codeBlockBackground, .list, .blockBorder, .blockMargin,
+        case .inlineStyle, .orderedListMarker, .unorderedListMarker, .thematicBreak, .list, .blockBorder, .blockMargin,
                 .blockPadding, .blockBackground:
             break // handled elsewhere
         }
@@ -100,16 +98,6 @@ extension BlockStyle: ExpressibleAsAttributes {
         case let .thematicBreak(thickness: thickness, color: color):
             attributes[.thematicBreakThickness] = thickness
             attributes[.thematicBreakColor] = color
-        case let .codeBlockBackground(fillColor: fillColor, strokeColor: strokeColor, strokeWidth: strokeWidth, cornerRadius: cornerRadius, topMargin: topMargin, bottomMargin: bottomMargin, leftMargin: leftMargin, rightMargin: rightMargin):
-            let value = CodeBlockBackgroundValue(fillColor: fillColor,
-                                             strokeColor: strokeColor,
-                                             strokeWidth: strokeWidth,
-                                             cornerRadius: cornerRadius,
-                                             topMargin: topMargin,
-                                             bottomMargin: bottomMargin,
-                                             leftMargin: leftMargin,
-                                             rightMargin: rightMargin)
-            attributes[.codeBlockBackground] = value
         case let .list(padding: padding, markerToContentIndent: markerToContentIndent, paragraphSpacingBefore: paragraphSpacingBefore, paragraphSpacingAfter: paragraphSpacingAfter):
             let defaultFont = (attributes[.font] as? NativeFont) ?? TextStyle.body.makeFont()
             let value = ListValue(leftPadding: padding.left.asRawPoints(for: defaultFont.pointSize),

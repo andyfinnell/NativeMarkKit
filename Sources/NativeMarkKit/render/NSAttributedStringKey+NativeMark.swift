@@ -6,7 +6,6 @@ extension NSAttributedString.Key {
     static let thematicBreakThickness = NSAttributedString.Key("nativeMarkKit.thematicBreakThickness")
     static let thematicBreakColor = NSAttributedString.Key("nativeMarkKit.thematicBreakColor")
     static let backgroundBorder = NSAttributedString.Key("nativeMarkKit.backgroundBorder")
-    static let codeBlockBackground = NSAttributedString.Key("nativeMarkKit.codeBlockBackground")
     static let inlineBackground = NSAttributedString.Key("nativeMarkKit.inlineBackground")
     static let nativeMarkLink = NSAttributedString.Key("nativeMarkKit.link")
     static let containerBreak = NSAttributedString.Key("nativeMarkKit.containerBreak")

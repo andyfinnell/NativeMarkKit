@@ -86,7 +86,10 @@ public extension StyleSheet {
                 .textStyle(.code),
                 .paragraphSpacingBefore(0.pt),
                 .paragraphSpacingAfter(0.pt),
-                .codeBlockBackground(fillColor: .adaptableCodeBackgroundColor, strokeColor: .adaptableCodeBorderColor, strokeWidth: 1, cornerRadius: 3)
+                .blockBorder(Border(shape: .roundedRect(cornerRadius: 3), width: 1, color: .adaptableCodeBorderColor)),
+                .blockPadding(Padding(left: 1.em, right: 1.em, top: 1.em, bottom: 1.em)),
+                .blockBackground(.adaptableCodeBackgroundColor),
+                .backgroundColor(.adaptableCodeBackgroundColor)
             ],
             .blockQuote: [
                 .textColor(.adaptableBlockQuoteTextColor),

@@ -32,3 +32,5 @@ extension FourSidedValue where Value == Length {
                                 bottom: bottom.asRawPoints(for: fontSize))
     }
 }
+
+extension FourSidedValue: Equatable where Value: Equatable {}
