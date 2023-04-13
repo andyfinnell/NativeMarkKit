@@ -9,6 +9,7 @@ public final class NativeMarkLabel: UIControl {
         get { abstractView.onOpenLink }
         set { abstractView.onOpenLink = newValue }
     }
+    public var onIntrinsicSizeInvalidated: (() -> Void)?
     
     public var nativeMark: String {
         didSet {
@@ -23,7 +24,6 @@ public final class NativeMarkLabel: UIControl {
         }
     }
     
-    var onIntrinsicSizeInvalidated: (() -> Void)?
     var isMultiline: Bool { abstractView.isMultiline }
 
     public init(nativeMark: String, styleSheet: StyleSheet = .default, environment: Environment) {
