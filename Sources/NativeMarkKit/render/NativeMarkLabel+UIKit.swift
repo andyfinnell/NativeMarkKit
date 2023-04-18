@@ -78,6 +78,20 @@ public final class NativeMarkLabel: UIControl {
         abstractView.draw()
     }
     
+    public override func sizeThatFits(_ size: CGSize) -> CGSize {
+        return abstractView.sizeThatFits(size)
+    }
+    
+    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let hit = super.hitTest(point, with: event)
+        if hit === self {
+            if abstractView.beginTracking(at: point) == false {
+                return nil
+            }
+        }
+        return hit
+    }
+    
     public override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         let location = touch.location(in: self)
         return abstractView.beginTracking(at: location)

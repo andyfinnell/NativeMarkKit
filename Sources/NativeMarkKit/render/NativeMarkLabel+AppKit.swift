@@ -62,6 +62,20 @@ public final class NativeMarkLabel: NSView {
         abstractView.draw()
     }
     
+    public func sizeThatFits(_ size: NSSize) -> NSSize {
+        return abstractView.sizeThatFits(size)
+    }
+    
+    public override func hitTest(_ point: NSPoint) -> NSView? {
+        let hit = super.hitTest(point)
+        if hit === self {
+            if abstractView.beginTracking(at: point) == false {
+                return nil
+            }
+        }
+        return hit
+    }
+    
     public override func mouseDown(with event: NSEvent) {
         let location = convert(event.locationInWindow, from: nil)
         _ = abstractView.beginTracking(at: location)
