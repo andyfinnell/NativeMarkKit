@@ -62,6 +62,14 @@ final class AbstractView: NSObject {
                       height: computedSize.height.rounded(.up))
     }
     
+    func sizeThatFits(_ size: CGSize) -> CGSize {
+        let computedSize = layout.measure(maxWidth: size.width)
+        return CGSize(
+            width: computedSize.width.rounded(.up),
+            height: computedSize.height.rounded(.up)
+        )
+    }
+    
     func draw() {
         layoutManager.drawBackground(in: bounds, using: styleSheet)
         layout.draw(at: .zero)

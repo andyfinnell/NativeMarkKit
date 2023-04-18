@@ -11,6 +11,7 @@ public final class NativeMarkLabel: NSView {
         get { abstractView.onOpenLink }
         set { abstractView.onOpenLink = newValue }
     }
+    public var onIntrinsicSizeInvalidated: (() -> Void)?
     
     public var nativeMark: String {
         didSet {
@@ -25,7 +26,6 @@ public final class NativeMarkLabel: NSView {
         }
     }
 
-    var onIntrinsicSizeInvalidated: (() -> Void)?
     var isMultiline: Bool { abstractView.isMultiline }
     
     public init(nativeMark: String, styleSheet: StyleSheet = .default, environment: Environment = .default) {
@@ -60,6 +60,20 @@ public final class NativeMarkLabel: NSView {
     
     public override func draw(_ dirtyRect: NSRect) {
         abstractView.draw()
+    }
+    
+    public func sizeThatFits(_ size: NSSize) -> NSSize {
+        return abstractView.sizeThatFits(size)
+    }
+    
+    public override func hitTest(_ point: NSPoint) -> NSView? {
+        let hit = super.hitTest(point)
+        if hit === self {
+            if abstractView.beginTracking(at: point) == false {
+                return nil
+            }
+        }
+        return hit
     }
     
     public override func mouseDown(with event: NSEvent) {

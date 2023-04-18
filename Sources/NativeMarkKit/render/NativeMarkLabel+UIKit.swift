@@ -9,6 +9,7 @@ public final class NativeMarkLabel: UIControl {
         get { abstractView.onOpenLink }
         set { abstractView.onOpenLink = newValue }
     }
+    public var onIntrinsicSizeInvalidated: (() -> Void)?
     
     public var nativeMark: String {
         didSet {
@@ -23,7 +24,6 @@ public final class NativeMarkLabel: UIControl {
         }
     }
     
-    var onIntrinsicSizeInvalidated: (() -> Void)?
     var isMultiline: Bool { abstractView.isMultiline }
 
     public init(nativeMark: String, styleSheet: StyleSheet = .default, environment: Environment) {
@@ -76,6 +76,20 @@ public final class NativeMarkLabel: UIControl {
     
     public override func draw(_ rect: CGRect) {
         abstractView.draw()
+    }
+    
+    public override func sizeThatFits(_ size: CGSize) -> CGSize {
+        return abstractView.sizeThatFits(size)
+    }
+    
+    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let hit = super.hitTest(point, with: event)
+        if hit === self {
+            if abstractView.beginTracking(at: point) == false {
+                return nil
+            }
+        }
+        return hit
     }
     
     public override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
